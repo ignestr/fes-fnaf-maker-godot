@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://o16dc8u71hwj"]
+
+[ext_resource type="Script" uid="uid://cth146dtdndau" path="res://debug ☹️/I hate this/room_button.gd" id="1_ot3ky"]
+
+[node name="MarginContainer" type="MarginContainer" unique_id=2008316741]
+custom_minimum_size = Vector2(65, 65)
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+script = ExtResource("1_ot3ky")
+
+[node name="Button" type="Button" parent="." unique_id=680239742]
+layout_mode = 2
+toggle_mode = true
+
+[node name="Label" type="Label" parent="." unique_id=2144170584]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 12
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

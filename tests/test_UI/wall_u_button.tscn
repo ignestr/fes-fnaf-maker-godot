@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dnw0kqal3weno"]
+
+[ext_resource type="Script" uid="uid://hng4k5q47g2n" path="res://debug ☹️/I hate this/wall_u_button.gd" id="1_sso6x"]
+
+[node name="MarginContainer" type="MarginContainer" unique_id=2045968698]
+custom_minimum_size = Vector2(60, 15)
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+script = ExtResource("1_sso6x")
+
+[node name="Button" type="Button" parent="." unique_id=1576504802]
+layout_mode = 2
+toggle_mode = true
+
+[node name="Label" type="Label" parent="." unique_id=1526978542]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "0,0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

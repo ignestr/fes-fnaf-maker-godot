@@ -1,0 +1,231 @@
+[gd_scene format=3 uid="uid://tikhgthkpc3k"]
+
+[ext_resource type="Script" uid="uid://u7i0h6fafe2u" path="res://scripts/player/dayshiftMovement.gd" id="1_txtqv"]
+[ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://misc/ffps theme.tres" id="2_ogt6m"]
+[ext_resource type="Shader" uid="uid://gsueykgajqq" path="res://resources/shaders/squares.res" id="3_bjurr"]
+[ext_resource type="Script" uid="uid://20xuk31bae5l" path="res://scripts/player/dayshiftBuild.gd" id="3_txtqv"]
+[ext_resource type="Texture2D" uid="uid://2ltrbcplqkrl" path="res://resources/bg_math_v3.png" id="4_14dl4"]
+[ext_resource type="Script" uid="uid://dhoc2cafhg5po" path="res://scripts/player/UI/buildModeButton.gd" id="4_kcjai"]
+[ext_resource type="Script" uid="uid://h8raol3x07q1" path="res://scenes/player/UI/thingGetter.gd" id="5_bjurr"]
+[ext_resource type="Script" uid="uid://cvc8eo6lq5yob" path="res://scripts/classes/vox.gd" id="8_bjurr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4m1vv"]
+shader = ExtResource("3_bjurr")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1fmh"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_kcjai"]
+radius = 1.3637
+
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=313928948]
+script = ExtResource("1_txtqv")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1175914136]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0)
+
+[node name="Control" type="Control" parent="." unique_id=2026507976]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control" unique_id=2033973678]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="Panel2" type="Panel" parent="Control/MarginContainer" unique_id=1342267954]
+custom_minimum_size = Vector2(225, 400)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme = ExtResource("2_ogt6m")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Panel2" unique_id=189307182]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer/Panel2/MarginContainer" unique_id=1555212928]
+material = SubResource("ShaderMaterial_4m1vv")
+custom_minimum_size = Vector2(197.705, 355.685)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+texture = ExtResource("4_14dl4")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="TabContainer" type="TabContainer" parent="Control/MarginContainer/Panel2/MarginContainer" unique_id=1281684131]
+layout_mode = 2
+theme = ExtResource("2_ogt6m")
+theme_override_font_sizes/font_size = 10
+tab_alignment = 1
+current_tab = 0
+
+[node name="OBJECTS" type="MarginContainer" parent="Control/MarginContainer/Panel2/MarginContainer/TabContainer" unique_id=1120936400]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="OBJECTS" type="ScrollContainer" parent="Control/MarginContainer/Panel2/MarginContainer/TabContainer/OBJECTS" unique_id=1352700037]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_j1fmh")
+
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/Panel2/MarginContainer/TabContainer/OBJECTS/OBJECTS" unique_id=171422036]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 2
+script = ExtResource("5_bjurr")
+itemType = 2
+
+[node name="ANIMATRONICS" type="MarginContainer" parent="Control/MarginContainer/Panel2/MarginContainer/TabContainer" unique_id=338449198]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="ANIMATRONICS" type="ScrollContainer" parent="Control/MarginContainer/Panel2/MarginContainer/TabContainer/ANIMATRONICS" unique_id=473089897]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/Panel2/MarginContainer/TabContainer/ANIMATRONICS/ANIMATRONICS" unique_id=333344611]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 2
+script = ExtResource("5_bjurr")
+itemType = 1
+
+[node name="Panel" type="Panel" parent="Control/MarginContainer" unique_id=1038229989]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme = ExtResource("2_ogt6m")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Panel" unique_id=1113561127]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Panel3" type="Panel" parent="Control/MarginContainer" unique_id=1845270340]
+custom_minimum_size = Vector2(500, 75)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("2_ogt6m")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Panel3" unique_id=1105661192]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/Panel3/MarginContainer" unique_id=2033473902]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Button" type="Button" parent="Control/MarginContainer/Panel3/MarginContainer/HBoxContainer" unique_id=1718049709]
+clip_contents = true
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_ogt6m")
+text = "Add"
+autowrap_mode = 3
+clip_text = true
+expand_icon = true
+script = ExtResource("4_kcjai")
+
+[node name="Button2" type="Button" parent="Control/MarginContainer/Panel3/MarginContainer/HBoxContainer" unique_id=1050883700]
+clip_contents = true
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_ogt6m")
+text = "Delete
+"
+text_overrun_behavior = 1
+autowrap_mode = 3
+clip_text = true
+expand_icon = true
+script = ExtResource("4_kcjai")
+transferState = 1
+
+[node name="Button3" type="Button" parent="Control/MarginContainer/Panel3/MarginContainer/HBoxContainer" unique_id=842888784]
+clip_contents = true
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_ogt6m")
+text = "Select"
+text_overrun_behavior = 1
+autowrap_mode = 3
+clip_text = true
+expand_icon = true
+script = ExtResource("4_kcjai")
+transferState = 2
+
+[node name="Button4" type="Button" parent="Control/MarginContainer/Panel3/MarginContainer/HBoxContainer" unique_id=1244073641]
+clip_contents = true
+custom_minimum_size = Vector2(55, 55)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_ogt6m")
+text = "Make Room"
+text_overrun_behavior = 1
+autowrap_mode = 3
+clip_text = true
+expand_icon = true
+script = ExtResource("4_kcjai")
+transferState = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1965284668]
+shape = SubResource("SphereShape3D_kcjai")
+
+[node name="dayshiftBuildSystem" type="Node3D" parent="." unique_id=684297167]
+script = ExtResource("3_txtqv")
+metadata/_custom_type_script = "uid://20xuk31bae5l"
+
+[node name="master_pizzeria" type="Node3D" parent="." unique_id=261275204]
+script = ExtResource("8_bjurr")
+metadata/_custom_type_script = "uid://cvc8eo6lq5yob"

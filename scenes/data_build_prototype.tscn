@@ -1,0 +1,301 @@
+[gd_scene format=3 uid="uid://i6wfvbncuo08"]
+
+[ext_resource type="Script" uid="uid://b2xu80nmpfdmm" path="res://scripts/classes/playerData.gd" id="1_vyvm5"]
+[ext_resource type="PackedScene" uid="uid://tikhgthkpc3k" path="res://scenes/player/dayshift.tscn" id="2_pugii"]
+[ext_resource type="Script" uid="uid://cvc8eo6lq5yob" path="res://scripts/classes/vox.gd" id="3_q7gyk"]
+[ext_resource type="PackedScene" uid="uid://bik8ysf8p1als" path="res://resources/models/toy freddy/Toy Freddy v2.fbx" id="4_irbku"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_25ajg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0.7647059)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_25ajg"]
+energy_multiplier = 3.0
+
+[sub_resource type="Sky" id="Sky_25ajg"]
+sky_material = SubResource("PhysicalSkyMaterial_25ajg")
+
+[sub_resource type="Environment" id="Environment_e83qx"]
+background_mode = 1
+background_color = Color(0.78125, 0.78125, 0.78125, 1)
+sky = SubResource("Sky_25ajg")
+tonemap_mode = 3
+tonemap_exposure = 0.62
+ssil_enabled = true
+sdfgi_use_occlusion = true
+
+[node name="Node3D" type="Node3D" unique_id=1382551264]
+
+[node name="debug" type="Node" parent="." unique_id=1104627225 node_paths=PackedStringArray("grids")]
+script = ExtResource("1_vyvm5")
+grids = NodePath("CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel3")
+metadata/_custom_type_script = "uid://b2xu80nmpfdmm"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="debug" unique_id=291689381]
+
+[node name="Control" type="Control" parent="debug/CanvasLayer" unique_id=1449143942]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="debug/CanvasLayer/Control" unique_id=1896471227]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 765
+theme_override_constants/margin_top = 124
+
+[node name="Panel" type="Panel" parent="debug/CanvasLayer/Control/MarginContainer" unique_id=974164950]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel" unique_id=1276284860]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Panel" type="Panel" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer" unique_id=336937813]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel" unique_id=1567974083]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer" unique_id=188220283]
+clip_contents = true
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 2
+
+[node name="Panel3" type="Panel" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer" unique_id=273904553]
+z_index = 10
+z_as_relative = false
+custom_minimum_size = Vector2(350, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_25ajg")
+
+[node name="rooms" type="MarginContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel3" unique_id=1670908748]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.007142857
+anchor_top = -0.007142857
+anchor_right = 1.0071429
+anchor_bottom = 1.0071429
+offset_left = 2.5
+offset_top = 2.5
+offset_right = -2.5000305
+offset_bottom = -2.5000305
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="rooms" type="GridContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel3/rooms" unique_id=641593718]
+z_index = 10
+z_as_relative = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 5
+
+[node name="wall_u" type="MarginContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel3" unique_id=664566657]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="wall_u" type="GridContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel3/wall_u" unique_id=1976566394]
+z_index = 10
+z_as_relative = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 50
+columns = 5
+
+[node name="wall_v" type="MarginContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel3" unique_id=1167802301]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="wall_v" type="GridContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel3/wall_v" unique_id=1274324860]
+z_index = 10
+z_as_relative = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 5
+columns = 6
+
+[node name="Panel2" type="Panel" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer" unique_id=2032784493]
+custom_minimum_size = Vector2(0, 120.295)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2" unique_id=960910865]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer" unique_id=56148888]
+custom_minimum_size = Vector2(107.815, 0)
+layout_mode = 2
+mouse_filter = 1
+text = "For testing purposes only
+Final editor will not have size limits"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Button" type="Button" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer" unique_id=1551299722]
+layout_mode = 2
+text = "Build"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer" unique_id=1993444700]
+layout_mode = 2
+alignment = 1
+
+[node name="select" type="Button" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer/HBoxContainer" unique_id=384393002]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "select"
+
+[node name="edit" type="Button" parent="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer/HBoxContainer" unique_id=1974434361]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "edit"
+
+[node name="MarginContainer2" type="MarginContainer" parent="debug/CanvasLayer/Control" unique_id=849952026]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -387.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 482
+theme_override_constants/margin_top = 427
+
+[node name="Panel" type="Panel" parent="debug/CanvasLayer/Control/MarginContainer2" unique_id=1854431622]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="debug/CanvasLayer/Control/MarginContainer2/Panel" unique_id=345961663]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer" unique_id=1086512708]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer" unique_id=1920323033]
+layout_mode = 2
+
+[node name="OptionButton" type="OptionButton" parent="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer" unique_id=2124357011]
+layout_mode = 2
+
+[node name="door" type="CheckButton" parent="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer" unique_id=481677174]
+layout_mode = 2
+text = "DOOR"
+
+[node name="light" type="CheckButton" parent="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer" unique_id=1971208163]
+layout_mode = 2
+text = "LIGHT"
+
+[node name="glas" type="CheckButton" parent="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer" unique_id=1416449898]
+layout_mode = 2
+text = "GLASS"
+
+[node name="interact" type="CheckButton" parent="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer" unique_id=817265385]
+layout_mode = 2
+text = "INTERACT"
+
+[node name="World" type="Node3D" parent="." unique_id=144335533]
+
+[node name="CharacterBody3D" parent="World" unique_id=192348580 instance=ExtResource("2_pugii")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 5, 5)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World" unique_id=1522843852]
+environment = SubResource("Environment_e83qx")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World/WorldEnvironment" unique_id=910356243]
+transform = Transform3D(-0.57579076, 0.7847004, 0.2295869, 0.58171576, 0.19586784, 0.78945696, 0.57451856, 0.5881164, -0.5692515, -0.33681393, 3.885047, 0)
+light_energy = 0.0
+shadow_enabled = true
+
+[node name="master_pizzeria" type="Node" parent="World" unique_id=1258265150]
+script = ExtResource("3_q7gyk")
+metadata/_custom_type_script = "uid://cvc8eo6lq5yob"
+
+[node name="Toy Freddy v2" parent="." unique_id=554884083 instance=ExtResource("4_irbku")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[connection signal="pressed" from="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer/Button" to="debug" method="_on_button_pressed"]
+[connection signal="pressed" from="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer/HBoxContainer/select" to="debug" method="_on_select_pressed"]
+[connection signal="pressed" from="debug/CanvasLayer/Control/MarginContainer/Panel/MarginContainer/Panel/MarginContainer/VBoxContainer/Panel2/VBoxContainer/HBoxContainer/edit" to="debug" method="_on_edit_pressed"]
+[connection signal="item_selected" from="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer/OptionButton" to="debug" method="_on_option_button_item_selected"]
+[connection signal="toggled" from="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer/door" to="debug" method="_on_door_toggled"]
+[connection signal="toggled" from="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer/light" to="debug" method="_on_light_toggled"]
+[connection signal="toggled" from="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer/glas" to="debug" method="_on_glas_toggled"]
+[connection signal="toggled" from="debug/CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer/interact" to="debug" method="_on_interact_toggled"]
