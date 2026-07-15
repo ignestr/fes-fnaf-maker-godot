@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DeviceIndexResource" format=3 uid="uid://yeo2nmm16si0"]
+
+[ext_resource type="Script" uid="uid://cd1kcdg3obt2a" path="res://scripts/classes/data/device_index_data_entry.gd" id="1_kt441"]
+[ext_resource type="Script" uid="uid://c8geo1haj7v0u" path="res://scripts/classes/data/device_index_resource.gd" id="2_8ltr3"]
+[ext_resource type="Resource" uid="uid://28bv0wgheobe" path="res://resources/data/devindex/devices/security_blast_door_1.tres" id="2_onrv4"]
+
+[sub_resource type="Resource" id="Resource_q7gyk"]
+script = ExtResource("1_kt441")
+scene = "uid://dykduylafydiv"
+allowed_flag = 1
+allowed_type = 3
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_udev2"]
+script = ExtResource("1_kt441")
+scene = "uid://5qx8dnyxf68g"
+allowed_flag = 1
+allowed_type = 3
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[resource]
+script = ExtResource("2_8ltr3")
+devices = Dictionary[StringName, ExtResource("1_kt441")]({
+&"fnaf1_blast_door_1": ExtResource("2_onrv4"),
+&"fnaf2_fvent_door_1": SubResource("Resource_q7gyk"),
+&"ucn_fvent_door_2": SubResource("Resource_udev2")
+})
+metadata/_custom_type_script = "uid://c8geo1haj7v0u"

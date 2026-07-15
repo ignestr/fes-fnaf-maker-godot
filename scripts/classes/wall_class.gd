@@ -5,7 +5,7 @@ extends Resource
 class_name pizzeria_wall
 ## enum for using wall type names directly
 enum WALL_TYPES {NONE, FLAT, DOOR, FLOORVENT, HALL, ROOFVENT, WALLVENT} # int 0 through 6
-## enum for using wall flag names directly
+## enum for using wall flag names directly.
 enum WALL_FLAGS {HAS_DOOR = 1 << 0, HAS_LIGHT = 1 << 1, HAS_GLASS = 1 << 2, DO_INTERACT = 1 << 3} # 4 bits (bools)
 
 ## Wall byte for storing the main wall data:
@@ -14,6 +14,8 @@ enum WALL_FLAGS {HAS_DOOR = 1 << 0, HAS_LIGHT = 1 << 1, HAS_GLASS = 1 << 2, DO_I
 var wall_byte : int = 0
 ## TBD, second byte that store any modifications it gets
 var mod_byte : int = 0
+
+var device_model_name = &""
 
 
 #TODO: implement the mod byte

@@ -2,3 +2,6 @@
 .godot/
 /android/
 backup commands
+components/
+addons/
+YouCanDoIt/

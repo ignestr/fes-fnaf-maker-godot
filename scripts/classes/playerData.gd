@@ -50,14 +50,14 @@ func _ready():
 			for x in range(0,5):
 				for y in range(0,5):
 					var new_room = ROOM_BUTTON.instantiate()
-					new_room.idx = Vector2(x,y)
+					new_room.idx = Vector2(y,x)
 					new_room.parent = self
 					i.get_child(0).add_child(new_room)
 		if i.name == "wall_u":
 			for x in range(0,6):
 				for y in range(0,5):
 					var new_room = WALL_U_BUTTON.instantiate()
-					new_room.idx = Vector2(x,y)
+					new_room.idx = Vector2(y,x)
 					new_room.parent = self
 					i.get_child(0).add_child(new_room)
 
@@ -65,7 +65,7 @@ func _ready():
 			for x in range(0,5):
 				for y in range(0,6):
 					var new_room = WALL_V_BUTTON.instantiate()
-					new_room.idx = Vector2(x,y)
+					new_room.idx = Vector2(y,x)
 					new_room.parent = self
 					i.get_child(0).add_child(new_room)
 	for i in pizzeria_wall.WALL_TYPES:

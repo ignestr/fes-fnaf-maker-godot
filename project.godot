@@ -16,17 +16,23 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="ffes"
 run/main_scene="uid://i6wfvbncuo08"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Animatrindex="*res://scripts/singletons/animatrindex.gd"
 Objex="*uid://ds5tbcfgljeld"
+Devicedex="*uid://dkawadkvqk3fc"
 
 [display]
 
 window/stretch/mode="canvas_items"
+
+[global_group]
+
+office_devices=""
+security_door=""
 
 [input]
 

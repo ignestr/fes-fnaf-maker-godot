@@ -1,0 +1,104 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://bik8ysf8p1als"
+path="res://.godot/imported/Toy Freddy v2.fbx-08773b9dade7cdebdc92c324e43b1815.scn"
+
+[deps]
+
+source_file="res://resources/models/animatronics/toy_freddy/Toy Freddy v2.fbx"
+dest_files=["res://.godot/imported/Toy Freddy v2.fbx-08773b9dade7cdebdc92c324e43b1815.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/root_script=null
+mesh_library/use_node_names_as_mesh_names=false
+array_mesh/deduplicate_surfaces=true
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
+nodes/use_node_type_suffixes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=true
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+materials/extract=2
+materials/extract_format=0
+materials/extract_path=""
+_subresources={
+"materials": {
+"Char_Mat_Eye_Toy_Freddy": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Char_Mat_Eye_Toy_Freddy.tres",
+"use_external/path": "uid://du8snug1w4kmw"
+},
+"Endo 1": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Endo 1.tres",
+"use_external/path": "uid://dxhke33i17crw"
+},
+"Endo 1.001": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Endo 1.001.tres",
+"use_external/path": "uid://oixpghq6dkjh"
+},
+"Material": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.tres",
+"use_external/path": "uid://c03wtlakhqj2c"
+},
+"Material.001": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.001.tres",
+"use_external/path": "uid://bropu71wcuu"
+},
+"Material.002": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.002.tres",
+"use_external/path": "uid://btach3dmxqprx"
+},
+"Material.003": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.003.tres",
+"use_external/path": "uid://cchymbng7d38p"
+},
+"Material.004": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.004.tres",
+"use_external/path": "uid://2q171n1436x4"
+},
+"Material.005": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.005.tres",
+"use_external/path": "uid://8t1numf2k0q6"
+},
+"Material.006": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.006.tres",
+"use_external/path": "uid://bjh3oa8t4qb86"
+},
+"Material.010": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/toy_freddy/Material.010.tres",
+"use_external/path": "uid://kts337kpwn1e"
+}
+}
+}
+fbx/importer=0
+fbx/allow_geometry_helper_nodes=false
+fbx/embedded_image_handling=1
+fbx/naming_version=2
