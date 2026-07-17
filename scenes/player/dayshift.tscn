@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://tikhgthkpc3k"]
 
 [ext_resource type="Script" uid="uid://u7i0h6fafe2u" path="res://scripts/player/dayshiftMovement.gd" id="1_txtqv"]
-[ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://misc/ffps theme.tres" id="2_ogt6m"]
-[ext_resource type="Shader" uid="uid://gsueykgajqq" path="res://resources/shaders/squares.res" id="3_bjurr"]
+[ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://resources/misc/main_ui_theme.tres" id="2_ogt6m"]
+[ext_resource type="Shader" uid="uid://gsueykgajqq" path="res://resources/materials/shaders/squares.res" id="3_bjurr"]
 [ext_resource type="Script" uid="uid://20xuk31bae5l" path="res://scripts/player/dayshiftBuild.gd" id="3_txtqv"]
 [ext_resource type="Texture2D" uid="uid://2ltrbcplqkrl" path="res://resources/bg_math_v3.png" id="4_14dl4"]
 [ext_resource type="Script" uid="uid://dhoc2cafhg5po" path="res://scripts/player/UI/buildModeButton.gd" id="4_kcjai"]

@@ -1,4 +1,4 @@
-extends office_device
+extends wall_device
 class_name security_door
 
 @onready var animation_tree: AnimationTree = $AnimationTree
@@ -25,10 +25,3 @@ var closed := false:
 			await tween.finished
 			changing = false
 			
-
-func _ready() -> void:
-	closed = false
-	await get_tree().create_timer(2).timeout
-	closed = true
-	await get_tree().create_timer(2).timeout
-	

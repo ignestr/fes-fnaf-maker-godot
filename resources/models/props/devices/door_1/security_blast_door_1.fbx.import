@@ -4,18 +4,20 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://cokvq5gpqjk0a"
-path="res://.godot/imported/security_blast_door_1.fbx-33edf4b14c24816e4253725972aaadde.scn"
+path="res://.godot/imported/security_blast_door_1.fbx-d362723d48ee8cf6e3cde9b19d3ff9d5.scn"
 
 [deps]
 
-source_file="res://resources/models/props/devices/security_blast_door_1/security_blast_door_1.fbx"
-dest_files=["res://.godot/imported/security_blast_door_1.fbx-33edf4b14c24816e4253725972aaadde.scn"]
+source_file="res://resources/models/props/devices/door_1/security_blast_door_1.fbx"
+dest_files=["res://.godot/imported/security_blast_door_1.fbx-d362723d48ee8cf6e3cde9b19d3ff9d5.scn"]
 
 [params]
 
 nodes/root_type=""
 nodes/root_name=""
 nodes/root_script=null
+mesh_library/use_node_names_as_mesh_names=false
+array_mesh/deduplicate_surfaces=true
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
@@ -41,7 +43,7 @@ _subresources={
 "animations": {
 "Armature|Closed": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://resources/models/props/devices/security_blast_door_1/Armature_Closed.res",
+"save_to_file/fallback_path": "res://resources/models/props/devices/door_1/Armature_Closed.res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://c6um0nqcn6xrq",
 "settings/loop_mode": 0,
@@ -2097,7 +2099,7 @@ _subresources={
 },
 "Armature|Closing": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://resources/models/props/devices/security_blast_door_1/Armature_Closing.res",
+"save_to_file/fallback_path": "res://resources/models/props/devices/door_1/Armature_Closing.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://dvq7dfdiu68mn",
 "settings/loop_mode": 0,
@@ -4153,7 +4155,7 @@ _subresources={
 },
 "Armature|Open": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://resources/models/props/devices/security_blast_door_1/Armature_Open.res",
+"save_to_file/fallback_path": "res://resources/models/props/devices/door_1/Armature_Open.res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://dwvmq5qh7x4h8",
 "settings/loop_mode": 0,
@@ -6209,7 +6211,7 @@ _subresources={
 },
 "Armature|Opening": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://resources/models/props/devices/security_blast_door_1/Armature_Opening.res",
+"save_to_file/fallback_path": "res://resources/models/props/devices/door_1/Armature_Opening.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://bo2xixiurbp6f",
 "settings/loop_mode": 0,

@@ -21,6 +21,7 @@ func _on_button_pressed() -> void:
 			if parent.mode == 0:
 				print("on")
 				parent.floor.walls.get_or_add(Vector3(idx.x, idx.y, 1), template)
+				print(parent.floor.walls)
 		else:
 			if parent.mode == 0:
 				print("off")

@@ -44,84 +44,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_r8jb7")
 
-[sub_resource type="Animation" id="Animation_i3fc8"]
-length = 0.001
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_uhdab"]
-_data = {
-&"RESET": SubResource("Animation_i3fc8")
-}
-
-[sub_resource type="Animation" id="Animation_72aiq"]
-resource_name = "Armature|Closed"
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = true
-tracks/0/enabled = true
-tracks/0/path = NodePath("Armature/Skeleton3D:door")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, -0.25)
-
-[sub_resource type="Animation" id="Animation_hqmfe"]
-resource_name = "Armature|Closing"
-length = 0.125
-tracks/0/type = "position_3d"
-tracks/0/imported = true
-tracks/0/enabled = true
-tracks/0/path = NodePath("Armature/Skeleton3D:door")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0.018, 0.041666668, 1, 0, 0, 0.016625054, 0.1, 1, 0, 0, 0.014346111, 0.125, 1, 0, 0, -0.0025)
-
-[sub_resource type="Animation" id="Animation_wq6ua"]
-resource_name = "Armature|Open"
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = true
-tracks/0/enabled = true
-tracks/0/path = NodePath("Armature/Skeleton3D:door")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 1.695)
-
-[sub_resource type="Animation" id="Animation_yg18k"]
-resource_name = "Armature|Opening"
-length = 0.36666667
-tracks/0/type = "position_3d"
-tracks/0/imported = true
-tracks/0/enabled = true
-tracks/0/path = NodePath("Armature/Skeleton3D:door")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, -0.0025, 0.03333333, 1, 0, 0, 0.014388718, 0.09999998, 1, 0, 0, 0.01612039, 0.13333334, 1, 0, 0, 0.017337237, 0.23333333, 1, 0, 0, 0.018)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_i3fc8"]
-_data = {
-&"Armature|Closed": SubResource("Animation_72aiq"),
-&"Armature|Closing": SubResource("Animation_hqmfe"),
-&"Armature|Open": SubResource("Animation_wq6ua"),
-&"Armature|Opening": SubResource("Animation_yg18k")
-}
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_06lkb"]
-animation = &"blast_door_1_anims/Armature|Open"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_duhl3"]
-animation = &"blast_door_1_anims/Armature|Closed"
-
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_3tvfq"]
-
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_53vj5"]
-graph_offset = Vector2(-475.2748, -3.1763306)
-"nodes/Animation 4/node" = SubResource("AnimationNodeAnimation_duhl3")
-"nodes/Animation 4/position" = Vector2(-320, 380)
-nodes/opening/node = SubResource("AnimationNodeBlend2_3tvfq")
-nodes/opening/position = Vector2(60, 160)
-"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_06lkb")
-"nodes/Animation 2/position" = Vector2(-340, 180)
-node_connections = [&"output", 0, &"opening", &"opening", 0, &"Animation 2", &"opening", 1, &"Animation 4"]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6drfm"]
 resource_name = "Door_stripes"
 vertex_color_use_as_albedo = true
@@ -200,21 +122,92 @@ bind/0/name = &"door"
 bind/0/bone = -1
 bind/0/pose = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.25, 0)
 
-[node name="security_door" type="Node3D" unique_id=1550996843 groups=["office_devices", "security_door"]]
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ybvdj"]
+data = PackedVector3Array(-0.024999999, 0.6572, -0.5796, -0.024999999, -0.65529996, -0.5796, -0.024999999, -0.65529996, -0.86939996, -0.024999999, -0.65529996, -0.86939996, -0.024999999, 0.6572, -0.86939996, -0.024999999, 0.6572, -0.5796, 0.024999999, -0.65529996, -0.5796, 0.024999999, 0.6572, -0.5796, 0.024999999, 0.6572, -0.86939996, 0.024999999, 0.6572, -0.86939996, 0.024999999, -0.65529996, -0.86939996, 0.024999999, -0.65529996, -0.5796, 0.024999999, -0.65529996, 0.86939996, 0.024999999, 0.6572, 0.86939996, 0.024999999, 0.6572, 0.5796, 0.024999999, 0.6572, 0.5796, 0.024999999, -0.65529996, 0.5796, 0.024999999, -0.65529996, 0.86939996, -0.024999999, 0.6572, 0.86939996, -0.024999999, -0.65529996, 0.86939996, -0.024999999, -0.65529996, 0.5796, -0.024999999, -0.65529996, 0.5796, -0.024999999, 0.6572, 0.5796, -0.024999999, 0.6572, 0.86939996, -0.024999999, 0.6572, 1, -0.024999999, -0.65529996, 1, -0.024999999, -0.65529996, 0.86939996, -0.024999999, -0.65529996, 0.86939996, -0.024999999, 0.6572, 0.86939996, -0.024999999, 0.6572, 1, 0.024999999, 0.6572, 1, -0.024999999, 0.6572, 1, -0.024999999, 0.6572, 0.86939996, -0.024999999, 0.6572, 0.86939996, 0.024999999, 0.6572, 0.86939996, 0.024999999, 0.6572, 1, 0.024999999, -0.65529996, 1, 0.024999999, 0.6572, 1, 0.024999999, 0.6572, 0.86939996, 0.024999999, 0.6572, 0.86939996, 0.024999999, -0.65529996, 0.86939996, 0.024999999, -0.65529996, 1, -0.024999999, -0.65529996, 1, 0.024999999, -0.65529996, 1, 0.024999999, -0.65529996, 0.86939996, 0.024999999, -0.65529996, 0.86939996, -0.024999999, -0.65529996, 0.86939996, -0.024999999, -0.65529996, 1, 0.024999999, -0.65529996, -1, 0.024999999, 0.6572, -1, -0.024999999, 0.6572, -1, -0.024999999, 0.6572, -1, -0.024999999, -0.65529996, -1, 0.024999999, -0.65529996, -1, -0.024999999, -0.65529996, 1, -0.024999999, 0.6572, 1, 0.024999999, 0.6572, 1, 0.024999999, 0.6572, 1, 0.024999999, -0.65529996, 1, -0.024999999, -0.65529996, 1, -0.024999999, -0.65529996, 0, 0.024999999, -0.65529996, 0, 0.024999999, -0.65529996, -0.5796, 0.024999999, -0.65529996, -0.5796, -0.024999999, -0.65529996, -0.5796, -0.024999999, -0.65529996, 0, 0.024999999, -0.65529996, 0, -0.024999999, -0.65529996, 0, -0.024999999, -0.65529996, 0.5796, -0.024999999, -0.65529996, 0.5796, 0.024999999, -0.65529996, 0.5796, 0.024999999, -0.65529996, 0, 0.024999999, 0.6572, 0, -0.024999999, 0.6572, 0, -0.024999999, 0.6572, -0.5796, -0.024999999, 0.6572, -0.5796, 0.024999999, 0.6572, -0.5796, 0.024999999, 0.6572, 0, -0.024999999, 0.6572, 0, 0.024999999, 0.6572, 0, 0.024999999, 0.6572, 0.5796, 0.024999999, 0.6572, 0.5796, -0.024999999, 0.6572, 0.5796, -0.024999999, 0.6572, 0, 0.024999999, 0.6572, -0.5796, -0.024999999, 0.6572, -0.5796, -0.024999999, 0.6572, -0.86939996, -0.024999999, 0.6572, -0.86939996, 0.024999999, 0.6572, -0.86939996, 0.024999999, 0.6572, -0.5796, -0.024999999, -0.65529996, -0.5796, 0.024999999, -0.65529996, -0.5796, 0.024999999, -0.65529996, -0.86939996, 0.024999999, -0.65529996, -0.86939996, -0.024999999, -0.65529996, -0.86939996, -0.024999999, -0.65529996, -0.5796, -0.024999999, -0.65529996, -0.86939996, 0.024999999, -0.65529996, -0.86939996, 0.024999999, -0.65529996, -1, 0.024999999, -0.65529996, -1, -0.024999999, -0.65529996, -1, -0.024999999, -0.65529996, -0.86939996, 0.024999999, -0.65529996, -0.86939996, 0.024999999, 0.6572, -0.86939996, 0.024999999, 0.6572, -1, 0.024999999, 0.6572, -1, 0.024999999, -0.65529996, -1, 0.024999999, -0.65529996, -0.86939996, 0.024999999, 0.6572, -0.86939996, -0.024999999, 0.6572, -0.86939996, -0.024999999, 0.6572, -1, -0.024999999, 0.6572, -1, 0.024999999, 0.6572, -1, 0.024999999, 0.6572, -0.86939996, -0.024999999, 0.6572, -0.86939996, -0.024999999, -0.65529996, -0.86939996, -0.024999999, -0.65529996, -1, -0.024999999, -0.65529996, -1, -0.024999999, 0.6572, -1, -0.024999999, 0.6572, -0.86939996, -0.024999999, -0.65529996, 0.86939996, 0.024999999, -0.65529996, 0.86939996, 0.024999999, -0.65529996, 0.5796, 0.024999999, -0.65529996, 0.5796, -0.024999999, -0.65529996, 0.5796, -0.024999999, -0.65529996, 0.86939996, 0.024999999, 0.6572, 0.86939996, -0.024999999, 0.6572, 0.86939996, -0.024999999, 0.6572, 0.5796, -0.024999999, 0.6572, 0.5796, 0.024999999, 0.6572, 0.5796, 0.024999999, 0.6572, 0.86939996, 0.024999999, -0.65529996, 0, 0.024999999, 0.6572, 0, 0.024999999, 0.6572, -0.5796, 0.024999999, 0.6572, -0.5796, 0.024999999, -0.65529996, -0.5796, 0.024999999, -0.65529996, 0, 0.024999999, 0.6572, 0, 0.024999999, -0.65529996, 0, 0.024999999, -0.65529996, 0.5796, 0.024999999, -0.65529996, 0.5796, 0.024999999, 0.6572, 0.5796, 0.024999999, 0.6572, 0, -0.024999999, 0.6572, 0, -0.024999999, -0.65529996, 0, -0.024999999, -0.65529996, -0.5796, -0.024999999, -0.65529996, -0.5796, -0.024999999, 0.6572, -0.5796, -0.024999999, 0.6572, 0, -0.024999999, -0.65529996, 0, -0.024999999, 0.6572, 0, -0.024999999, 0.6572, 0.5796, -0.024999999, 0.6572, 0.5796, -0.024999999, -0.65529996, 0.5796, -0.024999999, -0.65529996, 0)
+
+[sub_resource type="Animation" id="Animation_i3fc8"]
+length = 0.001
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_uhdab"]
+_data = {
+&"RESET": SubResource("Animation_i3fc8")
+}
+
+[sub_resource type="Animation" id="Animation_72aiq"]
+resource_name = "Armature|Closed"
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Armature/Skeleton3D:door")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, -0.25)
+
+[sub_resource type="Animation" id="Animation_hqmfe"]
+resource_name = "Armature|Closing"
+length = 0.125
+tracks/0/type = "position_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Armature/Skeleton3D:door")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0.018, 0.041666668, 1, 0, 0, 0.016625054, 0.1, 1, 0, 0, 0.014346111, 0.125, 1, 0, 0, -0.0025)
+
+[sub_resource type="Animation" id="Animation_wq6ua"]
+resource_name = "Armature|Open"
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Armature/Skeleton3D:door")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 1.695)
+
+[sub_resource type="Animation" id="Animation_yg18k"]
+resource_name = "Armature|Opening"
+length = 0.36666667
+tracks/0/type = "position_3d"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("Armature/Skeleton3D:door")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, -0.0025, 0.03333333, 1, 0, 0, 0.014388718, 0.09999998, 1, 0, 0, 0.01612039, 0.13333334, 1, 0, 0, 0.017337237, 0.23333333, 1, 0, 0, 0.018)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_i3fc8"]
+_data = {
+&"Armature|Closed": SubResource("Animation_72aiq"),
+&"Armature|Closing": SubResource("Animation_hqmfe"),
+&"Armature|Open": SubResource("Animation_wq6ua"),
+&"Armature|Opening": SubResource("Animation_yg18k")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_06lkb"]
+animation = &"blast_door_1_anims/Armature|Open"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_duhl3"]
+animation = &"blast_door_1_anims/Armature|Closed"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_3tvfq"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_53vj5"]
+graph_offset = Vector2(-338, 37)
+"nodes/Animation 4/node" = SubResource("AnimationNodeAnimation_duhl3")
+"nodes/Animation 4/position" = Vector2(-320, 380)
+nodes/opening/node = SubResource("AnimationNodeBlend2_3tvfq")
+nodes/opening/position = Vector2(60, 160)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_06lkb")
+"nodes/Animation 2/position" = Vector2(-340, 180)
+node_connections = [&"output", 0, &"opening", &"opening", 0, &"Animation 2", &"opening", 1, &"Animation 4"]
+
+[node name="door_1" type="Node3D" unique_id=1550996843 node_paths=PackedStringArray("collision_shape") groups=["office_devices", "security_door"]]
 script = ExtResource("1_ybvdj")
 borders = SubResource("ArrayMesh_i3fc8")
+collision_shape = NodePath("Empty/Armature/Skeleton3D/Door1_001/StaticBody3D/CollisionShape3D")
 metadata/_custom_type_script = "uid://dpk48ag0xn3vv"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1294417589]
-root_node = NodePath("../Empty")
-libraries/ = SubResource("AnimationLibrary_uhdab")
-libraries/blast_door_1_anims = SubResource("AnimationLibrary_i3fc8")
-
-[node name="AnimationTree" type="AnimationTree" parent="." unique_id=544517244]
-root_node = NodePath("../Empty")
-tree_root = SubResource("AnimationNodeBlendTree_53vj5")
-anim_player = NodePath("../AnimationPlayer")
-parameters/opening/blend_amount = 1.0
 
 [node name="Empty" type="Node3D" parent="." unique_id=866207932]
 transform = Transform3D(0, -1, 0, 0, 0, 1, -1, 0, 0, 0, 0, 0)
@@ -231,7 +224,7 @@ bones/0/name = "door"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 1.6950618)
 bones/0/enabled = true
-bones/0/position = Vector3(0, 0, -0.25)
+bones/0/position = Vector3(0, 0, 1.695)
 bones/0/rotation = Quaternion(0.70710677, 0, 0, 0.70710677)
 bones/0/scale = Vector3(1, 1, 1)
 bones/1/name = "door_end"
@@ -245,3 +238,19 @@ bones/1/scale = Vector3(1, 1, 1)
 [node name="Door1_001" type="MeshInstance3D" parent="Empty/Armature/Skeleton3D" unique_id=405535832]
 mesh = SubResource("ArrayMesh_uhdab")
 skin = SubResource("Skin_06lkb")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Empty/Armature/Skeleton3D/Door1_001" unique_id=1252785695]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Empty/Armature/Skeleton3D/Door1_001/StaticBody3D" unique_id=1184179499]
+shape = SubResource("ConcavePolygonShape3D_ybvdj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1294417589]
+root_node = NodePath("../Empty")
+libraries/ = SubResource("AnimationLibrary_uhdab")
+libraries/blast_door_1_anims = SubResource("AnimationLibrary_i3fc8")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=544517244]
+root_node = NodePath("../Empty")
+tree_root = SubResource("AnimationNodeBlendTree_53vj5")
+anim_player = NodePath("../AnimationPlayer")
+parameters/opening/blend_amount = 0.0

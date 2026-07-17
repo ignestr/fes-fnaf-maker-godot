@@ -1,5 +1,5 @@
 extends Node3D
-class_name office_device
+class_name wall_device
 
 # Might be deprecated in the future
 enum TYPES {CLEAR, WINDOW, DOOR, WINDOOR}

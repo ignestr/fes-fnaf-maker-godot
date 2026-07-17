@@ -1,0 +1,32 @@
+[gd_resource type="VisualShader" format=3 uid="uid://gl2odjo45ima"]
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_yq25l"]
+source = 1
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_k0wex"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_yvuv8"]
+parameter_name = "MainColor"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_gixhp"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_jmue0"]
+constant = 1.2
+
+[resource]
+modes/cull = 2
+nodes/vertex/0/position = Vector2(420, 100)
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_yq25l")
+nodes/fragment/2/position = Vector2(-260, 220)
+nodes/fragment/3/node = SubResource("VisualShaderNodeVectorOp_k0wex")
+nodes/fragment/3/position = Vector2(140, 160)
+nodes/fragment/4/node = SubResource("VisualShaderNodeColorParameter_yvuv8")
+nodes/fragment/4/position = Vector2(-460, 440)
+nodes/fragment/5/node = SubResource("VisualShaderNodeVectorOp_gixhp")
+nodes/fragment/5/position = Vector2(-20, 420)
+nodes/fragment/6/node = SubResource("VisualShaderNodeFloatConstant_jmue0")
+nodes/fragment/6/position = Vector2(-93.164536, 776.8091)
+nodes/fragment/connections = PackedInt32Array(2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 3, 1, 6, 0, 5, 1)

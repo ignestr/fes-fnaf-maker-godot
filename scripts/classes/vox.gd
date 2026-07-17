@@ -8,9 +8,9 @@ var floors = []
 @export var SIZE : Vector2i = Vector2i(20, 20)
 ## The size of each tile in standard position units. Uses an int for simplicity.
 @export var TILE_SIZE : int = 4
-## The global height all walls use in standard position units.
-@export var WALL_HEIGHT : float = 3
-## The global width all walls use in standard position units. make it AS HIGH AS YOU WANT BABYYYY
+## The global height all walls use in standard position units. 3.5 is the minimum for hallway devices (3 is possible but it makes the top be flush with the roof
+@export var WALL_HEIGHT : float = 3.5
+## The global width all walls use in standard position units. Low values recommended, but it can work with higher ones.
 @export var WALL_THICK : float = 0.3
 
 # Don't mess around with this value, it's just here for readability. Changing it isn't tested.
@@ -18,7 +18,6 @@ const FLOOR_THICK = 0.1
 
 var animatronics = []
 
-# holy grail that took me 1 day to come up with
 # -1 is for when both are off
 
 enum wall_alignments {BOTTOM, CENTER, TOP}
@@ -46,24 +45,18 @@ const wall_lut = {
 	}
 
 
-# TODO: Change to use different door types per wall (once you have one more type for everything)
-
 # TODO: Make buttons be a thing with models, the full feature set such
 # as being toggeable between proximity prompts and just basic clicking, as well as being able
 # to be disabled for the editor view and having a "button" class
-
-# no
-
-# ok fine
+# ---
+# NOTE: in order to do that you would need to figure out which side of the wall to
+# put the button on, so I think it's better to leave it until we make the player-facing
+# editor itself
 
 # NOTE: an idea I had for the proximity prompt is that when you get close to it it's
 # initially just covered in static but it quickly fades into the action itself with a
 # small animation so it looks cooler, also with a small sfx
 # imagine like opening the cams in fnac but just the prompts itself
-
-# also search 128 on jukebox and click on serani poji's it's peak working music
-
-const DEFAULT_SECURITY_DOOR := preload("uid://cf20nw056d12u") 
 
 
 # Blender export settings 4 devices:
@@ -92,7 +85,7 @@ func init_pizzeria():
 		for i in floors:
 			render(i, 0)
 
-## Instance CSG pizzeria fully, then bake.
+## Instance CSG pizzeria fully + devices, then bake.
 # Needs work with the chunking system that I'll implement soon
 func render(floor : pizzeria_floor, floor_level, idx=0):
 	
@@ -106,7 +99,10 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 	var csg = self.get_node("pizzeria_csg")
 	print(csg)
 	
-	#region 1: handling floors
+	#TODO change the class naming so that each floor (as in building floors) is called a story
+	# and each floor tile (as in the floor you stand on) is called a floor
+	
+	#region 1: handling the floor tiles
 	for i in floor.rooms:
 		var room = CSGBox3D.new()
 		room.size = Vector3(TILE_SIZE, FLOOR_THICK, TILE_SIZE)
@@ -114,14 +110,13 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
 		room.material = mat
-		#INFO x is temporarily the opposite of what it's supposed to be because the debug editor is flipped for whatever reason
 		csg.add_child(room)
 	#endregion
 	
 	#region 2: walls
 	for i in floor.walls:
 		var wall = CSGBox3D.new()
-		if floor.walls[i].base_get_type() != pizzeria_wall.WALL_TYPES.NONE:
+		if floor.walls[i].base_get_type() == pizzeria_wall.WALL_TYPES.NONE:
 			continue
 		
 		if i.z == 0: # 0 if the wall is horizontal like ---, and 1 if it's vertical like |
@@ -150,10 +145,6 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 #region 3: devices
 		if floor.walls[i].base_get_type() != pizzeria_wall.WALL_TYPES.FLAT:
 			
-			# wow we have so many colors ALERT BUG NOTE INFO
-			# you should use them here is the link:
-			# https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#comments
-			
 			var cutout := CSGBox3D.new()
 			var current_wall = floor.walls[i]
 			cutout.operation = CSGShape3D.OPERATION_SUBTRACTION
@@ -178,6 +169,9 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 				key = pizzeria_wall.WALL_FLAGS.HAS_DOOR
 			elif current_wall.base_get_flag(pizzeria_wall.WALL_FLAGS.HAS_GLASS):
 				key = pizzeria_wall.WALL_FLAGS.HAS_GLASS
+			
+			
+			print(key)
 			
 			alignment = wall_lut[key][current_wall.base_get_type()]
 			
@@ -206,30 +200,41 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 			else:
 				# Fall back to the default
 				device_data = Devicedex.list_all.devices[Devicedex.defaults[key][current_wall.base_get_type()]]
+				
+			var device_scene = load(device_data.scene)
 			
+			var new_device = device_scene.instantiate()
+			print(device_scene)
+			var aabb = new_device.borders.get_aabb()
+			print(aabb.size.x)
+			print(WALL_HEIGHT)
 			
 			if alignment == wall_alignments.BOTTOM:
-				# about to implement the scene index thing
-				# God give me strength...
-				
-				var device_scene := load(device_data.scene)
-				
-				var new_device = device_scene.instantiate()
-				print(device_scene)
-				var aabb = new_device.borders.get_aabb()
-				print(aabb.size.x)
-				print(WALL_HEIGHT)
 				cutout.position = wall.position - Vector3(0, (WALL_HEIGHT - aabb.size.z)/2, 0)
 				new_device.position = wall.position - Vector3(0, WALL_HEIGHT/2, 0)
-				
-				cutout.size = Vector3(aabb.size.y, aabb.size.z, 2)
-				# if it's vertical
-				if i.z == 1:
-					new_device.rotate_y(deg_to_rad(90))
-					cutout.rotate_y(deg_to_rad(90))
-				csg.add_child(new_device)
-				
-				
+			elif alignment == wall_alignments.CENTER:
+				cutout.position = wall.position
+				new_device.position = wall.position
+			elif alignment == wall_alignments.TOP:
+				cutout.position = wall.position + Vector3(0, (WALL_HEIGHT - aabb.size.z)/2, 0)
+				new_device.position = wall.position + Vector3(0, WALL_HEIGHT/2, 0)
+			
+			cutout.size = Vector3(aabb.size.y, aabb.size.z, 2)
+			# if it's vertical
+			if i.z == 1:
+				new_device.rotate_y(deg_to_rad(90))
+				cutout.rotate_y(deg_to_rad(90))
+			
+			if new_device is security_doorwindow:
+				var second_cutout = CSGBox3D.new()
+				second_cutout.size = new_device.window_cutout.size
+				second_cutout.position = new_device.position + new_device.window_offset
+				second_cutout.operation = CSGShape3D.OPERATION_SUBTRACTION
+				csg.add_child(second_cutout)
+			
+			csg.add_child(new_device)
+			
+			
 			# instance the final cutout, end wall loop
 			csg.add_child(cutout)
 	#endregion

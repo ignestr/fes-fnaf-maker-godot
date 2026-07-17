@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cwjrxe1rccw11"]
+
+[ext_resource type="Shader" uid="uid://gl2odjo45ima" path="res://resources/materials/shaders/glass.tres" id="1_7c4kh"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_7c4kh")
+shader_parameter/MainColor = Color(1, 1, 1, 1)

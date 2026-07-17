@@ -4,11 +4,85 @@
 [ext_resource type="Script" uid="uid://c8geo1haj7v0u" path="res://scripts/classes/data/device_index_resource.gd" id="2_8ltr3"]
 [ext_resource type="Resource" uid="uid://28bv0wgheobe" path="res://resources/data/devindex/devices/security_blast_door_1.tres" id="2_onrv4"]
 
+[sub_resource type="Resource" id="Resource_p6vd5"]
+script = ExtResource("1_kt441")
+scene = "uid://rd6uuku7f48y"
+allowed_flag = -1
+allowed_type = 2
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_xhgyu"]
+script = ExtResource("1_kt441")
+scene = "uid://b1s4vfsu2wtgy"
+allowed_flag = -1
+allowed_type = 2
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
 [sub_resource type="Resource" id="Resource_q7gyk"]
 script = ExtResource("1_kt441")
 scene = "uid://dykduylafydiv"
 allowed_flag = 1
 allowed_type = 3
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_yc1tl"]
+script = ExtResource("1_kt441")
+scene = "uid://3r26lux661jn"
+allowed_flag = -1
+allowed_type = 3
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_76gd8"]
+script = ExtResource("1_kt441")
+scene = "uid://xt5q73pnr4bl"
+allowed_flag = 1
+allowed_type = 4
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_sfl6x"]
+script = ExtResource("1_kt441")
+scene = "uid://b7o17bex8fj8"
+allowed_flag = -1
+allowed_type = 4
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_onrv4"]
+script = ExtResource("1_kt441")
+scene = "uid://svo4tbpd5y70"
+aligment = 2
+allowed_flag = 1
+allowed_type = 5
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_kf5so"]
+script = ExtResource("1_kt441")
+scene = "uid://dpl82roe1uowi"
+allowed_flag = -1
+allowed_type = 5
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_7k4m1"]
+script = ExtResource("1_kt441")
+scene = "uid://0kc36tdej2m4"
+aligment = 1
+allowed_flag = 4
+allowed_type = 4
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_pc4ti"]
+script = ExtResource("1_kt441")
+scene = "uid://chddfqejbtd4m"
+aligment = 1
+allowed_flag = -1
+allowed_type = 6
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_oms6s"]
+script = ExtResource("1_kt441")
+scene = "uid://2rv6r8sg15k7"
+aligment = 1
+allowed_flag = 1
+allowed_type = 6
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_udev2"]
@@ -18,11 +92,55 @@ allowed_flag = 1
 allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
+[sub_resource type="Resource" id="Resource_ipmd2"]
+script = ExtResource("1_kt441")
+scene = "uid://dwuov7tuh5hvv"
+allowed_flag = -1
+allowed_type = 3
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_8ltr3"]
+script = ExtResource("1_kt441")
+scene = "uid://djr36f8bcjlfg"
+aligment = 2
+allowed_flag = 1
+allowed_type = 5
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_dnwq2"]
+script = ExtResource("1_kt441")
+scene = "uid://cbiq16ukvqfot"
+allowed_flag = -1
+allowed_type = 5
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_cmp8d"]
+script = ExtResource("1_kt441")
+scene = "uid://chddfqejbtd4m"
+aligment = 1
+allowed_flag = -1
+allowed_type = 6
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
 [resource]
 script = ExtResource("2_8ltr3")
 devices = Dictionary[StringName, ExtResource("1_kt441")]({
-&"fnaf1_blast_door_1": ExtResource("2_onrv4"),
+&"fnaf1_door_1": ExtResource("2_onrv4"),
+&"fnaf1_door_1_empty": SubResource("Resource_p6vd5"),
+&"fnaf1_windoor_doorglass_1": SubResource("Resource_xhgyu"),
+&"fnaf2_fvent_1_empty": SubResource("Resource_yc1tl"),
 &"fnaf2_fvent_door_1": SubResource("Resource_q7gyk"),
-&"ucn_fvent_door_2": SubResource("Resource_udev2")
+&"fnaf2_hall_1_empty": SubResource("Resource_sfl6x"),
+&"fnaf2_hall_door_1": SubResource("Resource_76gd8"),
+&"fnaf2_rvent_1_empty": SubResource("Resource_kf5so"),
+&"fnaf2_rvent_door_1": SubResource("Resource_onrv4"),
+&"fnaf3_window_hallglass_1": SubResource("Resource_7k4m1"),
+&"fnaf6_wvent_1": SubResource("Resource_pc4ti"),
+&"fnaf6_wvent_1_empty": SubResource("Resource_cmp8d"),
+&"fnaf6_wvent_door_1": SubResource("Resource_oms6s"),
+&"ucn_fvent_2_empty": SubResource("Resource_ipmd2"),
+&"ucn_fvent_door_2": SubResource("Resource_udev2"),
+&"ucn_rvent_2_empty": SubResource("Resource_dnwq2"),
+&"ucn_rvent_door_2": SubResource("Resource_8ltr3")
 })
 metadata/_custom_type_script = "uid://c8geo1haj7v0u"
