@@ -17,8 +17,6 @@ func _ready():
 func _on_button_pressed() -> void:
 	if parent:
 		if button.button_pressed:
-			print("on")
 			parent.floor.rooms.get_or_add(idx, template)
 		else:
-			print("off")
 			parent.floor.rooms.erase(idx)

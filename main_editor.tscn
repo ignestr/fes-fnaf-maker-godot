@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://bvssdjgdyjh35"]
+
+[ext_resource type="PackedScene" uid="uid://tikhgthkpc3k" path="res://scenes/player/dayshift.tscn" id="1_dcjw0"]
+[ext_resource type="Script" uid="uid://cvc8eo6lq5yob" path="res://scripts/classes/vox.gd" id="1_up0xs"]
+[ext_resource type="Script" uid="uid://sqbdrwq25tg6" path="res://scripts/classes/state-machine/dayshift_manager.gd" id="2_xyjpv"]
+[ext_resource type="Script" uid="uid://iuk0mu5neqhw" path="res://scripts/classes/state-machine/dayshift-buildstates/ground_place.gd" id="3_72ku5"]
+[ext_resource type="PackedScene" uid="uid://bjbq7wgka6o8m" path="res://resources/temporary/bee/Bee.glb" id="4_mvya2"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_wdx0a"]
+energy_multiplier = 3.0
+
+[sub_resource type="Sky" id="Sky_hojw0"]
+sky_material = SubResource("PhysicalSkyMaterial_wdx0a")
+
+[sub_resource type="Environment" id="Environment_21po1"]
+background_mode = 2
+sky = SubResource("Sky_hojw0")
+tonemap_mode = 3
+tonemap_exposure = 0.62
+
+[node name="world" type="Node3D" unique_id=1170330851]
+
+[node name="CharacterBody3D" parent="." unique_id=313928948 instance=ExtResource("1_dcjw0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.434, 20)
+
+[node name="MasterPizzeria" type="Node" parent="." unique_id=759086066]
+script = ExtResource("1_up0xs")
+metadata/_custom_type_script = "uid://cvc8eo6lq5yob"
+
+[node name="DayshiftManager" type="Node" parent="." unique_id=204671372 node_paths=PackedStringArray("pizzeria", "default_state")]
+script = ExtResource("2_xyjpv")
+pizzeria = NodePath("../MasterPizzeria")
+default_state = NodePath("ground_place_state")
+metadata/_custom_type_script = "uid://sqbdrwq25tg6"
+
+[node name="ground_place_state" type="Node" parent="DayshiftManager" unique_id=168040470]
+script = ExtResource("3_72ku5")
+metadata/_custom_type_script = "uid://iuk0mu5neqhw"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=863748286]
+environment = SubResource("Environment_21po1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=1234315056]
+transform = Transform3D(0.5517197, -0.5948455, 0.584606, 0, 0.7009416, 0.71321875, -0.8340297, -0.39349687, 0.38672334, 0, 0, 0)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="Bee" parent="." unique_id=507816300 instance=ExtResource("4_mvya2")]
+transform = Transform3D(-5.4639235e-09, 0, 0.125, 0, 0.125, 0, -0.125, 0, -5.4639235e-09, -6.756631, 0, -1.0403917)

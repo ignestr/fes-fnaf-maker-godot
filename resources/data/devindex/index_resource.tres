@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="DeviceIndexResource" format=3 uid="uid://yeo2nmm16si0"]
 
-[ext_resource type="Script" uid="uid://cd1kcdg3obt2a" path="res://scripts/classes/data/device_index_data_entry.gd" id="1_kt441"]
-[ext_resource type="Script" uid="uid://c8geo1haj7v0u" path="res://scripts/classes/data/device_index_resource.gd" id="2_8ltr3"]
+[ext_resource type="Script" uid="uid://cd1kcdg3obt2a" path="res://scripts/classes/indexdata-classes/device_index_data_entry.gd" id="1_kt441"]
+[ext_resource type="Script" uid="uid://c8geo1haj7v0u" path="res://scripts/classes/indexdata-classes/device_index_resource.gd" id="2_8ltr3"]
 [ext_resource type="Resource" uid="uid://28bv0wgheobe" path="res://resources/data/devindex/devices/security_blast_door_1.tres" id="2_onrv4"]
 
 [sub_resource type="Resource" id="Resource_p6vd5"]
@@ -18,13 +18,6 @@ allowed_flag = -1
 allowed_type = 2
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
-[sub_resource type="Resource" id="Resource_q7gyk"]
-script = ExtResource("1_kt441")
-scene = "uid://dykduylafydiv"
-allowed_flag = 1
-allowed_type = 3
-metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
-
 [sub_resource type="Resource" id="Resource_yc1tl"]
 script = ExtResource("1_kt441")
 scene = "uid://3r26lux661jn"
@@ -32,11 +25,11 @@ allowed_flag = -1
 allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
-[sub_resource type="Resource" id="Resource_76gd8"]
+[sub_resource type="Resource" id="Resource_q7gyk"]
 script = ExtResource("1_kt441")
-scene = "uid://xt5q73pnr4bl"
+scene = "uid://dykduylafydiv"
 allowed_flag = 1
-allowed_type = 4
+allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_sfl6x"]
@@ -46,18 +39,25 @@ allowed_flag = -1
 allowed_type = 4
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
-[sub_resource type="Resource" id="Resource_onrv4"]
+[sub_resource type="Resource" id="Resource_76gd8"]
 script = ExtResource("1_kt441")
-scene = "uid://svo4tbpd5y70"
-aligment = 2
+scene = "uid://xt5q73pnr4bl"
 allowed_flag = 1
-allowed_type = 5
+allowed_type = 4
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_kf5so"]
 script = ExtResource("1_kt441")
 scene = "uid://dpl82roe1uowi"
 allowed_flag = -1
+allowed_type = 5
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
+[sub_resource type="Resource" id="Resource_onrv4"]
+script = ExtResource("1_kt441")
+scene = "uid://svo4tbpd5y70"
+aligment = 2
+allowed_flag = 1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
@@ -77,19 +77,20 @@ allowed_flag = -1
 allowed_type = 6
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
+[sub_resource type="Resource" id="Resource_cmp8d"]
+script = ExtResource("1_kt441")
+scene = "uid://chddfqejbtd4m"
+aligment = 1
+allowed_flag = -1
+allowed_type = 6
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
+
 [sub_resource type="Resource" id="Resource_oms6s"]
 script = ExtResource("1_kt441")
 scene = "uid://2rv6r8sg15k7"
 aligment = 1
 allowed_flag = 1
 allowed_type = 6
-metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
-
-[sub_resource type="Resource" id="Resource_udev2"]
-script = ExtResource("1_kt441")
-scene = "uid://5qx8dnyxf68g"
-allowed_flag = 1
-allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_ipmd2"]
@@ -99,12 +100,11 @@ allowed_flag = -1
 allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
-[sub_resource type="Resource" id="Resource_8ltr3"]
+[sub_resource type="Resource" id="Resource_udev2"]
 script = ExtResource("1_kt441")
-scene = "uid://djr36f8bcjlfg"
-aligment = 2
+scene = "uid://5qx8dnyxf68g"
 allowed_flag = 1
-allowed_type = 5
+allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_dnwq2"]
@@ -114,12 +114,12 @@ allowed_flag = -1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
-[sub_resource type="Resource" id="Resource_cmp8d"]
+[sub_resource type="Resource" id="Resource_8ltr3"]
 script = ExtResource("1_kt441")
-scene = "uid://chddfqejbtd4m"
-aligment = 1
-allowed_flag = -1
-allowed_type = 6
+scene = "uid://djr36f8bcjlfg"
+aligment = 2
+allowed_flag = 1
+allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [resource]

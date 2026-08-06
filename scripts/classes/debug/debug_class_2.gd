@@ -3,7 +3,7 @@ class_name aDeBugsLife
 
 @export var grids: Panel
 var floor := pizzeria_floor.new()
-@onready var master: master_pizzeria = $"../World/master_pizzeria"
+@onready var master: MasterPizzeria = $"../World/MasterPizzeria"
 @onready var option_button: OptionButton = $CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer/OptionButton
 @onready var label: Label = $CanvasLayer/Control/MarginContainer2/Panel/MarginContainer/VBoxContainer/Label
 

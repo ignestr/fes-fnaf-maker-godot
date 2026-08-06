@@ -13,7 +13,6 @@ var changing = false
 
 var closed := false:
 	set(state):
-		print("attempted")
 		if changing == false:
 			changing = true
 			closed = state
@@ -21,7 +20,6 @@ var closed := false:
 				collision_shape.disabled = false
 			else:
 				collision_shape.disabled = true
-			print("did")
 			var tween = self.create_tween()
 			tween.tween_property(animation_tree, "parameters/opening/blend_amount", int(state), 0.15).set_trans(Tween.TRANS_CIRC)
 			await tween.finished

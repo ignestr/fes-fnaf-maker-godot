@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://b1s4vfsu2wtgy"]
 
-[ext_resource type="Script" uid="uid://c8y64id8o3vyh" path="res://scripts/classes/security_windoor_class.gd" id="1_26daj"]
+[ext_resource type="Script" uid="uid://c8y64id8o3vyh" path="res://scripts/classes/datapizzeria-classes/security_windoor_class.gd" id="1_26daj"]
 [ext_resource type="Material" uid="uid://cwjrxe1rccw11" path="res://resources/materials/glass_mat.tres" id="2_vp1bx"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xkkix"]
@@ -223,7 +223,7 @@ nodes/opening/position = Vector2(60, 160)
 "nodes/Animation 2/position" = Vector2(-340, 180)
 node_connections = [&"output", 0, &"opening", &"opening", 0, &"Animation 2", &"opening", 1, &"Animation 4"]
 
-[node name="security_doorwindow" type="Node3D" unique_id=376169151 node_paths=PackedStringArray("collision_shape", "window_cutout")]
+[node name="security_doorwindow" type="Node3D" unique_id=376169151 node_paths=PackedStringArray("collision_shape", "window_cutout") groups=["office_devices", "security_door"]]
 script = ExtResource("1_26daj")
 borders = SubResource("ArrayMesh_j6vb6")
 collision_shape = NodePath("door_window1/Armature_009/Skeleton3D/door_window_door1/StaticBody3D/CollisionShape3D")

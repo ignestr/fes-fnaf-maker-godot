@@ -1,13 +1,18 @@
 extends Node
-## Class that handles storing the pizzeria's data, rendering it as a 3D object and editing efficiently. 
-class_name master_pizzeria
 
-## Array that holds each floor. Each floor
-var floors = []
+# Completed the basic device stuff
+# happiness
+# 17/07/2026
+
+## Class that handles storing the pizzeria's data, rendering it as a 3D object and editing efficiently. 
+class_name MasterPizzeria
+
+## Array that holds each floor. Each floor holds three dictionaries: one for walls, and one for the ground tiles. Walls have Vector3i keys, where z represents whether the wall is vertical or horizontal, and ground tiles have Vector2i keys with simple cartesian coordinates.
+var floors : Array[pizzeria_floor] = []
 ## Most likely deprecated, might use later on.
 @export var SIZE : Vector2i = Vector2i(20, 20)
-## The size of each tile in standard position units. Uses an int for simplicity.
-@export var TILE_SIZE : int = 4
+## The size of each tile in standard position units.
+@export var TILE_SIZE : float = 4
 ## The global height all walls use in standard position units. 3.5 is the minimum for hallway devices (3 is possible but it makes the top be flush with the roof
 @export var WALL_HEIGHT : float = 3.5
 ## The global width all walls use in standard position units. Low values recommended, but it can work with higher ones.
@@ -15,6 +20,7 @@ var floors = []
 
 # Don't mess around with this value, it's just here for readability. Changing it isn't tested.
 const FLOOR_THICK = 0.1
+const CHUNK_SIZE = 5.0
 
 var animatronics = []
 
@@ -29,12 +35,12 @@ const wall_lut = {
 		pizzeria_wall.WALL_TYPES.HALL: wall_alignments.BOTTOM,
 		pizzeria_wall.WALL_TYPES.ROOFVENT: wall_alignments.TOP,
 		pizzeria_wall.WALL_TYPES.WALLVENT: wall_alignments.CENTER
-		}, 
+		},
 	pizzeria_wall.WALL_FLAGS.HAS_GLASS: {
 		pizzeria_wall.WALL_TYPES.DOOR: wall_alignments.BOTTOM,
 		pizzeria_wall.WALL_TYPES.HALL: wall_alignments.CENTER, 
 		pizzeria_wall.WALL_TYPES.WALLVENT: wall_alignments.CENTER 
-		}, 
+		},
 	-1: {
 		pizzeria_wall.WALL_TYPES.DOOR: wall_alignments.BOTTOM,
 		pizzeria_wall.WALL_TYPES.FLOORVENT: wall_alignments.BOTTOM, 
@@ -66,12 +72,14 @@ const wall_lut = {
 # up = y up
 # apply unit, apply space transform and apply transform all off
 
+func to_chunk(x):
+	return floori(float(x) / CHUNK_SIZE)
+
 func _ready():
-	pass
+	init_pizzeria()
 
 ## Initialize the pizzeria.
 func init_pizzeria():
-	
 	if !self.has_node("devices"):
 		var new = Node3D.new()
 		new.name = "devices"
@@ -79,25 +87,45 @@ func init_pizzeria():
 		
 	if floors.size() == 0:
 		floors.append(pizzeria_floor.new())
-		render(floors[0], 0) #consider deprecating floor_level?
+		render_base_fullfloor(floors[0], 0)
 	else:
 		# counter for the amount of floors present
+		var j = -1
 		for i in floors:
-			render(i, 0)
+			j += 1
+			render_base_fullfloor(i, j*WALL_HEIGHT)
+
+
+
+
+# The way chunks work is that tile coordinates are made global and kept that way, 
+# but for the rendering routine it's separated into 5x5 chunks.
+#
+# When rendering a full floor, it will loop through all entries and sort them into CSGCombiner3D nodes
+# so they can be baked and rebuilt individually. This is a counter measure to the time it already takes
+# to build the whole pizzeria
+#
+# It gets each chunk's index through floori(float(pos.x) / chunk_size), which is like integer
+# division but it works with negatives. All tiles contained inside a chunk will mathematically
+# coincide in index, so we don't need to save it anywhere and we can know what chunks to
+# rebuild just from selecting multiple floors.
+# 
+# Then, to rebuild specific chunks, we just have to delete the csg combiner
+# whose name is same as the desired chunk, and then in the routine only build specific indexes
+# within the floor data.
+# The logic for this is that all indexes MUST be equal or more than
+# the chunk's index multiplied by the chunk size. At the same time, they must be less than
+# minimum_index + chunk_size - 1 (which is how the maximum index can be defined)
+#
+# So we don't have to change the data structure at all and 
+# we still get to keep all of the benefits of chunks!
+
 
 ## Instance CSG pizzeria fully + devices, then bake.
-# Needs work with the chunking system that I'll implement soon
-func render(floor : pizzeria_floor, floor_level, idx=0):
-	
-	# If there is no CSGCombiner3D present,
-	if !self.has_node("pizzeria_csg"):
-		var newcsg = CSGCombiner3D.new()
-		newcsg.name = "pizzeria_csg"
-		newcsg.use_collision = true
-		add_child(newcsg)
-	
-	var csg = self.get_node("pizzeria_csg")
-	print(csg)
+func render_base_fullfloor(floor : pizzeria_floor, floor_level):
+	for i in self.get_children():
+		i.queue_free()
+	await get_tree().process_frame
 	
 	#TODO change the class naming so that each floor (as in building floors) is called a story
 	# and each floor tile (as in the floor you stand on) is called a floor
@@ -106,7 +134,25 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 	for i in floor.rooms:
 		var room = CSGBox3D.new()
 		room.size = Vector3(TILE_SIZE, FLOOR_THICK, TILE_SIZE)
-		room.global_position = Vector3(i.x * TILE_SIZE, floor_level-FLOOR_THICK/2, i.y * TILE_SIZE)
+		
+		# Added + TILE_SIZE/2 offset to fix visual bug
+		# Whenever this shows up there's a 9/10 chance it's because of that
+		room.global_position = Vector3(i.x * TILE_SIZE + TILE_SIZE/2, floor_level-FLOOR_THICK/2, i.y * TILE_SIZE + TILE_SIZE/2)
+		
+		# chunk logic
+		var csg : CSGCombiner3D
+		var cur_chunk = Vector2i(to_chunk(i.x), to_chunk(i.y))
+		
+		# If the current chunk has already been created
+		if self.get_node_or_null(str(cur_chunk)) != null:
+			csg = self.get_node(str(cur_chunk))
+		else:
+			# If not, it will create it 
+			csg = CSGCombiner3D.new()
+			csg.name = str(cur_chunk)
+			csg.use_collision = true
+			self.add_child(csg)
+		
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
 		room.material = mat
@@ -116,6 +162,20 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 	#region 2: walls
 	for i in floor.walls:
 		var wall = CSGBox3D.new()
+		
+		# chunk logic
+		var csg = CSGCombiner3D.new()
+		var cur_chunk = Vector2i(to_chunk(i.x), to_chunk(i.y))
+		
+		# If the current chunk has already been created
+		if self.get_node_or_null(str(cur_chunk)) != null:
+			csg = self.get_node(str(cur_chunk))
+		else:
+			# If not, it will create it 
+			csg.name = str(cur_chunk)
+			csg.use_collision = true
+			self.add_child(csg)
+			
 		if floor.walls[i].base_get_type() == pizzeria_wall.WALL_TYPES.NONE:
 			continue
 		
@@ -124,14 +184,16 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 			# Adjust size according to orientation
 			wall.size = Vector3(TILE_SIZE, WALL_HEIGHT, WALL_THICK)
 			# Position math for converting from tile space to world space w/ tile size
-			print("one")
-			wall.position = Vector3(i.x * TILE_SIZE, floor_level+WALL_HEIGHT/2, TILE_SIZE * (i.y - 0.5))
+			wall.position = Vector3(i.x * TILE_SIZE + TILE_SIZE/2, floor_level+WALL_HEIGHT/2, TILE_SIZE * (i.y - 0.5) + TILE_SIZE/2)
 		else:
 			# Adjust size according to orientation
 			wall.size = Vector3(WALL_THICK, WALL_HEIGHT, TILE_SIZE)
-			# Position math for converting from tile space to world space w/ tile size
 			22 # singlehandedly carrying the entire script yo
-			wall.global_position = Vector3(TILE_SIZE * (i.x - 0.5), floor_level+WALL_HEIGHT/2, i.y * TILE_SIZE)
+			# Position math for converting from tile space to world space w/ tile size
+			
+			# CRITICAL I've added an offset on the y axisto get rid of Z-fighting, 
+			# but you need to keep it in mind in case it ever becomes important 
+			wall.global_position = Vector3(TILE_SIZE * (i.x - 0.5) + TILE_SIZE/2, floor_level+WALL_HEIGHT/2 + 0.001, i.y * TILE_SIZE + TILE_SIZE/2)
 		# after the wall is set up, instance the basic wall
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
@@ -171,7 +233,6 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 				key = pizzeria_wall.WALL_FLAGS.HAS_GLASS
 			
 			
-			print(key)
 			
 			alignment = wall_lut[key][current_wall.base_get_type()]
 			
@@ -204,10 +265,7 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 			var device_scene = load(device_data.scene)
 			
 			var new_device = device_scene.instantiate()
-			print(device_scene)
 			var aabb = new_device.borders.get_aabb()
-			print(aabb.size.x)
-			print(WALL_HEIGHT)
 			
 			if alignment == wall_alignments.BOTTOM:
 				cutout.position = wall.position - Vector3(0, (WALL_HEIGHT - aabb.size.z)/2, 0)
@@ -237,7 +295,48 @@ func render(floor : pizzeria_floor, floor_level, idx=0):
 			
 			# instance the final cutout, end wall loop
 			csg.add_child(cutout)
-	#endregion
 	
+	
+	for i in self.get_children():
+		# In case the player spams the build function and it gets freed in the same frame
+		if !i:
+			continue
+		if i is CSGCombiner3D:
+			var new_mesh = MeshInstance3D.new()
+			var collide = CollisionShape3D.new()
+			var body = StaticBody3D.new()
+			
+			var chunk_name = " "
+			
+			await get_tree().process_frame
+			if !i:
+				continue
+			new_mesh.mesh = await i.bake_static_mesh()
+			collide.shape = await i.bake_collision_shape()
+			
+			chunk_name = i.name
+			i.name = "delete"
+
+			self.add_child(new_mesh)
+			new_mesh.name = chunk_name
+			
+			new_mesh.add_child(body)
+			body.add_child(collide)
+			
+			for j in i.get_children():
+				if j.is_in_group("office_devices"):
+					var copy = j.duplicate()
+					new_mesh.add_child(copy)
+			i.queue_free()
+	await get_tree().create_timer(1).timeout
+	#endregion
+
+# will need to be redone when multi floors are implemented in the fnaf 3 update
+func render_singlechunk(idx : Vector2i , floor_level):
+	var chunk = self.get_node(str(idx))
+	print(chunk)
+	#TODO finish
+
+
 func _process(delta: float) -> void:
 	pass

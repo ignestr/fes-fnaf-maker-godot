@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://xt5q73pnr4bl"]
 
-[ext_resource type="Script" uid="uid://dpk48ag0xn3vv" path="res://scripts/classes/security_door_class.gd" id="1_pmpj6"]
+[ext_resource type="Script" uid="uid://dpk48ag0xn3vv" path="res://scripts/classes/datapizzeria-classes/security_door_class.gd" id="1_pmpj6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sfl6x"]
 resource_name = "Frame_metal"
