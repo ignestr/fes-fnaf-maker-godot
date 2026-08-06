@@ -72,8 +72,8 @@ const wall_lut = {
 # up = y up
 # apply unit, apply space transform and apply transform all off
 
-func to_chunk(x):
-	return floori(float(x) / CHUNK_SIZE)
+func to_chunk(n : Vector2i):
+	return Vector2i(floori(float(n.x) / CHUNK_SIZE), floori(float(n.y) / CHUNK_SIZE))
 
 func _ready():
 	init_pizzeria()
@@ -122,100 +122,142 @@ func init_pizzeria():
 
 
 ## Instance CSG pizzeria fully + devices, then bake.
+
+
+
 func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 	for i in self.get_children():
 		i.queue_free()
 	await get_tree().process_frame
 	
-	#TODO change the class naming so that each floor (as in building floors) is called a story
-	# and each floor tile (as in the floor you stand on) is called a floor
+	print("run")
+	
+	var chunks = []
+	
+	# this will tally up all chunks that should be rendered
+	for i in floor.groundtiles:
+		if not chunks.has(to_chunk(i)):
+			chunks.append(to_chunk(i))
+	
+	for i in floor.walls:
+		if not chunks.has(to_chunk(Vector2i(i.x, i.y))):
+			chunks.append(to_chunk(Vector2i(i.x, i.y)))
+	
+	for chunk in chunks:
+		render_chunk(chunk, floor, floor_level)
+
+
+
+# will need to be redone when multi floors are implemented in the fnaf 3 update
+func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
+	var csg : CSGCombiner3D
+		
+	# If the current chunk has already been created
+	# If it has, it must override it
+	if self.get_node_or_null(str(idx)) != null:
+		self.get_node(str(idx)).queue_free()
+		await get_tree().process_frame
+	
+	csg = CSGCombiner3D.new()
+	csg.name = str(idx)
+	csg.use_collision = true
+	self.add_child(csg)
+	
+	#region 0: splitting the floor into the chunk we want
+	var chunk_data = pizzeria_floor.new()
+	
+	# the range of allowed coordinates is from min x to max x, min y to max y
+	# the minimum tile in a chunk is C.idx * C.size (where C.idx is the chunk vector and its size is CHUNK_SIZE)
+	# the maximum tile is min + Vec2(C.size, C.size) - Vec2.one (where min is the minimum from before,
+	# and Vec2.one is just Vec2(1, 1) )
+	#
+	# using this, we can then:
+	
+	var min_tile = idx * CHUNK_SIZE
+	var max_tile = min_tile + Vector2(CHUNK_SIZE, CHUNK_SIZE) - Vector2.ONE
+	for x in range(min_tile.x, max_tile.x + 1):
+		for y in range(min_tile.y, max_tile.y + 1):
+			# copying the ground tiles
+			if floor.groundtiles.has(Vector2i(x,y)):
+				chunk_data.groundtiles[Vector2i(x,y)] = floor.groundtiles[Vector2i(x,y)]
+			
+			#copying the horizontal walls
+			if floor.walls.has(Vector3i(x,y,0)):
+				chunk_data.walls[Vector3i(x,y,0)] = floor.walls[Vector3i(x,y,0)]
+				
+			#copying the horizontal walls
+			if floor.walls.has(Vector3i(x,y,1)):
+				chunk_data.walls[Vector3i(x,y,1)] = floor.walls[Vector3i(x,y,1)]
+	
+	#endregion
 	
 	#region 1: handling the floor tiles
-	for i in floor.rooms:
-		var room = CSGBox3D.new()
-		room.size = Vector3(TILE_SIZE, FLOOR_THICK, TILE_SIZE)
+	for tile in chunk_data.groundtiles:
+		var ground = CSGBox3D.new()
+		ground.size = Vector3(TILE_SIZE, FLOOR_THICK, TILE_SIZE)
 		
 		# Added + TILE_SIZE/2 offset to fix visual bug
 		# Whenever this shows up there's a 9/10 chance it's because of that
-		room.global_position = Vector3(i.x * TILE_SIZE + TILE_SIZE/2, floor_level-FLOOR_THICK/2, i.y * TILE_SIZE + TILE_SIZE/2)
+		ground.global_position = Vector3(tile.x * TILE_SIZE + TILE_SIZE/2, floor_level-FLOOR_THICK/2, tile.y * TILE_SIZE + TILE_SIZE/2)
 		
-		# chunk logic
-		var csg : CSGCombiner3D
-		var cur_chunk = Vector2i(to_chunk(i.x), to_chunk(i.y))
-		
-		# If the current chunk has already been created
-		if self.get_node_or_null(str(cur_chunk)) != null:
-			csg = self.get_node(str(cur_chunk))
-		else:
-			# If not, it will create it 
-			csg = CSGCombiner3D.new()
-			csg.name = str(cur_chunk)
-			csg.use_collision = true
-			self.add_child(csg)
 		
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
-		room.material = mat
-		csg.add_child(room)
+		ground.material = mat
+		csg.add_child(ground)
 	#endregion
 	
 	#region 2: walls
-	for i in floor.walls:
+	for wall_tile in chunk_data.walls:
 		var wall = CSGBox3D.new()
 		
 		# chunk logic
-		var csg = CSGCombiner3D.new()
-		var cur_chunk = Vector2i(to_chunk(i.x), to_chunk(i.y))
-		
-		# If the current chunk has already been created
-		if self.get_node_or_null(str(cur_chunk)) != null:
-			csg = self.get_node(str(cur_chunk))
-		else:
-			# If not, it will create it 
-			csg.name = str(cur_chunk)
-			csg.use_collision = true
-			self.add_child(csg)
+		var vec2_i = Vector2i(wall_tile.x, wall_tile.y)
+		var cur_chunk = Vector2i(to_chunk(vec2_i).x, to_chunk(vec2_i).y)
 			
-		if floor.walls[i].base_get_type() == pizzeria_wall.WALL_TYPES.NONE:
+		if floor.walls[wall_tile].base_get_type() == pizzeria_wall.WALL_TYPES.NONE:
 			continue
 		
-		if i.z == 0: # 0 if the wall is horizontal like ---, and 1 if it's vertical like |
-			
+		if wall_tile.z == 0: # 0 if the wall is horizontal like ---, and 1 if it's vertical like |
 			# Adjust size according to orientation
 			wall.size = Vector3(TILE_SIZE, WALL_HEIGHT, WALL_THICK)
 			# Position math for converting from tile space to world space w/ tile size
-			wall.position = Vector3(i.x * TILE_SIZE + TILE_SIZE/2, floor_level+WALL_HEIGHT/2, TILE_SIZE * (i.y - 0.5) + TILE_SIZE/2)
+			wall.position = Vector3(
+				wall_tile.x * TILE_SIZE + TILE_SIZE/2, 
+				floor_level+WALL_HEIGHT/2, 
+				TILE_SIZE * (wall_tile.y - 0.5) + TILE_SIZE/2
+				)
 		else:
 			# Adjust size according to orientation
 			wall.size = Vector3(WALL_THICK, WALL_HEIGHT, TILE_SIZE)
-			22 # singlehandedly carrying the entire script yo
+			# 22
 			# Position math for converting from tile space to world space w/ tile size
 			
-			# CRITICAL I've added an offset on the y axisto get rid of Z-fighting, 
+			# CRITICAL I've added an offset on the y axis to get rid of Z-fighting, 
 			# but you need to keep it in mind in case it ever becomes important 
-			wall.global_position = Vector3(TILE_SIZE * (i.x - 0.5) + TILE_SIZE/2, floor_level+WALL_HEIGHT/2 + 0.001, i.y * TILE_SIZE + TILE_SIZE/2)
+			wall.global_position = Vector3(
+				TILE_SIZE * (wall_tile.x - 0.5) + TILE_SIZE/2,
+				floor_level+WALL_HEIGHT/2 + 0.001,
+				wall_tile.y * TILE_SIZE + TILE_SIZE/2
+				)
+		
 		# after the wall is set up, instance the basic wall
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
 		wall.material = mat
 		csg.add_child(wall)
 		# if the wall doesn't need a cutout for windows, doors etc, the loop ends here
-#endregion
-		
+			
 		# if not, it uses csg to make one
 		
 #region 3: devices
-		if floor.walls[i].base_get_type() != pizzeria_wall.WALL_TYPES.FLAT:
-			
+		if chunk_data.walls[wall_tile].base_get_type() != pizzeria_wall.WALL_TYPES.FLAT:
 			var cutout := CSGBox3D.new()
-			var current_wall = floor.walls[i]
+			var current_wall = chunk_data.walls[wall_tile]
 			cutout.operation = CSGShape3D.OPERATION_SUBTRACTION
-			
 			# different cutout positions and dimensions for each type, using a look up table
-			var alignment = -1
+			var alignment = null
 			
-			
-			# Choosing the alignment (for the positioning routine)
 			
 			# the case where it has both the door and glass flags is being intentionally overshadowed here
 			# I only implmented the door flag + glass cutout
@@ -225,6 +267,7 @@ func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 			# -1 (for the LUT key) means that neither flag is true, hence why
 			# it is set as default
 			
+			# Choosing the alignment (for the positioning routine)
 			var key = -1
 			
 			if current_wall.base_get_flag(pizzeria_wall.WALL_FLAGS.HAS_DOOR):
@@ -233,12 +276,11 @@ func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 				key = pizzeria_wall.WALL_FLAGS.HAS_GLASS
 			
 			
-			
 			alignment = wall_lut[key][current_wall.base_get_type()]
-			
 			
 			# Choosing the device
 			var device_data : DeviceIndexDataEntry
+			
 			
 			# If it has to fallback to defaults
 			if current_wall.device_model_name == &"":
@@ -249,7 +291,7 @@ func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 			elif Devicedex.list_all.devices.has(current_wall.device_model_name):
 				var requested_device = Devicedex.list_all.devices[current_wall.device_model_name]
 				# if it has the same alignment
-				if requested_device.aligment == alignment:
+				if requested_device.alignment == alignment:
 					# if they match the allowed flag and allowed type
 					if requested_device.allowed_flag == key && requested_device.allowed_type == current_wall.base_get_type():
 						device_data = requested_device
@@ -279,7 +321,7 @@ func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 			
 			cutout.size = Vector3(aabb.size.y, aabb.size.z, 2)
 			# if it's vertical
-			if i.z == 1:
+			if wall_tile.z == 1:
 				new_device.rotate_y(deg_to_rad(90))
 				cutout.rotate_y(deg_to_rad(90))
 			
@@ -295,47 +337,40 @@ func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 			
 			# instance the final cutout, end wall loop
 			csg.add_child(cutout)
-	
-	
-	for i in self.get_children():
-		# In case the player spams the build function and it gets freed in the same frame
-		if !i:
-			continue
-		if i is CSGCombiner3D:
-			var new_mesh = MeshInstance3D.new()
-			var collide = CollisionShape3D.new()
-			var body = StaticBody3D.new()
-			
-			var chunk_name = " "
-			
-			await get_tree().process_frame
-			if !i:
-				continue
-			new_mesh.mesh = await i.bake_static_mesh()
-			collide.shape = await i.bake_collision_shape()
-			
-			chunk_name = i.name
-			i.name = "delete"
-
-			self.add_child(new_mesh)
-			new_mesh.name = chunk_name
-			
-			new_mesh.add_child(body)
-			body.add_child(collide)
-			
-			for j in i.get_children():
-				if j.is_in_group("office_devices"):
-					var copy = j.duplicate()
-					new_mesh.add_child(copy)
-			i.queue_free()
-	await get_tree().create_timer(1).timeout
 	#endregion
-
-# will need to be redone when multi floors are implemented in the fnaf 3 update
-func render_singlechunk(idx : Vector2i , floor_level):
-	var chunk = self.get_node(str(idx))
-	print(chunk)
-	#TODO finish
+	
+	#region Closing off - baking and adding collisions
+	# In case the player spams the build function and it gets freed in the same frame
+	if self.get_node_or_null(str(idx)) == null:
+		push_warning("Chunk", str(idx), "failed to bake because it was freed before it could do it. Try building less often!")
+		return
+	var new_mesh = MeshInstance3D.new()
+	var collide = CollisionShape3D.new()
+	var body = StaticBody3D.new()
+	
+	var chunk_name = " "
+	
+	await get_tree().process_frame
+	if self.get_node_or_null(str(idx)) == null:
+		push_warning("Chunk", str(idx), "failed to bake because it was freed before it could do it. Try building less often!")
+		return
+	new_mesh.mesh = await csg.bake_static_mesh()
+	collide.shape = await csg.bake_collision_shape()
+	
+	chunk_name = csg.name
+	csg.name = "delete"
+	self.add_child(new_mesh)
+	new_mesh.name = chunk_name
+	
+	new_mesh.add_child(body)
+	body.add_child(collide)
+	
+	for child in csg.get_children():
+		if child.is_in_group("office_devices"):
+			var copy = child.duplicate()
+			new_mesh.add_child(copy)
+	csg.queue_free()
+	#endregion
 
 
 func _process(delta: float) -> void:

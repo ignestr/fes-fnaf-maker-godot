@@ -17,6 +17,6 @@ func _ready():
 func _on_button_pressed() -> void:
 	if parent:
 		if button.button_pressed:
-			parent.floor.rooms.get_or_add(idx, template)
+			parent.floor.groundtiles.get_or_add(idx, template)
 		else:
-			parent.floor.rooms.erase(idx)
+			parent.floor.groundtiles.erase(idx)

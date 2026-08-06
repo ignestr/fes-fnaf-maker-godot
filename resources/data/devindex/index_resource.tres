@@ -49,6 +49,7 @@ metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 [sub_resource type="Resource" id="Resource_kf5so"]
 script = ExtResource("1_kt441")
 scene = "uid://dpl82roe1uowi"
+alignment = 2
 allowed_flag = -1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
@@ -56,7 +57,7 @@ metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 [sub_resource type="Resource" id="Resource_onrv4"]
 script = ExtResource("1_kt441")
 scene = "uid://svo4tbpd5y70"
-aligment = 2
+alignment = 2
 allowed_flag = 1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
@@ -64,23 +65,15 @@ metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 [sub_resource type="Resource" id="Resource_7k4m1"]
 script = ExtResource("1_kt441")
 scene = "uid://0kc36tdej2m4"
-aligment = 1
+alignment = 1
 allowed_flag = 4
 allowed_type = 4
-metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
-
-[sub_resource type="Resource" id="Resource_pc4ti"]
-script = ExtResource("1_kt441")
-scene = "uid://chddfqejbtd4m"
-aligment = 1
-allowed_flag = -1
-allowed_type = 6
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_cmp8d"]
 script = ExtResource("1_kt441")
 scene = "uid://chddfqejbtd4m"
-aligment = 1
+alignment = 1
 allowed_flag = -1
 allowed_type = 6
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
@@ -88,7 +81,7 @@ metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 [sub_resource type="Resource" id="Resource_oms6s"]
 script = ExtResource("1_kt441")
 scene = "uid://2rv6r8sg15k7"
-aligment = 1
+alignment = 1
 allowed_flag = 1
 allowed_type = 6
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
@@ -110,6 +103,7 @@ metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 [sub_resource type="Resource" id="Resource_dnwq2"]
 script = ExtResource("1_kt441")
 scene = "uid://cbiq16ukvqfot"
+alignment = 2
 allowed_flag = -1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
@@ -117,7 +111,7 @@ metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 [sub_resource type="Resource" id="Resource_8ltr3"]
 script = ExtResource("1_kt441")
 scene = "uid://djr36f8bcjlfg"
-aligment = 2
+alignment = 2
 allowed_flag = 1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
@@ -135,7 +129,6 @@ devices = Dictionary[StringName, ExtResource("1_kt441")]({
 &"fnaf2_rvent_1_empty": SubResource("Resource_kf5so"),
 &"fnaf2_rvent_door_1": SubResource("Resource_onrv4"),
 &"fnaf3_window_hallglass_1": SubResource("Resource_7k4m1"),
-&"fnaf6_wvent_1": SubResource("Resource_pc4ti"),
 &"fnaf6_wvent_1_empty": SubResource("Resource_cmp8d"),
 &"fnaf6_wvent_door_1": SubResource("Resource_oms6s"),
 &"ucn_fvent_2_empty": SubResource("Resource_ipmd2"),

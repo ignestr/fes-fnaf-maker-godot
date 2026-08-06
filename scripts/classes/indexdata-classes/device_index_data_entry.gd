@@ -8,6 +8,6 @@ enum WALL_FLAGS {HAS_DOOR = 1 << 0, HAS_LIGHT = 1 << 1, HAS_GLASS = 1 << 2, DO_I
 
 
 @export_file var scene : String
-@export var aligment : alignments
+@export var alignment : alignments
 @export var allowed_flag : WALL_FLAGS
 @export var allowed_type : pizzeria_wall.WALL_TYPES

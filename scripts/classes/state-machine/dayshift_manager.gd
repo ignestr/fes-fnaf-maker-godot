@@ -14,9 +14,7 @@ var gizmo_box := CSGBox3D.new()
 
 func _ready_extra():
 	gizmo_box.size = Vector3(pizzeria.TILE_SIZE, pizzeria.FLOOR_THICK, pizzeria.TILE_SIZE)
-	var gizmo_material = ShaderMaterial.new()
-	gizmo_material.shader = load("uid://dt81oon461p8x")
-	gizmo_box.material = gizmo_material
+	gizmo_box.material = load("uid://dcaedodw0xujq")
 	self.add_child(gizmo_box)
 
 func _input(event):
@@ -41,7 +39,7 @@ func _input(event):
 
 func place_floortile_single(idx : Vector2i):
 	var template = pizzeria_room.new()
-	pizzeria.floors[current_floor_idx].rooms.get_or_add(idx, template)
+	pizzeria.floors[current_floor_idx].groundtiles.get_or_add(idx, template)
 	pizzeria.render_base_fullfloor(pizzeria.floors[current_floor_idx], 0)
 
 func place_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
@@ -55,14 +53,20 @@ func place_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 	if idx_begin.y > idx_end.y:
 		y_step = -1
 	
+	var chunks = []
 	# going through the square
 	# adding x and y step because ranges are exclusive
 	for x in range(idx_begin.x, idx_end.x + x_step, x_step):
 		for y in range(idx_begin.y, idx_end.y + y_step, y_step):
-			pizzeria.floors[current_floor_idx].rooms.get_or_add(Vector2i(x, y), template)
-	
-	#pizzeria.floors[current_floor_idx].rooms.get_or_add(idx, template)
-	pizzeria.render_base_fullfloor(pizzeria.floors[current_floor_idx], 0)
+			pizzeria.floors[current_floor_idx].groundtiles.get_or_add(Vector2i(x, y), template)
+			if not chunks.has(pizzeria.to_chunk(Vector2i(x, y))):
+				chunks.append(pizzeria.to_chunk(Vector2i(x, y)))
+			
+
+	# this will tally up all chunks that should be re-rendered
+	for chunk in chunks:
+		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
 
 func place_walltile(idx : Vector2i):
 	pass
