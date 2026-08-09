@@ -16,3 +16,23 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 	move_and_slide()
+
+
+func _on_floor_button_pressed() -> void:
+	dayshift_manager.state(dayshift_manager.states[&"ground_place_state"])
+
+
+func _on_wall_button_pressed() -> void:
+	dayshift_manager.state(dayshift_manager.states[&"wall_place_state"])
+
+
+func _on_room_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_select_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_delete_button_pressed() -> void:
+	dayshift_manager.state(dayshift_manager.states[&"delete_state"])

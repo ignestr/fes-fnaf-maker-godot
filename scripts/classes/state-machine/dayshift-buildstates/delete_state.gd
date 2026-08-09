@@ -1,5 +1,5 @@
 extends StateMachineState
-class_name ground_place_state
+class_name delete_state
 
 var held_time := 0.0
 var start_cell := Vector2i(0, 0)

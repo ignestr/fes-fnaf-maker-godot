@@ -190,7 +190,6 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				chunk_data.walls[Vector3i(x,y,1)] = floor.walls[Vector3i(x,y,1)]
 	
 	#endregion
-	
 	#region 1: handling the floor tiles
 	for tile in chunk_data.groundtiles:
 		var ground = CSGBox3D.new()
@@ -206,7 +205,6 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 		ground.material = mat
 		csg.add_child(ground)
 	#endregion
-	
 	#region 2: walls
 	for wall_tile in chunk_data.walls:
 		var wall = CSGBox3D.new()
