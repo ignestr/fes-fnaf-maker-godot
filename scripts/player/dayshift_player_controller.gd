@@ -27,7 +27,7 @@ func _on_wall_button_pressed() -> void:
 
 
 func _on_room_button_pressed() -> void:
-	pass # Replace with function body.
+	dayshift_manager.state(dayshift_manager.states[&"room_place_state"])
 
 
 func _on_select_button_pressed() -> void:

@@ -178,7 +178,6 @@ func delete_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 	for chunk in chunks:
 		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-
 func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i):
 	new_actiongroup()
 	var x_step = 1
@@ -205,6 +204,59 @@ func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i):
 	# this will tally up all chunks that should be re-rendered
 	for chunk in chunks:
 		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
+func place_room(idx_begin, idx_end):
+	new_actiongroup()
+	var ground_template = pizzeria_room.new()
+	var wall_template = pizzeria_wall.new()
+	wall_template.base_set_type(pizzeria_wall.WALL_TYPES.FLAT)
+
+	
+	# in case it has to step backwards in order to progress to the desired tile
+	if idx_begin.x > idx_end.x:
+		var new_x = idx_end.x
+		idx_end.x = idx_begin.x
+		idx_begin.x = new_x
+	if idx_begin.y > idx_end.y:
+		var new_y = idx_end.y
+		idx_end.y = idx_begin.y
+		idx_begin.y = new_y
+	
+	var chunks = []
+	# going through the square
+	# adding x and y step because ranges are exclusive
+	for x in range(idx_begin.x, idx_end.x + 1):
+		# add northern room walls at the start of each column
+		add_cell(Vector3i(x,idx_begin.y,0), wall_template, fields.WALL, current_floor_idx)
+		
+		for y in range(idx_begin.y, idx_end.y + 1):
+			
+			add_cell(Vector3i(x, y, 0), ground_template, fields.GROUND, current_floor_idx)
+			
+			# add western walls when in the first column, aka the western
+			# edge of the room
+			if x == idx_begin.x:
+				add_cell(Vector3i(x, y,1), wall_template, fields.WALL, current_floor_idx)
+			# add eastern walls when in the last column, aka the eastern
+			# edge of the room
+			if x == idx_end.x:
+				add_cell(Vector3i(x+1, y,1), wall_template, fields.WALL, current_floor_idx)
+			
+				# to make sure walls that lie in chunk edges
+				# also get displayed, we re-render all chunks that 
+				# the tile's neighbors contain
+			for nx in range(x-1, x+1):
+				for ny in range(y-1, y+1):
+					if not chunks.has(pizzeria.to_chunk(Vector2i(nx, ny))):
+						chunks.append(pizzeria.to_chunk(Vector2i(nx, ny)))
+		
+		# add southern room walls at the end of each column
+		add_cell(Vector3i(x,idx_end.y+1,0), wall_template, fields.WALL, current_floor_idx)
+
+	# this will tally up all chunks that should be re-rendered
+	for chunk in chunks:
+		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
 
 #endregion
 

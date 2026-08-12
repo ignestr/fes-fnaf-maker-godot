@@ -1,261 +1,49 @@
 [gd_scene format=3 uid="uid://tikhgthkpc3k"]
 
-[ext_resource type="Script" uid="uid://u7i0h6fafe2u" path="res://scripts/player/dayshift_player_controller.gd" id="1_txtqv"]
-[ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://resources/misc/main_ui_theme.tres" id="2_txtqv"]
-[ext_resource type="Material" uid="uid://cwjrxe1rccw11" path="res://resources/materials/glass_mat.tres" id="3_ogt6m"]
-[ext_resource type="Texture2D" uid="uid://choduooq2rid4" path="res://resources/textures/ui_background.png" id="4_kcjai"]
+[ext_resource type="Script" uid="uid://cvc8eo6lq5yob" path="res://scripts/classes/vox.gd" id="1_kcjai"]
+[ext_resource type="Script" uid="uid://sqbdrwq25tg6" path="res://scripts/classes/state-machine/dayshift_manager.gd" id="2_j1fmh"]
+[ext_resource type="Script" uid="uid://iuk0mu5neqhw" path="res://scripts/classes/state-machine/dayshift-buildstates/ground_place.gd" id="3_bjurr"]
+[ext_resource type="Script" uid="uid://c6nvw0vx7nmgb" path="res://scripts/classes/state-machine/dayshift-buildstates/wall_place.gd" id="4_14dl4"]
+[ext_resource type="Script" uid="uid://dplkjicl5ujjf" path="res://scripts/classes/state-machine/dayshift-buildstates/delete_state.gd" id="5_4m1vv"]
+[ext_resource type="PackedScene" uid="uid://tikhgthkpc3k" path="res://scenes/player/dayshift.tscn" id="6_558x2"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_kcjai"]
-radius = 1.3637
+[sub_resource type="Environment" id="Environment_21po1"]
+background_mode = 1
+background_color = Color(0.53125, 0.53125, 0.53125, 1)
+tonemap_mode = 3
+tonemap_exposure = 0.62
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1fmh"]
-bg_color = Color(0.017500034, 0, 0.21, 0.11372549)
+[node name="world" type="Node3D" unique_id=1170330851]
 
-[node name="CharacterBody3D" type="CharacterBody3D" unique_id=313928948]
-script = ExtResource("1_txtqv")
+[node name="CharacterBody3D" parent="." unique_id=313928948 instance=ExtResource("6_558x2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.434, 20)
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1175914136]
-transform = Transform3D(1, 0, 0, 0, 0.7071064, 0.7071064, 0, -0.7071064, 0.7071064, 0, 0, 0)
+[node name="MasterPizzeria" type="Node" parent="." unique_id=759086066]
+script = ExtResource("1_kcjai")
+metadata/_custom_type_script = "uid://cvc8eo6lq5yob"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1965284668]
-shape = SubResource("SphereShape3D_kcjai")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=863748286]
+environment = SubResource("Environment_21po1")
 
-[node name="Control" type="Control" parent="." unique_id=2051940212]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=1234315056]
+transform = Transform3D(0.5517197, -0.5948455, 0.584606, 0, 0.7009416, 0.71321875, -0.8340297, -0.39349687, 0.38672334, 0, 0, 0)
+light_energy = 2.0
+shadow_enabled = true
 
-[node name="MarginContainer" type="MarginContainer" parent="Control" unique_id=18905749]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 25
-theme_override_constants/margin_top = 25
-theme_override_constants/margin_right = 25
-theme_override_constants/margin_bottom = 25
+[node name="DayshiftManager" type="Node" parent="." unique_id=197531565 node_paths=PackedStringArray("pizzeria", "default_state")]
+script = ExtResource("2_j1fmh")
+pizzeria = NodePath("../MasterPizzeria")
+default_state = NodePath("ground_place_state")
+metadata/_custom_type_script = "uid://sqbdrwq25tg6"
 
-[node name="Context_Menu" type="Panel" parent="Control/MarginContainer" unique_id=2035570998]
-custom_minimum_size = Vector2(175, 300)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
-theme = ExtResource("2_txtqv")
+[node name="ground_place_state" type="Node" parent="DayshiftManager" unique_id=1688740203]
+script = ExtResource("3_bjurr")
+metadata/_custom_type_script = "uid://iuk0mu5neqhw"
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Context_Menu" unique_id=1059084333]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+[node name="wall_place_state" type="Node" parent="DayshiftManager" unique_id=151513349]
+script = ExtResource("4_14dl4")
+metadata/_custom_type_script = "uid://c6nvw0vx7nmgb"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/Context_Menu/MarginContainer" unique_id=103582253]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Control/MarginContainer/Context_Menu/MarginContainer/VBoxContainer" unique_id=556891232]
-layout_mode = 2
-text = "Info:"
-
-[node name="Label2" type="Label" parent="Control/MarginContainer/Context_Menu/MarginContainer/VBoxContainer" unique_id=1757077237]
-layout_mode = 2
-text = "	"
-
-[node name="Catalog" type="Panel" parent="Control/MarginContainer" unique_id=1365128103]
-custom_minimum_size = Vector2(700, 140)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-theme = ExtResource("2_txtqv")
-
-[node name="MarginContainer2" type="MarginContainer" parent="Control/MarginContainer/Catalog" unique_id=2125334039]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 3
-theme_override_constants/margin_bottom = 3
-
-[node name="TextureRect" type="TextureRect" parent="Control/MarginContainer/Catalog/MarginContainer2" unique_id=871256800]
-material = ExtResource("3_ogt6m")
-layout_mode = 2
-size_flags_horizontal = 3
-texture = ExtResource("4_kcjai")
-expand_mode = 1
-stretch_mode = 1
-
-[node name="Panel" type="Panel" parent="Control/MarginContainer/Catalog/MarginContainer2" unique_id=246451107]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_j1fmh")
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog" unique_id=1389379980]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/Catalog/MarginContainer" unique_id=382716397]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer" unique_id=223048389]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Panel2" type="Panel" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer" unique_id=709064878]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2" unique_id=1725446040]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer" unique_id=1683004947]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer" unique_id=496598837]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1021868285]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label2" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1646741179]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label3" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=507123987]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label4" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1363148201]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label5" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1257916618]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Panel" type="Panel" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1708400075]
-custom_minimum_size = Vector2(0, 35)
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel" unique_id=997507714]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 7
-theme_override_constants/margin_bottom = 7
-
-[node name="Label" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer" unique_id=1652934833]
-layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "basic item type buttons
-(like animatronics, devices, furniture etc)"
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer" unique_id=463278707]
-custom_minimum_size = Vector2(440, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Panel" type="Panel" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer" unique_id=2040142850]
-layout_mode = 2
-
-[node name="Top" type="Panel" parent="Control/MarginContainer" unique_id=988985930]
-custom_minimum_size = Vector2(400, 55)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-theme = ExtResource("2_txtqv")
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Top" unique_id=1661102216]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/Top/MarginContainer" unique_id=946326726]
-layout_mode = 2
-alignment = 1
-
-[node name="Button" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=1108309759]
-custom_minimum_size = Vector2(45, 45)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "Wall"
-
-[node name="Button2" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=322696337]
-custom_minimum_size = Vector2(45, 45)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "Room"
-text_overrun_behavior = 2
-clip_text = true
-
-[node name="Button3" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=694791497]
-custom_minimum_size = Vector2(45, 45)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "Select"
-clip_text = true
-
-[node name="Button5" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=1938940637]
-custom_minimum_size = Vector2(45, 45)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "Delete"
-
-[node name="Button4" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=284335728]
-custom_minimum_size = Vector2(45, 45)
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "Floor"
-
-[connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button" to="." method="_on_wall_button_pressed"]
-[connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button2" to="." method="_on_room_button_pressed"]
-[connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button3" to="." method="_on_select_button_pressed"]
-[connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button5" to="." method="_on_delete_button_pressed"]
-[connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button4" to="." method="_on_floor_button_pressed"]
+[node name="delete_state" type="Node" parent="DayshiftManager" unique_id=161196726]
+script = ExtResource("5_4m1vv")
+metadata/_custom_type_script = "uid://dplkjicl5ujjf"

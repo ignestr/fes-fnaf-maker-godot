@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://iuk0mu5neqhw" path="res://scripts/classes/state-machine/dayshift-buildstates/ground_place.gd" id="3_72ku5"]
 [ext_resource type="Script" uid="uid://c6nvw0vx7nmgb" path="res://scripts/classes/state-machine/dayshift-buildstates/wall_place.gd" id="5_72ku5"]
 [ext_resource type="Script" uid="uid://dplkjicl5ujjf" path="res://scripts/classes/state-machine/dayshift-buildstates/delete_state.gd" id="6_fyby4"]
+[ext_resource type="Script" uid="uid://b7xkl0y7lra22" path="res://scripts/classes/state-machine/dayshift-buildstates/room_place.gd" id="7_jk1px"]
 
 [sub_resource type="Environment" id="Environment_21po1"]
 background_mode = 1
@@ -33,7 +34,7 @@ shadow_enabled = true
 [node name="DayshiftManager" type="Node" parent="." unique_id=197531565 node_paths=PackedStringArray("pizzeria", "default_state")]
 script = ExtResource("2_xyjpv")
 pizzeria = NodePath("../MasterPizzeria")
-default_state = NodePath("ground_place_state")
+default_state = NodePath("room_place_state")
 metadata/_custom_type_script = "uid://sqbdrwq25tg6"
 
 [node name="ground_place_state" type="Node" parent="DayshiftManager" unique_id=1688740203]
@@ -47,3 +48,7 @@ metadata/_custom_type_script = "uid://c6nvw0vx7nmgb"
 [node name="delete_state" type="Node" parent="DayshiftManager" unique_id=161196726]
 script = ExtResource("6_fyby4")
 metadata/_custom_type_script = "uid://dplkjicl5ujjf"
+
+[node name="room_place_state" type="Node" parent="DayshiftManager" unique_id=1737319952]
+script = ExtResource("7_jk1px")
+metadata/_custom_type_script = "uid://b7xkl0y7lra22"
