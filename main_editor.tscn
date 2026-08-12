@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://sqbdrwq25tg6" path="res://scripts/classes/state-machine/dayshift_manager.gd" id="2_xyjpv"]
 [ext_resource type="Script" uid="uid://iuk0mu5neqhw" path="res://scripts/classes/state-machine/dayshift-buildstates/ground_place.gd" id="3_72ku5"]
 [ext_resource type="Script" uid="uid://c6nvw0vx7nmgb" path="res://scripts/classes/state-machine/dayshift-buildstates/wall_place.gd" id="5_72ku5"]
+[ext_resource type="Script" uid="uid://dplkjicl5ujjf" path="res://scripts/classes/state-machine/dayshift-buildstates/delete_state.gd" id="6_fyby4"]
 
 [sub_resource type="Environment" id="Environment_21po1"]
 background_mode = 1
@@ -42,3 +43,7 @@ metadata/_custom_type_script = "uid://iuk0mu5neqhw"
 [node name="wall_place_state" type="Node" parent="DayshiftManager" unique_id=151513349]
 script = ExtResource("5_72ku5")
 metadata/_custom_type_script = "uid://c6nvw0vx7nmgb"
+
+[node name="delete_state" type="Node" parent="DayshiftManager" unique_id=161196726]
+script = ExtResource("6_fyby4")
+metadata/_custom_type_script = "uid://dplkjicl5ujjf"

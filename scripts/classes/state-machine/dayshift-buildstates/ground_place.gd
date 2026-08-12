@@ -10,24 +10,20 @@ var hold_time_limit = 0.1
 
 
 func Update(delta, machine : DayshiftManager = null):
-	if held_time < hold_time_limit:
-		if machine:
-			start_cell = machine.current_cell
 	# converting back to global by multiplying by the tile size and adding half the tile size
 	# done in multiple steps for readiblity
 	if Input.is_action_pressed("lclick"):
 		# keep a score of how much time the key has been pressed
 		held_time += delta
 		
-		
 		# NOTE we should offload this to user preference, maybe use one global holding time window
 		if held_time >= hold_time_limit:
 			holding = true
 
 	
-	if Input.is_action_just_released("lclick") and held_time != 0:
+	if Input.is_action_just_released("lclick") and holding and held_time != 0:
 		holding = false
-		if held_time >= hold_time_limit:
+		if held_time > hold_time_limit:
 			held_time = 0
 			var end_cell = machine.current_cell
 			if start_cell == end_cell:
@@ -39,9 +35,13 @@ func Update(delta, machine : DayshiftManager = null):
 # Helper function
 func single_click(machine):
 	held_time = 0
+	holding = false
 	machine.place_floortile_single(start_cell)
 
 func InputUpdate(event, machine):
+	if not holding:
+		if machine:
+			start_cell = machine.current_cell
 	if not holding:
 		machine.gizmo_box.global_position = Vector3i(machine.current_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT, machine.current_cell.y)
 		machine.gizmo_box.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
@@ -66,3 +66,13 @@ func InputUpdate(event, machine):
 				end_corner.y * machine.pizzeria.TILE_SIZE + machine.gizmo_box.size.z/2.0
 			)
 	pass 
+
+func Enter():
+	holding = false
+	var held_time = 0.0
+	var start_cell = Vector2i.ZERO
+
+func Exit():
+	holding = false
+	var held_time = 0.0
+	var start_cell = Vector2i.ZERO

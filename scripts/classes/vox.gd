@@ -130,7 +130,6 @@ func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 		i.queue_free()
 	await get_tree().process_frame
 	
-	print("run")
 	
 	var chunks = []
 	
@@ -193,6 +192,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	#region 1: handling the floor tiles
 	for tile in chunk_data.groundtiles:
 		var ground = CSGBox3D.new()
+		csg.add_child(ground)
 		ground.size = Vector3(TILE_SIZE, FLOOR_THICK, TILE_SIZE)
 		
 		# Added + TILE_SIZE/2 offset to fix visual bug
@@ -203,7 +203,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
 		ground.material = mat
-		csg.add_child(ground)
+		
 	#endregion
 	#region 2: walls
 	for wall_tile in chunk_data.walls:
@@ -243,7 +243,17 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
 		wall.material = mat
+		
+		var label = Label3D.new()
+		label.pixel_size = 0.02
+		label.text = str(wall_tile)
+		label.billboard = true
+		label.no_depth_test = true
+		label.position = wall.position
+		label.add_to_group("office_devices")
+		csg.add_child(label)
 		csg.add_child(wall)
+		
 		# if the wall doesn't need a cutout for windows, doors etc, the loop ends here
 			
 		# if not, it uses csg to make one

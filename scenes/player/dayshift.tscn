@@ -15,7 +15,7 @@ bg_color = Color(0.017500034, 0, 0.21, 0.11372549)
 script = ExtResource("1_txtqv")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1175914136]
-transform = Transform3D(1, 0, 0, 0, 0.7071065, 0.7071065, 0, -0.7071065, 0.7071065, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.7071064, 0.7071064, 0, -0.7071064, 0.7071064, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1965284668]
 shape = SubResource("SphereShape3D_kcjai")

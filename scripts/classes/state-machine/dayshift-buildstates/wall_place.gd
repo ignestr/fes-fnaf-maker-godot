@@ -8,13 +8,13 @@ var holding := false
 var hold_time_limit = 0.3
 
 
-var current_wall : Vector2i = Vector2i.ZERO
+var current_wall := Vector2i.ZERO
 var end_cell := Vector2i.ZERO
 
 # Whether the wall currently being drawn by the user
 # is vertical (like |) or horizontal (like ---) from a top-down view
 var vertical := false
-
+@onready var camera = get_viewport()
 
 var debug_point := CSGSphere3D.new()
 
@@ -158,7 +158,8 @@ func InputUpdate(event, machine : DayshiftManager):
 		end_cell.x = start_cell.x
 	
 	if not holding:
-		machine.gizmo_box.global_position = Vector3i(
+		machine.gizmo_box.size = Vector3(machine.pizzeria.WALL_THICK, machine.pizzeria.WALL_HEIGHT, machine.pizzeria.WALL_THICK)
+		machine.gizmo_box.global_position = Vector3(
 			current_wall.x,
 			machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT + machine.pizzeria.WALL_HEIGHT/2,
 			current_wall.y
@@ -168,7 +169,6 @@ func InputUpdate(event, machine : DayshiftManager):
 			1, 
 			machine.pizzeria.TILE_SIZE
 			)
-		machine.gizmo_box.size = Vector3(machine.pizzeria.WALL_THICK, machine.pizzeria.WALL_HEIGHT, machine.pizzeria.WALL_THICK)
 	else:
 		if vertical == false:
 			machine.gizmo_box.size = Vector3(

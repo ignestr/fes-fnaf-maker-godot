@@ -12,7 +12,6 @@ func _ready() -> void:
 	for i in get_children():
 		if i is StateMachineState:
 			states[StringName(i.name)] = i
-			print(i)
 	
 	if default_state:
 		state(default_state)

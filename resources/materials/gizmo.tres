@@ -2,6 +2,7 @@
 
 [resource]
 transparency = 4
+no_depth_test = true
 shading_mode = 0
 diffuse_mode = 3
 specular_mode = 1
