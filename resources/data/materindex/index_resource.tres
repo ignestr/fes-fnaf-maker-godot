@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MaterialIndexResource" format=3 uid="uid://1gand01hkxjm"]
+
+[ext_resource type="Script" uid="uid://bm2w7flo03xqk" path="res://scripts/classes/indexdata-classes/material_index_data_entry.gd" id="1_p71b5"]
+[ext_resource type="Script" uid="uid://buspddl3onk3v" path="res://scripts/classes/indexdata-classes/material_index_resource.gd" id="2_h6iuy"]
+
+[sub_resource type="Resource" id="Resource_2v50i"]
+script = ExtResource("1_p71b5")
+material = "uid://dv8582n7t07ht"
+metadata/_custom_type_script = "uid://bm2w7flo03xqk"
+
+[sub_resource type="Resource" id="Resource_g6dfd"]
+script = ExtResource("1_p71b5")
+material = "uid://ddic8fwek48rw"
+metadata/_custom_type_script = "uid://bm2w7flo03xqk"
+
+[resource]
+script = ExtResource("2_h6iuy")
+materials = Dictionary[StringName, ExtResource("1_p71b5")]({
+&"fnaf1_ground_1": SubResource("Resource_2v50i"),
+&"fnaf1_wall_1": SubResource("Resource_g6dfd")
+})
+metadata/_custom_type_script = "uid://buspddl3onk3v"

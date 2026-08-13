@@ -1,7 +1,7 @@
 extends MarginContainer
 
 @onready var label: Label = $Label
-var template = pizzeria_room.new()
+var template = pizzeria_groundtile.new()
 @onready var button: Button = $Button
 
 

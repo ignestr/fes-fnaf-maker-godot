@@ -15,7 +15,7 @@ var wall_byte : int = 0
 ## TBD, second byte that store any modifications it gets
 var mod_byte : int = 0
 
-var device_model_name = &""
+var material_id = &""
 
 
 #TODO: implement the mod byte

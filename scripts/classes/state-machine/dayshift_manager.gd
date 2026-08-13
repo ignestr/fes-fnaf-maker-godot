@@ -78,13 +78,13 @@ func _input(event):
 
 func place_floortile_single(idx : Vector2i):
 	new_actiongroup()
-	var template = pizzeria_room.new()
+	var template = pizzeria_groundtile.new()
 	add_cell(Vector3i(idx.x, idx.y, 0), template, fields.GROUND, current_floor_idx)
 	pizzeria.render_chunk(pizzeria.to_chunk(idx), pizzeria.floors[current_floor_idx], pizzeria.WALL_HEIGHT * current_floor_idx)
 
 func place_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 	new_actiongroup()
-	var template = pizzeria_room.new()
+	var template = pizzeria_groundtile.new()
 	var x_step = 1
 	var y_step = 1
 	
@@ -207,7 +207,7 @@ func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i):
 
 func place_room(idx_begin, idx_end):
 	new_actiongroup()
-	var ground_template = pizzeria_room.new()
+	var ground_template = pizzeria_groundtile.new()
 	var wall_template = pizzeria_wall.new()
 	wall_template.base_set_type(pizzeria_wall.WALL_TYPES.FLAT)
 

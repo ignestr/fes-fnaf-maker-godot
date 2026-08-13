@@ -24,6 +24,7 @@ config/icon="res://icon.svg"
 Animatrindex="*res://scripts/singletons/animatrindex.gd"
 Objex="*uid://ds5tbcfgljeld"
 Devicedex="*uid://dkawadkvqk3fc"
+Materindex="*uid://o4qrmp4fb67n"
 
 [display]
 

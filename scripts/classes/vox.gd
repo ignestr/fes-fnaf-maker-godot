@@ -22,6 +22,9 @@ var floors : Array[pizzeria_floor] = []
 const FLOOR_THICK = 0.1
 const CHUNK_SIZE = 5.0
 
+@export var default_ground_material := &"fnaf1_ground_1"
+@export var default_wall_material := &"fnaf1_wall_1"
+
 var animatronics = []
 
 # -1 is for when both are off
@@ -72,6 +75,8 @@ const wall_lut = {
 # up = y up
 # apply unit, apply space transform and apply transform all off
 
+var use_random_colors = false
+
 func to_chunk(n : Vector2i):
 	return Vector2i(floori(float(n.x) / CHUNK_SIZE), floori(float(n.y) / CHUNK_SIZE))
 
@@ -80,11 +85,12 @@ func _ready():
 
 ## Initialize the pizzeria.
 func init_pizzeria():
-	if !self.has_node("devices"):
-		var new = Node3D.new()
-		new.name = "devices"
-		add_child(new)
-		
+	if !self.has_node("MaterialManager"):
+		var new = MaterialManager.new()
+		new.name = "MaterialManager"
+		self.add_child(new)
+		print(get_node_or_null("MaterialManager"))
+	
 	if floors.size() == 0:
 		floors.append(pizzeria_floor.new())
 		render_base_fullfloor(floors[0], 0)
@@ -127,7 +133,8 @@ func init_pizzeria():
 
 func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 	for i in self.get_children():
-		i.queue_free()
+		if i is MeshInstance3D:
+			i.queue_free()
 	await get_tree().process_frame
 	
 	
@@ -199,10 +206,21 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 		# Whenever this shows up there's a 9/10 chance it's because of that
 		ground.global_position = Vector3(tile.x * TILE_SIZE + TILE_SIZE/2, floor_level-FLOOR_THICK/2, tile.y * TILE_SIZE + TILE_SIZE/2)
 		
-		
-		var mat = StandardMaterial3D.new()
-		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
-		ground.material = mat
+		if use_random_colors == true:
+			var mat = StandardMaterial3D.new()
+			mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
+			ground.material = mat
+		else:
+			if chunk_data.groundtiles[tile].material_id == &"":
+				chunk_data.groundtiles[tile].material_id = default_ground_material
+				
+			var matman : MaterialManager = self.get_node("MaterialManager")
+			if matman.materials.has(chunk_data.groundtiles[tile].material_id):
+				ground.material = matman.materials[chunk_data.groundtiles[tile].material_id]
+			else:
+				await matman.load_new_mat(chunk_data.groundtiles[tile].material_id)
+				ground.material = matman.materials[chunk_data.groundtiles[tile].material_id]
+
 		
 	#endregion
 	#region 2: walls
@@ -239,19 +257,26 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				wall_tile.y * TILE_SIZE + TILE_SIZE/2
 				)
 		
-		# after the wall is set up, instance the basic wall
-		var mat = StandardMaterial3D.new()
-		mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
-		wall.material = mat
+		if use_random_colors == true:
+			var mat = StandardMaterial3D.new()
+			mat.albedo_color = Color(randf_range(0, 1),randf_range(0, 1),randf_range(0, 1))
+			wall.material = mat
+		else:
+			if chunk_data.walls[wall_tile].material_id == &"":
+				chunk_data.walls[wall_tile].material_id = default_wall_material
+				
+			var matman : MaterialManager = self.get_node("MaterialManager")
+	
+			if matman.materials.has(chunk_data.walls[wall_tile].material_id):
+				#print(matman.materials[chunk_data.walls[wall_tile].material_id])
+				wall.material = matman.materials[chunk_data.walls[wall_tile].material_id]
+			else:
+				print(67)
+				await matman.load_new_mat(chunk_data.walls[wall_tile].material_id)
+				wall.material = matman.materials[chunk_data.walls[wall_tile].material_id]
 		
-		var label = Label3D.new()
-		label.pixel_size = 0.02
-		label.text = str(wall_tile)
-		label.billboard = true
-		label.no_depth_test = true
-		label.position = wall.position
-		label.add_to_group("office_devices")
-		csg.add_child(label)
+		
+		# after the wall is set up, instance the basic wall
 		csg.add_child(wall)
 		
 		# if the wall doesn't need a cutout for windows, doors etc, the loop ends here

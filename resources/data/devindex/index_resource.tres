@@ -2,7 +2,13 @@
 
 [ext_resource type="Script" uid="uid://cd1kcdg3obt2a" path="res://scripts/classes/indexdata-classes/device_index_data_entry.gd" id="1_kt441"]
 [ext_resource type="Script" uid="uid://c8geo1haj7v0u" path="res://scripts/classes/indexdata-classes/device_index_resource.gd" id="2_8ltr3"]
-[ext_resource type="Resource" uid="uid://28bv0wgheobe" path="res://resources/data/devindex/devices/security_blast_door_1.tres" id="2_onrv4"]
+
+[sub_resource type="Resource" id="Resource_kt441"]
+script = ExtResource("1_kt441")
+scene = "uid://cf20nw056d12u"
+allowed_flag = 1
+allowed_type = 2
+metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_p6vd5"]
 script = ExtResource("1_kt441")
@@ -119,7 +125,7 @@ metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 [resource]
 script = ExtResource("2_8ltr3")
 devices = Dictionary[StringName, ExtResource("1_kt441")]({
-&"fnaf1_door_1": ExtResource("2_onrv4"),
+&"fnaf1_door_1": SubResource("Resource_kt441"),
 &"fnaf1_door_1_empty": SubResource("Resource_p6vd5"),
 &"fnaf1_windoor_doorglass_1": SubResource("Resource_xhgyu"),
 &"fnaf2_fvent_1_empty": SubResource("Resource_yc1tl"),
