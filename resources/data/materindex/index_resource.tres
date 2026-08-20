@@ -4,17 +4,11 @@
 [ext_resource type="Script" uid="uid://bm2w7flo03xqk" path="res://scripts/classes/indexdata-classes/material_index_data_entry.gd" id="1_p71b5"]
 [ext_resource type="Texture2D" uid="uid://c6gvs87x5vgxk" path="res://icon.svg" id="2_dld5v"]
 [ext_resource type="Script" uid="uid://buspddl3onk3v" path="res://scripts/classes/indexdata-classes/material_index_resource.gd" id="2_h6iuy"]
-[ext_resource type="Texture2D" uid="uid://dd8oetcrxri67" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_orm.png" id="3_qtlim"]
 
 [sub_resource type="Resource" id="Resource_dld5v"]
 script = ExtResource("1_h6iuy")
 icon = ExtResource("2_dld5v")
 members = Array[StringName]([&"fnaf1_ground_1", &"fnaf1_ground_2", &"fnaf1_ground_3", &"fnaf1_wall_1", &"fnaf1_wall_2", &"fnaf1_wall_3", &"fnaf1_wall_4"])
-metadata/_custom_type_script = "uid://by17fa6o76ruq"
-
-[sub_resource type="Resource" id="Resource_qtlim"]
-script = ExtResource("1_h6iuy")
-icon = ExtResource("3_qtlim")
 metadata/_custom_type_script = "uid://by17fa6o76ruq"
 
 [sub_resource type="Resource" id="Resource_aimki"]
@@ -75,7 +69,6 @@ materials = Dictionary[StringName, ExtResource("1_p71b5")]({
 &"fnaf1_wall_4": SubResource("Resource_1j0ho")
 })
 categories = Dictionary[StringName, ExtResource("1_h6iuy")]({
-&"FNAF 1": SubResource("Resource_dld5v"),
-&"FNAF 2": SubResource("Resource_qtlim")
+&"FNAF 1": SubResource("Resource_dld5v")
 })
 metadata/_custom_type_script = "uid://buspddl3onk3v"

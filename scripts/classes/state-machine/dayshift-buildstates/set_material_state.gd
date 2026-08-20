@@ -146,7 +146,6 @@ func InputUpdate(event, machine : DayshiftManager):
 	
 
 func Enter(machine : DayshiftManager):
-	print("hi guyys")
 	holding = false
 	var held_time = 0.0
 	var start_cell = Vector2i.ZERO

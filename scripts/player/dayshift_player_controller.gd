@@ -66,7 +66,6 @@ func catalog_load_category_material(id : StringName):
 		new_button.natural_name = Materindex.list_all.materials[item].natural_name
 		if !Materindex.list_all.materials.has(item):
 			continue
-		print(Materindex.list_all.materials[item].material)
 		var material = load(Materindex.list_all.materials[item].material)
 		if material:
 			new_button.icon_texture = material.albedo_texture
