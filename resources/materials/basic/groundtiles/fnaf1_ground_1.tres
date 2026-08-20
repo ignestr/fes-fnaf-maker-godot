@@ -1,4 +1,18 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://dv8582n7t07ht"]
+[gd_resource type="StandardMaterial3D" format=2]
 
+[ext_resource type="Texture" path="../../../textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_albedo.png" id="1"]
+[ext_resource type="Texture" path="../../../textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_orm.png" id="2"]
+[ext_resource type="Texture" path="../../../textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_normal.png" id="3"]
 [resource]
-albedo_color = Color(0.46, 0.46, 0.46, 1)
+albedo_color = Color(1.0, 1.0, 1.0, 1.0)
+albedo_texture = ExtResource( 1 )
+metallic = 0.0
+roughness = 1.0
+roughness_texture = ExtResource( 2 )
+roughness_texture_channel = 1
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource( 3 )
+
+
+

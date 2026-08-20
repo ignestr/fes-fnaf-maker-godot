@@ -10,8 +10,28 @@ var current_cell : Vector2i = Vector2i(0, 0)
 ## Floor currently being edited as an index from pizzeria's floors array
 var current_floor_idx = 0 
 
-var gizmo_box := CSGBox3D.new()
+var resource_view
 
+var gizmo_box := CSGBox3D.new()
+@onready var gizmo_level : GIZMO_LEVELS = GIZMO_LEVELS.NEUTRAL:
+	set(level):
+		gizmo_level = level
+		var mat = StandardMaterial3D.new()
+		if gizmo_box.material:
+			match level:
+				GIZMO_LEVELS.NEUTRAL:
+					gizmo_box.material.albedo_color = gizmo_neutral_color
+				GIZMO_LEVELS.NEGATIVE:
+					gizmo_box.material.albedo_color = gizmo_negative_color
+				GIZMO_LEVELS.POSITIVE:
+					gizmo_box.material.albedo_color = gizmo_positive_color
+				GIZMO_LEVELS.OTHER:
+					gizmo_box.material.albedo_color = gizmo_other_color
+
+@export var gizmo_neutral_color : Color = Color(0.0, 0.518, 1.0, 0.655)
+@export var gizmo_negative_color : Color = Color(1.0, 0.0, 0.0, 0.655)
+@export var gizmo_positive_color : Color = Color(0.2, 1.0, 0.0, 0.655)
+@export var gizmo_other_color : Color = Color(1.0, 0.95, 0.0, 0.655)
 
 @onready var camera = get_viewport()
 
@@ -19,11 +39,17 @@ var action_history : Array[ActionStackActionGroup] = []
 var max_remembered_actions : int = 16
 
 enum fields {GROUND, WALL, OBJECT}
+enum GIZMO_LEVELS {NEUTRAL, NEGATIVE, POSITIVE, OTHER}
 
 var mouse_coordinates
 var collider
 var hit_pos
 var hit_normal
+
+var current_wall : Vector2i
+
+var current_item : StringName = &"" 
+
 
 # NOTE: cell index coordinates can be roughly defined as m/TS, where TS is
 # the tile size, so in order to use them for positioning, you must ALWAYS
@@ -37,12 +63,15 @@ func new_actiongroup():
 	action_history.push_front(newgroup)
 	if len(action_history) >= max_remembered_actions:
 		action_history.pop_back()
+
 func _ready_extra():
 	gizmo_box.size = Vector3(pizzeria.TILE_SIZE, pizzeria.FLOOR_THICK, pizzeria.TILE_SIZE)
 	gizmo_box.material = load("uid://dcaedodw0xujq")
 	self.add_child(gizmo_box)
+	await get_tree().process_frame
+	gizmo_level = GIZMO_LEVELS.NEUTRAL
 
-func _input(event):
+func _input(event: InputEvent) -> void:
 	# getting absolute / world space coords
 	# don't ask me how it works it's old code from back when this was a mall game
 	var mouse_pos = camera.get_mouse_position()
@@ -54,6 +83,12 @@ func _input(event):
 	var query = PhysicsRayQueryParameters3D.create(origin, origin + dir * 1000)
 	var space_state = camera.get_camera_3d().get_world_3d().direct_space_state
 	var result = space_state.intersect_ray(query)
+	
+	if mouse_coordinates:
+		current_wall = Vector2(
+			roundi(float(mouse_coordinates.x) / pizzeria.TILE_SIZE),
+			roundi(float(mouse_coordinates.z) / pizzeria.TILE_SIZE)
+			)
 	
 	if result:
 		collider = result.collider
@@ -68,10 +103,13 @@ func _input(event):
 	if mouse_coordinates:
 		current_cell = Vector2i(floori(float(mouse_coordinates.x) / pizzeria.TILE_SIZE), floori(float(mouse_coordinates.z) / pizzeria.TILE_SIZE))
 	
+	# state machine code	
+	if get_viewport().gui_get_hovered_control():
+		return 
 	
-	# state machine code
 	if current_state:
 		current_state.InputUpdate(event, self)
+	
 
 
 #region undo system actions
@@ -80,7 +118,10 @@ func place_floortile_single(idx : Vector2i):
 	new_actiongroup()
 	var template = pizzeria_groundtile.new()
 	add_cell(Vector3i(idx.x, idx.y, 0), template, fields.GROUND, current_floor_idx)
-	pizzeria.render_chunk(pizzeria.to_chunk(idx), pizzeria.floors[current_floor_idx], pizzeria.WALL_HEIGHT * current_floor_idx)
+	var chunk = pizzeria.to_chunk(Vector2i(idx.x, idx.y))
+	if pizzeria.get_node_or_null(str(chunk)):
+				pizzeria.get_node(str(chunk)).queue_free()
+	await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
 func place_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 	new_actiongroup()
@@ -106,7 +147,9 @@ func place_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 
 	# this will tally up all chunks that should be re-rendered
 	for chunk in chunks:
-		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
 func place_walltile_range(idx_begin, idx_end, direction):
 	new_actiongroup()
@@ -144,7 +187,9 @@ func place_walltile_range(idx_begin, idx_end, direction):
 				chunks.append(pizzeria.to_chunk(Vector2i(idx_begin.x, i)))
 	
 	for chunk in chunks:
-		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
 func delete_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 	new_actiongroup()
@@ -165,10 +210,6 @@ func delete_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 			
 			if pizzeria.floors[current_floor_idx].groundtiles.has(Vector2i(x, y)):
 				remove_cell(Vector3i(x, y, 0), fields.GROUND, current_floor_idx)
-			if pizzeria.floors[current_floor_idx].walls.has(Vector3i(x, y, 0)):
-				remove_cell(Vector3i(x, y, 0), fields.WALL, current_floor_idx)
-			if pizzeria.floors[current_floor_idx].walls.has(Vector3i(x, y, 1)):
-				remove_cell(Vector3i(x, y, 1), fields.WALL, current_floor_idx)
 			
 			if not chunks.has(pizzeria.to_chunk(Vector2i(x, y))):
 				chunks.append(pizzeria.to_chunk(Vector2i(x, y)))
@@ -176,9 +217,11 @@ func delete_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 	
 	# this will tally up all chunks that should be re-rendered
 	for chunk in chunks:
-		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i):
+func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i, direction : bool):
 	new_actiongroup()
 	var x_step = 1
 	var y_step = 1
@@ -189,21 +232,25 @@ func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i):
 	if idx_begin.y > idx_end.y:
 		y_step = -1
 	
+	
 	var chunks = []
 	# going through the square
 	# adding x and y step because ranges are exclusive
 	for x in range(idx_begin.x, idx_end.x + x_step, x_step):
 		for y in range(idx_begin.y, idx_end.y + y_step, y_step):
-			remove_cell(Vector3i(x, y, 0), fields.WALL, current_floor_idx)
-			remove_cell(Vector3i(x, y, 1), fields.WALL, current_floor_idx)
-
+			if !direction:
+				remove_cell(Vector3i(x, y, 0), fields.WALL, current_floor_idx)
+			else:
+				remove_cell(Vector3i(x, y, 1), fields.WALL, current_floor_idx)
 			if not chunks.has(pizzeria.to_chunk(Vector2i(x, y))):
 				chunks.append(pizzeria.to_chunk(Vector2i(x, y)))
 	
 	
 	# this will tally up all chunks that should be re-rendered
 	for chunk in chunks:
-		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
 func place_room(idx_begin, idx_end):
 	new_actiongroup()
@@ -245,8 +292,8 @@ func place_room(idx_begin, idx_end):
 				# to make sure walls that lie in chunk edges
 				# also get displayed, we re-render all chunks that 
 				# the tile's neighbors contain
-			for nx in range(x-1, x+1):
-				for ny in range(y-1, y+1):
+			for nx in range(x-1, x+2):
+				for ny in range(y-1, y+2):
 					if not chunks.has(pizzeria.to_chunk(Vector2i(nx, ny))):
 						chunks.append(pizzeria.to_chunk(Vector2i(nx, ny)))
 		
@@ -255,7 +302,86 @@ func place_room(idx_begin, idx_end):
 
 	# this will tally up all chunks that should be re-rendered
 	for chunk in chunks:
-		pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
+func changemat_ground(idx_begin, idx_end):
+	new_actiongroup()
+	var x_step = 1
+	var y_step = 1
+	
+	# in case it has to step backwards in order to progress to the desired tile
+	if idx_begin.x > idx_end.x:
+		x_step = -1
+	if idx_begin.y > idx_end.y:
+		y_step = -1
+	
+	var chunks = []
+	# going through the square
+	# adding x and y step because ranges are exclusive
+	for x in range(idx_begin.x, idx_end.x + x_step, x_step):
+		for y in range(idx_begin.y, idx_end.y + y_step, y_step):
+			if pizzeria.floors[current_floor_idx].groundtiles.has(Vector2i(x, y)):
+				var template : pizzeria_groundtile = pizzeria.floors[current_floor_idx].groundtiles[Vector2i(x, y)].duplicate()
+				if Materindex.list_all.materials[current_item].is_wall_mat == false:
+					template.material_id = current_item
+				add_cell(Vector3i(x, y, 0), template, fields.GROUND, current_floor_idx)
+				if not chunks.has(pizzeria.to_chunk(Vector2i(x, y))):
+					chunks.append(pizzeria.to_chunk(Vector2i(x, y)))
+	
+	for chunk in chunks:
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
+func changemat_walls(idx_begin, idx_end, direction):
+	new_actiongroup()
+	var x_step = 1
+	var y_step = 1
+	
+	# in case it has to step backwards in order to progress to the desired tile
+	if idx_begin.x > idx_end.x:
+		x_step = -1
+	if idx_begin.y > idx_end.y:
+		y_step = -1
+	
+	var chunks = []
+	# going through the square
+	# adding x and y step because ranges are exclusive
+	for x in range(idx_begin.x, idx_end.x + x_step, x_step):
+		for y in range(idx_begin.y, idx_end.y + y_step, y_step):
+			
+			# Case when it's one wall
+			if idx_begin == idx_end:
+				var template : pizzeria_wall = pizzeria.floors[current_floor_idx].walls[Vector3i(x, y, direction)].clone()
+				resource_view = template
+				if Materindex.list_all.materials[current_item].is_wall_mat == true:
+					template.material_id = current_item
+				add_cell(Vector3i(x, y, direction), template, fields.WALL, current_floor_idx)
+			
+			
+			else:
+				# Case for 0
+				if pizzeria.floors[current_floor_idx].walls.has(Vector3i(x, y, 0)):
+					var template : pizzeria_wall = pizzeria.floors[current_floor_idx].walls[Vector3i(x, y, 0)].clone()
+					if Materindex.list_all.materials[current_item].is_wall_mat == true:
+						template.material_id = current_item
+					add_cell(Vector3i(x, y, 0), template, fields.WALL, current_floor_idx)
+				
+				# Case for 1
+				if pizzeria.floors[current_floor_idx].walls.has(Vector3i(x, y, 1)):
+					var template : pizzeria_wall = pizzeria.floors[current_floor_idx].walls[Vector3i(x, y, 1)].clone()
+					if Materindex.list_all.materials[current_item].is_wall_mat == true:
+						template.material_id = current_item
+					add_cell(Vector3i(x, y, 1), template, fields.WALL, current_floor_idx)
+				
+			if not chunks.has(pizzeria.to_chunk(Vector2i(x, y))):
+				chunks.append(pizzeria.to_chunk(Vector2i(x, y)))
+	
+	# this will tally up all chunks that should be re-rendered
+	for chunk in chunks:
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
 
 #endregion
@@ -316,7 +442,9 @@ func undo():
 		
 		for floor_level in chunks.keys():
 			for chunk in chunks[floor_level]:
-				pizzeria.render_chunk(chunk, pizzeria.floors[floor_level], floor_level * pizzeria.WALL_HEIGHT)
+				if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+				await pizzeria.render_chunk(chunk, pizzeria.floors[floor_level], floor_level * pizzeria.WALL_HEIGHT)
 
 func add_cell(idx : Vector3i, data, field : fields, floor_idx : int=0, is_undo : bool = false):
 	var is_overriding = false

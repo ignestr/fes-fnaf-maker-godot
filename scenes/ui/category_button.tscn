@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://cu2l73mlss5c3"]
+
+[ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://resources/misc/main_ui_theme.tres" id="1_xy27w"]
+[ext_resource type="Script" uid="uid://btrrk3gsf7orx" path="res://scripts/ui/category_button.gd" id="2_l336s"]
+[ext_resource type="Shader" uid="uid://chkfmmtt8gb7t" path="res://resources/materials/shaders/ui_darkblur.tres" id="3_2mk6h"]
+[ext_resource type="Texture2D" uid="uid://c6gvs87x5vgxk" path="res://icon.svg" id="4_udscg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_swl1t"]
+bg_color = Color(0.4565, 0.5436501, 0.83, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.082722, 0.0713035, 0.328125, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r33uo"]
+shader = ExtResource("3_2mk6h")
+
+[node name="Button" type="Button" unique_id=1519177650]
+custom_minimum_size = Vector2(0, 32)
+theme = ExtResource("1_xy27w")
+theme_override_colors/font_outline_color = Color(0.08235294, 0.07058824, 0.32941177, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_swl1t")
+text = "FNAF 1"
+script = ExtResource("2_l336s")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=463159858]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 1
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 1
+theme_override_constants/margin_bottom = 3
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer" unique_id=1783679993]
+z_as_relative = false
+material = SubResource("ShaderMaterial_r33uo")
+layout_mode = 2
+texture = ExtResource("4_udscg")
+expand_mode = 2
+stretch_mode = 6

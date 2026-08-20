@@ -12,9 +12,13 @@ var hold_time_limit = 0.1
 func Update(delta, machine : DayshiftManager = null):
 	# converting back to global by multiplying by the tile size and adding half the tile size
 	# done in multiple steps for readiblity
+	
+	
 	if Input.is_action_pressed("lclick"):
 		# keep a score of how much time the key has been pressed
 		held_time += delta
+		if get_viewport().gui_get_hovered_control():
+			return 
 		
 		# NOTE we should offload this to user preference, maybe use one global holding time window
 		if held_time >= hold_time_limit:
@@ -67,12 +71,14 @@ func InputUpdate(event, machine):
 			)
 	pass 
 
-func Enter():
+func Enter(machine : DayshiftManager):
 	holding = false
 	var held_time = 0.0
 	var start_cell = Vector2i.ZERO
+	machine.gizmo_level = machine.GIZMO_LEVELS.POSITIVE
 
-func Exit():
+func Exit(machine : DayshiftManager):
 	holding = false
 	var held_time = 0.0
 	var start_cell = Vector2i.ZERO
+	machine.gizmo_level = machine.GIZMO_LEVELS.NEUTRAL

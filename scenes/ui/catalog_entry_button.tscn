@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://b6wl33yni3utc"]
+
+[ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://resources/misc/main_ui_theme.tres" id="1_06gcm"]
+[ext_resource type="Script" uid="uid://cyabvxiv0g4ym" path="res://scripts/ui/catalog_entry_button.gd" id="2_tg83a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u8i04"]
+bg_color = Color(0.4565, 0.5436501, 0.83, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.082722, 0.0713035, 0.328125, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="Button" type="Button" unique_id=845278142]
+custom_minimum_size = Vector2(52, 52)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_06gcm")
+theme_override_styles/normal = SubResource("StyleBoxFlat_u8i04")
+expand_icon = true
+script = ExtResource("2_tg83a")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1276258686]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer" unique_id=924780740]
+z_as_relative = false
+layout_mode = 2
+expand_mode = 2
+stretch_mode = 6

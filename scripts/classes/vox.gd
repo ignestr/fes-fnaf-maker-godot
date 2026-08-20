@@ -20,10 +20,11 @@ var floors : Array[pizzeria_floor] = []
 
 # Don't mess around with this value, it's just here for readability. Changing it isn't tested.
 const FLOOR_THICK = 0.1
-const CHUNK_SIZE = 5.0
+const CHUNK_SIZE = 7.0
 
 @export var default_ground_material := &"fnaf1_ground_1"
 @export var default_wall_material := &"fnaf1_wall_1"
+@export var wall_cap_material : Material = load("res://resources/materials/basic/misc/concrete.tres")
 
 var animatronics = []
 
@@ -88,9 +89,7 @@ func init_pizzeria():
 	if !self.has_node("MaterialManager"):
 		var new = MaterialManager.new()
 		new.name = "MaterialManager"
-		self.add_child(new)
-		print(get_node_or_null("MaterialManager"))
-	
+		self.add_child(new)	
 	if floors.size() == 0:
 		floors.append(pizzeria_floor.new())
 		render_base_fullfloor(floors[0], 0)
@@ -134,7 +133,7 @@ func init_pizzeria():
 func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 	for i in self.get_children():
 		if i is MeshInstance3D:
-			i.queue_free()
+			i.free()
 	await get_tree().process_frame
 	
 	
@@ -160,11 +159,14 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 		
 	# If the current chunk has already been created
 	# If it has, it must override it
-	if self.get_node_or_null(str(idx)) != null:
-		self.get_node(str(idx)).queue_free()
-		await get_tree().process_frame
 	
 	csg = CSGCombiner3D.new()
+	var leftover = self.get_node_or_null(str(idx))
+	if leftover:
+		leftover.name = "trash"
+		for child in self.get_children():
+			if child.name.contains("trash"):
+				child.queue_free()
 	csg.name = str(idx)
 	csg.use_collision = true
 	self.add_child(csg)
@@ -195,6 +197,10 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			if floor.walls.has(Vector3i(x,y,1)):
 				chunk_data.walls[Vector3i(x,y,1)] = floor.walls[Vector3i(x,y,1)]
 	
+	# If it's empty
+	if chunk_data.groundtiles.is_empty() and chunk_data.walls.is_empty() and chunk_data.objects.is_empty():
+		csg.queue_free()
+		return
 	#endregion
 	#region 1: handling the floor tiles
 	for tile in chunk_data.groundtiles:
@@ -226,6 +232,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	#region 2: walls
 	for wall_tile in chunk_data.walls:
 		var wall = CSGBox3D.new()
+		var wall_cap = CSGBox3D.new()
 		
 		# chunk logic
 		var vec2_i = Vector2i(wall_tile.x, wall_tile.y)
@@ -241,8 +248,12 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			wall.position = Vector3(
 				wall_tile.x * TILE_SIZE + TILE_SIZE/2, 
 				floor_level+WALL_HEIGHT/2, 
-				TILE_SIZE * (wall_tile.y - 0.5) + TILE_SIZE/2
+				TILE_SIZE * wall_tile.y
 				)
+			
+			wall_cap.size = Vector3(TILE_SIZE, 0.1, WALL_THICK)
+			wall_cap.position = wall.position
+			wall_cap.position.y += WALL_HEIGHT/2 + 0.05
 		else:
 			# Adjust size according to orientation
 			wall.size = Vector3(WALL_THICK, WALL_HEIGHT, TILE_SIZE)
@@ -252,10 +263,15 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			# CRITICAL I've added an offset on the y axis to get rid of Z-fighting, 
 			# but you need to keep it in mind in case it ever becomes important 
 			wall.global_position = Vector3(
-				TILE_SIZE * (wall_tile.x - 0.5) + TILE_SIZE/2,
+				TILE_SIZE * wall_tile.x,
 				floor_level+WALL_HEIGHT/2 + 0.001,
 				wall_tile.y * TILE_SIZE + TILE_SIZE/2
 				)
+			wall_cap.size = Vector3(WALL_THICK, 0.1, TILE_SIZE)
+			wall_cap.position = wall.position
+			wall_cap.position.y += WALL_HEIGHT/2 + 0.05
+		
+		wall_cap.material = wall_cap_material
 		
 		if use_random_colors == true:
 			var mat = StandardMaterial3D.new()
@@ -268,15 +284,17 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			var matman : MaterialManager = self.get_node("MaterialManager")
 	
 			if matman.materials.has(chunk_data.walls[wall_tile].material_id):
-				#print(matman.materials[chunk_data.walls[wall_tile].material_id])
 				wall.material = matman.materials[chunk_data.walls[wall_tile].material_id]
 			else:
-				print(67)
 				await matman.load_new_mat(chunk_data.walls[wall_tile].material_id)
-				wall.material = matman.materials[chunk_data.walls[wall_tile].material_id]
-		
+				if matman.materials.has(chunk_data.walls[wall_tile].material_id):
+					wall.material = matman.materials[chunk_data.walls[wall_tile].material_id]
+				else:
+					push_warning("Failed to get material ", chunk_data.walls[wall_tile].material_id, "!")
+					print("Failed to get material ", chunk_data.walls[wall_tile].material_id, "!")
 		
 		# after the wall is set up, instance the basic wall
+		csg.add_child(wall_cap)
 		csg.add_child(wall)
 		
 		# if the wall doesn't need a cutout for windows, doors etc, the loop ends here
@@ -377,6 +395,8 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	if self.get_node_or_null(str(idx)) == null:
 		push_warning("Chunk", str(idx), "failed to bake because it was freed before it could do it. Try building less often!")
 		return
+
+		
 	var new_mesh = MeshInstance3D.new()
 	var collide = CollisionShape3D.new()
 	var body = StaticBody3D.new()
@@ -384,7 +404,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	var chunk_name = " "
 	
 	await get_tree().process_frame
-	if self.get_node_or_null(str(idx)) == null:
+	if self.get_node_or_null(str(idx)) == null or csg == null:
 		push_warning("Chunk", str(idx), "failed to bake because it was freed before it could do it. Try building less often!")
 		return
 	new_mesh.mesh = await csg.bake_static_mesh()
@@ -403,6 +423,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			var copy = child.duplicate()
 			new_mesh.add_child(copy)
 	csg.queue_free()
+	await get_tree().process_frame
 	#endregion
 
 

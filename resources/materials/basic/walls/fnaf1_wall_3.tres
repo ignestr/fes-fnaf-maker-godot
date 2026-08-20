@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://db86tb34mcnwe"]
+
+[ext_resource type="Texture2D" uid="uid://0prbdy4ehkr4" path="res://resources/textures/pbr/walls/fnaf1_wall_3/fnaf1_wall_3.webp" id="1_yv0cy"]
+[ext_resource type="Texture2D" uid="uid://dvuwtur4yk5qw" path="res://resources/textures/pbr/walls/fnaf1_wall_3/fnaf1_wall_3_normal.png" id="2_wrvb2"]
+[ext_resource type="Texture2D" uid="uid://bfrwo7g42n5sg" path="res://resources/textures/pbr/walls/fnaf1_wall_3/fnaf1_wall_3_roughness.png" id="3_e65g0"]
+
+[resource]
+albedo_texture = ExtResource("1_yv0cy")
+roughness_texture = ExtResource("3_e65g0")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("2_wrvb2")
+uv1_scale = Vector3(0.25, 0.25, 0.25)
+uv1_triplanar = true
+uv1_world_triplanar = true

@@ -37,6 +37,6 @@ func state(new_state : StateMachineState):
 		return 
 	
 	if current_state:
-		current_state.Exit()
-	new_state.Enter()
+		current_state.Exit(self)
+	new_state.Enter(self)
 	current_state = new_state

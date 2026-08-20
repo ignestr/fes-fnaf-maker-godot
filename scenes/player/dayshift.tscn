@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://u7i0h6fafe2u" path="res://scripts/player/dayshift_player_controller.gd" id="1_txtqv"]
 [ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://resources/misc/main_ui_theme.tres" id="2_txtqv"]
 [ext_resource type="Material" uid="uid://cwjrxe1rccw11" path="res://resources/materials/glass_mat.tres" id="3_ogt6m"]
-[ext_resource type="Texture2D" uid="uid://choduooq2rid4" path="res://resources/textures/ui_background.png" id="4_kcjai"]
+[ext_resource type="Texture2D" uid="uid://b5e66yyjuankl" path="res://resources/textures/ui_background.png" id="4_kcjai"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kcjai"]
 radius = 1.3637
@@ -29,6 +29,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Control" unique_id=18905749]
 layout_mode = 1
@@ -37,6 +38,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
@@ -73,7 +75,7 @@ layout_mode = 2
 text = "	"
 
 [node name="Catalog" type="Panel" parent="Control/MarginContainer" unique_id=1365128103]
-custom_minimum_size = Vector2(700, 140)
+custom_minimum_size = Vector2(700, 160)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
@@ -134,42 +136,23 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer" unique_id=1683004947]
+[node name="categories" type="ScrollContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer" unique_id=1683004947]
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer" unique_id=496598837]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/categories" unique_id=496598837]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1021868285]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label2" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1646741179]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label3" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=507123987]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label4" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1363148201]
-layout_mode = 2
-text = "Category menus"
-
-[node name="Label5" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1257916618]
-layout_mode = 2
-text = "Category menus"
-
 [node name="Panel" type="Panel" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1708400075]
-custom_minimum_size = Vector2(0, 35)
+custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel" unique_id=997507714]
@@ -179,16 +162,65 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 7
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 7
-theme_override_constants/margin_bottom = 7
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer" unique_id=1652934833]
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer" unique_id=2086471325]
+layout_mode = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="Button" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=47072630]
+custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "basic item type buttons
-(like animatronics, devices, furniture etc)"
+text = "Devices"
+text_overrun_behavior = 1
+autowrap_mode = 1
+
+[node name="Button2" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=1641294049]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Furniture"
+text_overrun_behavior = 1
+autowrap_mode = 1
+
+[node name="Button3" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=890899937]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Tronics"
+text_overrun_behavior = 1
+autowrap_mode = 1
+
+[node name="Button4" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=553663044]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Wall Decor"
+text_overrun_behavior = 1
+autowrap_mode = 1
+
+[node name="Button5" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=1125230645]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Lights roof"
+text_overrun_behavior = 1
+autowrap_mode = 1
+autowrap_trim_flags = 192
+clip_text = true
+
+[node name="Button6" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=2089904851]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Materials"
+text_overrun_behavior = 1
+autowrap_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer" unique_id=463278707]
 custom_minimum_size = Vector2(440, 0)
@@ -197,6 +229,123 @@ size_flags_horizontal = 3
 
 [node name="Panel" type="Panel" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer" unique_id=2040142850]
 layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel" unique_id=179830411]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer" unique_id=1154000432]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer" unique_id=553292814]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 7
+
+[node name="Button" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=1234305385]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button4" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=111969052]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button5" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=1064492896]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button6" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=830310219]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button7" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=1262545059]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button8" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=1649365909]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button9" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=1639799254]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button2" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=742308322]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button3" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=672316234]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button10" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=298188709]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button11" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=686096189]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button12" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=170225877]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button13" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=848206722]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button14" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=179574160]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button15" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=1444904229]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button16" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer" unique_id=1964815279]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Top" type="Panel" parent="Control/MarginContainer" unique_id=988985930]
 custom_minimum_size = Vector2(400, 55)
@@ -254,6 +403,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "Floor"
 
+[connection signal="pressed" from="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/Button6" to="." method="on_catalog_material"]
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button" to="." method="_on_wall_button_pressed"]
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button2" to="." method="_on_room_button_pressed"]
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button3" to="." method="_on_select_button_pressed"]

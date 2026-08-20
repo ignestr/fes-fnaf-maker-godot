@@ -1,22 +1,81 @@
 [gd_resource type="Resource" script_class="MaterialIndexResource" format=3 uid="uid://1gand01hkxjm"]
 
+[ext_resource type="Script" uid="uid://by17fa6o76ruq" path="res://scripts/classes/indexdata-classes/catalog/catalog_category.gd" id="1_h6iuy"]
 [ext_resource type="Script" uid="uid://bm2w7flo03xqk" path="res://scripts/classes/indexdata-classes/material_index_data_entry.gd" id="1_p71b5"]
+[ext_resource type="Texture2D" uid="uid://c6gvs87x5vgxk" path="res://icon.svg" id="2_dld5v"]
 [ext_resource type="Script" uid="uid://buspddl3onk3v" path="res://scripts/classes/indexdata-classes/material_index_resource.gd" id="2_h6iuy"]
+[ext_resource type="Texture2D" uid="uid://dd8oetcrxri67" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_orm.png" id="3_qtlim"]
 
-[sub_resource type="Resource" id="Resource_2v50i"]
+[sub_resource type="Resource" id="Resource_dld5v"]
+script = ExtResource("1_h6iuy")
+icon = ExtResource("2_dld5v")
+members = Array[StringName]([&"fnaf1_ground_1", &"fnaf1_ground_2", &"fnaf1_ground_3", &"fnaf1_wall_1", &"fnaf1_wall_2", &"fnaf1_wall_3", &"fnaf1_wall_4"])
+metadata/_custom_type_script = "uid://by17fa6o76ruq"
+
+[sub_resource type="Resource" id="Resource_qtlim"]
+script = ExtResource("1_h6iuy")
+icon = ExtResource("3_qtlim")
+metadata/_custom_type_script = "uid://by17fa6o76ruq"
+
+[sub_resource type="Resource" id="Resource_aimki"]
 script = ExtResource("1_p71b5")
-material = "uid://dv8582n7t07ht"
+material = "res://resources/materials/basic/groundtiles/fnaf1_ground_1.tres"
+natural_name = "Basic Tiled Floor BK/W"
 metadata/_custom_type_script = "uid://bm2w7flo03xqk"
 
-[sub_resource type="Resource" id="Resource_g6dfd"]
+[sub_resource type="Resource" id="Resource_f85ke"]
 script = ExtResource("1_p71b5")
-material = "uid://ddic8fwek48rw"
+material = "res://resources/materials/basic/groundtiles/fnaf1_ground_2.tres"
+natural_name = "Basic Tiled Floor BL/R"
+metadata/_custom_type_script = "uid://bm2w7flo03xqk"
+
+[sub_resource type="Resource" id="Resource_4gipx"]
+script = ExtResource("1_p71b5")
+material = "res://resources/materials/basic/groundtiles/fnaf1_ground_3.tres"
+natural_name = "Basic Tiled Floor BK/R"
+metadata/_custom_type_script = "uid://bm2w7flo03xqk"
+
+[sub_resource type="Resource" id="Resource_p71b5"]
+script = ExtResource("1_p71b5")
+material = "uid://cw0ongfsg8kuw"
+is_wall_mat = true
+natural_name = "Tiled Wall (R)"
+metadata/_custom_type_script = "uid://bm2w7flo03xqk"
+
+[sub_resource type="Resource" id="Resource_lyhob"]
+script = ExtResource("1_p71b5")
+material = "uid://c2rvgouy8uaq6"
+is_wall_mat = true
+natural_name = "Tiled Wall (R) (Dirty)"
+metadata/_custom_type_script = "uid://bm2w7flo03xqk"
+
+[sub_resource type="Resource" id="Resource_7nhv3"]
+script = ExtResource("1_p71b5")
+material = "uid://db86tb34mcnwe"
+is_wall_mat = true
+natural_name = "Backstage Wall"
+metadata/_custom_type_script = "uid://bm2w7flo03xqk"
+
+[sub_resource type="Resource" id="Resource_1j0ho"]
+script = ExtResource("1_p71b5")
+material = "uid://tx3ml640h6bj"
+is_wall_mat = true
+natural_name = "Bathroom Wall"
 metadata/_custom_type_script = "uid://bm2w7flo03xqk"
 
 [resource]
 script = ExtResource("2_h6iuy")
 materials = Dictionary[StringName, ExtResource("1_p71b5")]({
-&"fnaf1_ground_1": SubResource("Resource_2v50i"),
-&"fnaf1_wall_1": SubResource("Resource_g6dfd")
+&"fnaf1_ground_1": SubResource("Resource_aimki"),
+&"fnaf1_ground_2": SubResource("Resource_f85ke"),
+&"fnaf1_ground_3": SubResource("Resource_4gipx"),
+&"fnaf1_wall_1": SubResource("Resource_p71b5"),
+&"fnaf1_wall_2": SubResource("Resource_lyhob"),
+&"fnaf1_wall_3": SubResource("Resource_7nhv3"),
+&"fnaf1_wall_4": SubResource("Resource_1j0ho")
+})
+categories = Dictionary[StringName, ExtResource("1_h6iuy")]({
+&"FNAF 1": SubResource("Resource_dld5v"),
+&"FNAF 2": SubResource("Resource_qtlim")
 })
 metadata/_custom_type_script = "uid://buspddl3onk3v"

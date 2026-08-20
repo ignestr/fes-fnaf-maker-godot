@@ -1,10 +1,10 @@
 extends Node
 class_name StateMachineState
 
-func Enter():
+func Enter(machine):
 	pass
 
-func Exit():
+func Exit(machine):
 	pass
 
 ## The equivalent of _process()

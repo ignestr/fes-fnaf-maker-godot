@@ -66,3 +66,10 @@ func base_get_type(): # returns the type as an int
 func base_set_type(x : WALL_TYPES):
 	wall_byte &= 0b00001111
 	wall_byte |= (x << 4)
+
+func clone():
+	var clone = pizzeria_wall.new()
+	clone.wall_byte = wall_byte
+	clone.mod_byte = mod_byte 
+	clone.material_id = material_id
+	return clone

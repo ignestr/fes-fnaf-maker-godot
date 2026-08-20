@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://baye6c1xg8rlm"]
+
+[ext_resource type="Texture2D" uid="uid://iy3f2278xjx4" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_3/fnaf1_ground_3_albedo.png" id="1_dsgye"]
+[ext_resource type="Texture2D" uid="uid://dd8oetcrxri67" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_orm.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://d2d1bf65emftu" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_normal.png" id="3"]
+
+[resource]
+albedo_texture = ExtResource("1_dsgye")
+roughness_texture = ExtResource("2")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("3")

@@ -16,20 +16,18 @@ var end_cell := Vector2i.ZERO
 var vertical := false
 @onready var camera = get_viewport()
 
-var debug_point := CSGSphere3D.new()
-
 func Update(delta, machine : DayshiftManager = null):
 	
 	# Walls lie at the vertices of tiles
 	# This is fundamentally a different metric than current_cell
 	# so we have to calculate this
+	
+		
 	if machine.mouse_coordinates:
 		current_wall = Vector2(
 			roundi(float(machine.mouse_coordinates.x) / machine.pizzeria.TILE_SIZE),
 			roundi(float(machine.mouse_coordinates.z) / machine.pizzeria.TILE_SIZE)
 			)
-	
-	debug_point.global_position = Vector3(current_wall.x, 0, current_wall.y) * machine.pizzeria.TILE_SIZE
 	
 	if held_time < hold_time_limit:
 		if machine:
@@ -40,7 +38,8 @@ func Update(delta, machine : DayshiftManager = null):
 	if Input.is_action_pressed("lclick"):
 		# keep a score of how much time the key has been pressed
 		held_time += delta
-		
+		if get_viewport().gui_get_hovered_control():
+			return 
 		
 		# NOTE we should offload this to user preference, maybe use one global holding time window
 		if held_time >= hold_time_limit:
@@ -204,7 +203,16 @@ func InputUpdate(event, machine : DayshiftManager):
 				machine.gizmo_box.global_position.z = start_cell.y * machine.pizzeria.TILE_SIZE - machine.gizmo_box.size.z/2.0
 			
 	return
-	
-func Enter():
-	add_child(debug_point)
-	debug_point.radius = 0.2
+
+
+func Enter(machine : DayshiftManager):
+	holding = false
+	var held_time = 0.0
+	var start_cell = Vector2i.ZERO
+	machine.gizmo_level = machine.GIZMO_LEVELS.POSITIVE
+
+func Exit(machine : DayshiftManager):
+	holding = false
+	var held_time = 0.0
+	var start_cell = Vector2i.ZERO
+	machine.gizmo_level = machine.GIZMO_LEVELS.NEUTRAL
