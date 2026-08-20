@@ -13,7 +13,33 @@ You start with an empty room, some tables, and a stage. From there you can choos
 ## Nightshift
 After building your dream location, you can spend five (or more) nights using the mechanics you set up before. Every single feature and gameplay mechanic from the original titles is present with more options and all the more potential for making challenging nights. You can decide everything from the length of each individual night, to changing the pizzeria itself as each night progresses! This is designed to be as versatile as possible, so there is always room for innovation on how to connect all of these elements together.
 
+---
+# Roadmap
+This is a rough layout of how I plan to structure development for the game, but it is very subject to change as challenges arise and shape the creative process.
 
+## Demo 1 (MVP) (In Progress):
+This will focus on getting the main gameplay down, with good controls and feature completeness for recreating FNAF 1.
+It includes the three main systems of Rendering, Editing, and the Nightshift, as well as the content from FNAF 1 with enough polish to be enjoyable.
+
+## Demo 2 (FNAF 2 Update) (Not started):
+This update is based around finishing up the necessary polish/fixes from the MVP, refactoring and documenting old code, as well as adding the rest of the basic features that might've been too expansive for the first demo (eg. the vent system, office interactions like the flashlight, a logging system, or setting up "fangame" structures)
+Along with the basic expansions and fixes, each update is focused on implementing subsequent entries in the series, so most features and content will be directed at adding all features, items and animatronics from FNAF 2.
+
+## Demo 3 (FNAF 3 Update) (Not fully conceptualized):
+This update is mostly focused on laying the foundations for the full version of the device and monitor system that will be required for some of the more complex mechanics that later entries introduce. To put it simply, because the FNAF 3 includes the maintenance panel, I intend to add a framework that allows you to create things similar to it yourself, where it can be connected to other gameplay elements outside of "fixing a system". (Also, expanding the device system to allow for "breaking", needing to reset, etc) Because from here on out the franchise breaks its formula quite strongly and features all sorts of camera / panel related mechanics, laying the first foundations for this early on is important.
+Outside of the cameras and panel, most of the remaining gameplay aspects are covered by the previous demo (although not all). Like the others it will aim to add all content and gameplay mechanics from FNAF 3
+
+## Version 1.0 (FNAF 4 Update) (Not fully conceptualized):
+This update marks version 1.0 as the following three updates will take a very extended amount of time to complete each, and it's meant to be able to stand on its own for a while. It will add all content and mechanics from FNAF 4, as well as original content and a heavy focus on polish. It will allow for creating custom animatronic AI based on logical nodes to represent behaviors more complex than following a linear path.
+
+## Beyond
+The last four updates aren't mentioned mostly because:
+- Sister Location's gameplay requires implementing a lot of completely brand new systems and re-contextualizes a lot of old code. Because the point is not only to be able to recreate any of the games, but to twist their mechanics and use them as modules, the update entails expanding all aspects of the game, and heavy refactors.
+- Pizzeria Simulator has a very large amount of content and assets that would have to be brought over, although mechanically most of the foundations for it were established before.
+- Ultimate Custom Night's roadmap is heavily dependent on the state of the project after the last two updates, as it both has a lot of content and introduces new mechanics that may not have been fully covered in the past.
+- After this, I intend to add a story mode following an alternate timeline, as well as the ability to make modular animatronics, being the final major content update, but this isn't guaranteed.
+
+---
 # Technical description
 This is a more in-depth description of the main systems the project hinges on. Not every system or implementation is mentioned here, as I want to focus on the most important aspects of how the game works. Systems or features that are yet to be implemented are not included.
 
