@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://dplkjicl5ujjf" path="res://scripts/classes/state-machine/dayshift-buildstates/delete_state.gd" id="6_fyby4"]
 [ext_resource type="Script" uid="uid://b7xkl0y7lra22" path="res://scripts/classes/state-machine/dayshift-buildstates/room_place.gd" id="7_jk1px"]
 [ext_resource type="Script" uid="uid://dbji2y1a3ncqw" path="res://scripts/classes/state-machine/dayshift-buildstates/set_material_state.gd" id="8_f85ke"]
+[ext_resource type="PackedScene" uid="uid://bik8ysf8p1als" path="res://resources/models/animatronics/toy_freddy/Toy Freddy v2.fbx" id="9_4gipx"]
+[ext_resource type="Script" uid="uid://dii0d61dbbpck" path="res://scripts/classes/state-machine/dayshift-buildstates/object_place_state.gd" id="9_aimki"]
 
 [sub_resource type="Environment" id="Environment_21po1"]
 background_mode = 1
@@ -22,6 +24,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.434, 20)
 
 [node name="MasterPizzeria" type="Node" parent="." unique_id=759086066]
 script = ExtResource("1_up0xs")
+SIZE = null
+TILE_SIZE = null
+WALL_HEIGHT = null
+WALL_THICK = null
+default_ground_material = null
+default_wall_material = null
 metadata/_custom_type_script = "uid://cvc8eo6lq5yob"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=863748286]
@@ -57,3 +65,10 @@ metadata/_custom_type_script = "uid://b7xkl0y7lra22"
 [node name="set_material_state" type="Node" parent="DayshiftManager" unique_id=315881195]
 script = ExtResource("8_f85ke")
 metadata/_custom_type_script = "uid://dbji2y1a3ncqw"
+
+[node name="object_place_state" type="Node" parent="DayshiftManager" unique_id=1914379523]
+script = ExtResource("9_aimki")
+metadata/_custom_type_script = "uid://dii0d61dbbpck"
+
+[node name="Toy Freddy v2" parent="." unique_id=1991967237 instance=ExtResource("9_4gipx")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -0.08649689, 0, -0.42760718)

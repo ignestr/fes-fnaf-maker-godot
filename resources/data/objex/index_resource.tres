@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="ObjectIndexResource" format=3 uid="uid://brtcir5u5bh0j"]
+
+[ext_resource type="Script" uid="uid://by17fa6o76ruq" path="res://scripts/classes/indexdata-classes/catalog/catalog_category.gd" id="1_5t0cj"]
+[ext_resource type="Script" uid="uid://bxrjxqch2eswd" path="res://scripts/classes/indexdata-classes/object_index_data_entry.gd" id="1_wrf8i"]
+[ext_resource type="Script" uid="uid://c8iu2t8nilrlu" path="res://scripts/classes/indexdata-classes/object_index_resource.gd" id="2_2ih2s"]
+[ext_resource type="Texture2D" uid="uid://c6gvs87x5vgxk" path="res://icon.svg" id="2_4gigb"]
+[ext_resource type="Texture2D" uid="uid://bis7die188kux" path="res://resources/temporary/bee/Bee_0.png" id="2_ykxjv"]
+[ext_resource type="Texture2D" uid="uid://yvj45s6xgj7p" path="res://resources/textures/pbr/walls/fnaf1_wall_1/fnaf1_wall_1.webp" id="3_5t0cj"]
+
+[sub_resource type="Resource" id="Resource_y8s5v"]
+script = ExtResource("1_5t0cj")
+icon = ExtResource("2_4gigb")
+members = Array[StringName]([&"bee", &"fnaf1_doorframe"])
+metadata/_custom_type_script = "uid://by17fa6o76ruq"
+
+[sub_resource type="Resource" id="Resource_5moft"]
+script = ExtResource("1_wrf8i")
+scene = "uid://cvjwk7tbpg3wl"
+icon = ExtResource("2_ykxjv")
+natural_name = "Bee. (remove this)"
+metadata/_custom_type_script = "uid://bxrjxqch2eswd"
+
+[sub_resource type="Resource" id="Resource_2pl6x"]
+script = ExtResource("1_wrf8i")
+icon = ExtResource("3_5t0cj")
+natural_name = "Doorframe. Remove - debug"
+metadata/_custom_type_script = "uid://bxrjxqch2eswd"
+
+[resource]
+script = ExtResource("2_2ih2s")
+objects = Dictionary[StringName, ExtResource("1_wrf8i")]({
+&"bee": SubResource("Resource_5moft"),
+&"fnaf1_doorframe": SubResource("Resource_2pl6x")
+})
+categories_ground = Dictionary[StringName, ExtResource("1_5t0cj")]({
+&"FNAF 1": SubResource("Resource_y8s5v")
+})
+metadata/_custom_type_script = "uid://c8iu2t8nilrlu"

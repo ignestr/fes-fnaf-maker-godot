@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://cbiq16ukvqfot"]
 
-[ext_resource type="Script" uid="uid://dx0b3efinxaad" path="res://scripts/classes/datapizzeria-classes/frame_class.gd" id="1_j1jrh"]
+[ext_resource type="Script" uid="uid://dx0b3efinxaad" path="res://scripts/classes/scene-related-classes/frame_class.gd" id="1_j1jrh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gwj7u"]
 resource_name = "Frame_metal.003"
@@ -60,7 +60,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_0kqnx")
 
-[node name="entry_frame_device" type="Node3D" unique_id=2051354191 groups=["office_devices"]]
+[node name="entry_frame_device" type="Node3D" unique_id=2051354191 groups=["objects"]]
 script = ExtResource("1_j1jrh")
 borders = SubResource("ArrayMesh_x37f2")
 metadata/_custom_type_script = "uid://dx0b3efinxaad"

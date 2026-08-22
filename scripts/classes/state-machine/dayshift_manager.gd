@@ -4,6 +4,8 @@ class_name DayshiftManager
 @export var pizzeria: MasterPizzeria
 # enum states {PLACING, SELECT, ROOM, WALL}
 
+enum CATALOG_TYPES {DEVICES, FURNITURE, TRONICS, WALL, ROOF, MATERIAL}
+
 ## Variable storing the cell the mouse is on.
 var current_cell : Vector2i = Vector2i(0, 0)
 
@@ -304,6 +306,16 @@ func place_room(idx_begin, idx_end):
 	for chunk in chunks:
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
+func place_object(idx : Vector3i, data):
+	new_actiongroup()
+	add_cell(Vector3i(idx), data, fields.OBJECT, current_floor_idx)
+	
+	var chunk = pizzeria.to_chunk(Vector2i(idx.x, idx.y))
+	if pizzeria.get_node_or_null(str(chunk)):
+				pizzeria.get_node(str(chunk)).queue_free()
+	
+	await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
 func changemat_ground(idx_begin, idx_end):
 	new_actiongroup()
 	var x_step = 1
@@ -423,7 +435,6 @@ func changemat_walls(idx_begin, idx_end, direction):
 # contain it (hence new_actiongroup())
 # if anything else is unclear, you can ask me
 
-
 func undo():
 	if len(action_history) > 0:
 		var chunks = {}
@@ -455,20 +466,41 @@ func add_cell(idx : Vector3i, data, field : fields, floor_idx : int=0, is_undo :
 	new_action.idx = idx
 	new_action.floor_idx = floor_idx
 	new_action.new_data = data
+	
 	match field:
 		fields.GROUND:
 			if pizzeria.floors[floor_idx].groundtiles.has(Vector2i(idx.x, idx.y)):
 				is_overriding = true
 				new_action.old_data = pizzeria.floors[floor_idx].groundtiles[Vector2i(idx.x, idx.y)]
 			pizzeria.floors[floor_idx].groundtiles[Vector2i(idx.x, idx.y)] = data
+		
 		fields.WALL:
 			if pizzeria.floors[floor_idx].walls.has(idx):
 				is_overriding = true
 				new_action.old_data = pizzeria.floors[floor_idx].walls[idx]
 			pizzeria.floors[floor_idx].walls[idx] = data
+		
 		fields.OBJECT:
-			#TODO: Implement along with object system
-			pass
+			match Objex.list_all.objects[data.id].allowed_position:
+				
+				ObjectIndexDataEntry.allowed_positions.GROUND:
+					if pizzeria.floors[floor_idx].objects_ground.has(idx):
+						is_overriding = true
+						new_action.old_data = pizzeria.floors[floor_idx].objects_ground[idx]
+					pizzeria.floors[floor_idx].objects_ground[idx] = data
+					resource_view = pizzeria.floors[floor_idx].objects_ground[idx]
+				
+				ObjectIndexDataEntry.allowed_positions.WALL:
+					if pizzeria.floors[floor_idx].objects_wall.has(idx):
+						is_overriding = true
+						new_action.old_data = pizzeria.floors[floor_idx].objects_wall[idx]
+					pizzeria.floors[floor_idx].objects_wall[idx] = data
+				
+				ObjectIndexDataEntry.allowed_positions.ROOF:
+					if pizzeria.floors[floor_idx].objects_wall.has(idx):
+						is_overriding = true
+						new_action.old_data = pizzeria.floors[floor_idx].objects_roof[idx]
+					pizzeria.floors[floor_idx].objects_roof[idx] = data
 	if !is_undo:
 		action_history[0].actions.append(new_action)
 

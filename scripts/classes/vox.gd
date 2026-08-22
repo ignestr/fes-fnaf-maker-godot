@@ -54,6 +54,17 @@ const wall_lut = {
 		}
 	}
 
+const tile_quadrant_lut = {
+	0:Vector2i(-1, 1),
+	1:Vector2i(0 , 1),
+	2:Vector2i(1, 1),
+	3:Vector2i(-1, 0),
+	4:Vector2i(0, 0),
+	5:Vector2i(1, 0),
+	6:Vector2i(-1, -1),
+	7:Vector2i(0, -1),
+	8:Vector2i(1, -1)
+}
 
 # TODO: Make buttons be a thing with models, the full feature set such
 # as being toggeable between proximity prompts and just basic clicking, as well as being able
@@ -156,7 +167,6 @@ func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 # will need to be redone when multi floors are implemented in the fnaf 3 update
 func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	var csg : CSGCombiner3D
-		
 	# If the current chunk has already been created
 	# If it has, it must override it
 	
@@ -196,9 +206,14 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			#copying the horizontal walls
 			if floor.walls.has(Vector3i(x,y,1)):
 				chunk_data.walls[Vector3i(x,y,1)] = floor.walls[Vector3i(x,y,1)]
+			
+			#copying the ground objects walls
+			for anchor in range(9):
+				if floor.objects_ground.has(Vector3i(x,y,anchor)):
+					chunk_data.objects_ground[Vector3i(x,y,anchor)] = floor.objects_ground[Vector3i(x,y,anchor)]
 	
 	# If it's empty
-	if chunk_data.groundtiles.is_empty() and chunk_data.walls.is_empty() and chunk_data.objects.is_empty():
+	if chunk_data.groundtiles.is_empty() and chunk_data.walls.is_empty():
 		csg.queue_free()
 		return
 	#endregion
@@ -300,8 +315,8 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 		# if the wall doesn't need a cutout for windows, doors etc, the loop ends here
 			
 		# if not, it uses csg to make one
-		
-#region 3: devices
+	#endregion
+	#region 3: devices
 		if chunk_data.walls[wall_tile].base_get_type() != pizzeria_wall.WALL_TYPES.FLAT:
 			var cutout := CSGBox3D.new()
 			var current_wall = chunk_data.walls[wall_tile]
@@ -389,7 +404,27 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			# instance the final cutout, end wall loop
 			csg.add_child(cutout)
 	#endregion
+	#region 4: objects ☆
+	for index in chunk_data.objects_ground:
+		var item_data : pizzeria_item = chunk_data.objects_ground[index]
+		if Objex.list_all.objects[item_data.id].scene:
+			var object = load(Objex.list_all.objects[item_data.id].scene).instantiate()
+			
+			# Start at the middle of the correct place in the cell
+			var quadrant = tile_quadrant_lut[index.z]
+			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2)
+			+ Vector3(item_data.offset.x, 0, item_data.offset.y)
+
+			object.add_to_group(&"objects")
+			object.rotate_y(deg_to_rad(item_data.rotate_y))
+			csg.add_child(object)
 	
+	for obj in chunk_data.objects_wall:
+		#TODO do
+		pass
+	for obj in chunk_data.objects_roof:
+		pass
+	#endregion
 	#region Closing off - baking and adding collisions
 	# In case the player spams the build function and it gets freed in the same frame
 	if self.get_node_or_null(str(idx)) == null:
@@ -419,7 +454,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	body.add_child(collide)
 	
 	for child in csg.get_children():
-		if child.is_in_group("office_devices"):
+		if child.is_in_group(&"objects"):
 			var copy = child.duplicate()
 			new_mesh.add_child(copy)
 	csg.queue_free()

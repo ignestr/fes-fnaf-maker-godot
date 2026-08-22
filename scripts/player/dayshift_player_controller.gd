@@ -3,6 +3,8 @@ extends CharacterBody3D
 const SPEED = 7.5
 const JUMP_VELOCITY = 4.5
 
+
+
 @onready var dayshift_manager : DayshiftManager = $"../DayshiftManager"
 @onready var categories_container: VBoxContainer = $Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/categories/VBoxContainer
 @onready var catalog_grid: GridContainer = $Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer
@@ -53,6 +55,7 @@ func on_catalog_material() -> void:
 		new_button.player = self
 		new_button.category_name = category
 		new_button.icon_texture = Materindex.list_all.categories[category].icon
+		new_button.type = dayshift_manager.CATALOG_TYPES.MATERIAL
 		categories_container.add_child(new_button)
 
 func catalog_load_category_material(id : StringName):
@@ -64,6 +67,7 @@ func catalog_load_category_material(id : StringName):
 		new_button.id = item
 		new_button.player = self
 		new_button.natural_name = Materindex.list_all.materials[item].natural_name
+		new_button.type = dayshift_manager.CATALOG_TYPES.MATERIAL
 		if !Materindex.list_all.materials.has(item):
 			continue
 		var material = load(Materindex.list_all.materials[item].material)
@@ -71,5 +75,32 @@ func catalog_load_category_material(id : StringName):
 			new_button.icon_texture = material.albedo_texture
 		catalog_grid.add_child(new_button)
 
-func start_placing_material(id : StringName):
-	dayshift_manager.current_item = id
+
+func catalog_load_category_furniture(id : StringName):
+	for child in catalog_grid.get_children():
+		child.queue_free()
+	
+	for item in Objex.list_all.categories_ground[id].members:
+		var new_button = CATALOG_ENTRY_BUTTON.instantiate()
+		new_button.id = item
+		new_button.player = self
+		new_button.type = dayshift_manager.CATALOG_TYPES.FURNITURE
+		new_button.natural_name = Objex.list_all.objects[item].natural_name
+		if !Objex.list_all.objects.has(item):
+			continue
+		new_button.icon_texture = Objex.list_all.objects[item].icon
+		catalog_grid.add_child(new_button)
+
+
+func _on_catalog_furniture() -> void:
+	for child in categories_container.get_children():
+		child.queue_free()
+	
+	for category in Objex.list_all.categories_ground:
+		var new_button = CATEGORY_BUTTON.instantiate()
+		new_button.player = self
+		new_button.category_name = category
+		new_button.icon_texture = Materindex.list_all.categories[category].icon
+		new_button.type = dayshift_manager.CATALOG_TYPES.FURNITURE
+		categories_container.add_child(new_button)
+	

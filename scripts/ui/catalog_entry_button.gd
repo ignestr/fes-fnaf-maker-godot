@@ -2,6 +2,7 @@ extends Button
 
 var player 
 var id : StringName
+var type : DayshiftManager.CATALOG_TYPES
 var natural_name : String
 var icon_texture : Texture2D
 @onready var texture_rect: TextureRect = $MarginContainer/TextureRect
@@ -11,7 +12,13 @@ var icon_texture : Texture2D
 func _input(event: InputEvent) -> void:
 	if button_pressed:
 		player.dayshift_manager.current_item = id
-		player.dayshift_manager.state(player.dayshift_manager.states[&"set_material_state"])
+		match type:
+			DayshiftManager.CATALOG_TYPES.MATERIAL:
+				player.dayshift_manager.state(player.dayshift_manager.states[&"set_material_state"])
+			DayshiftManager.CATALOG_TYPES.FURNITURE:
+				player.dayshift_manager.state(player.dayshift_manager.states[&"object_place_state"])
+		
+		#
 		
 
 func _ready() -> void:

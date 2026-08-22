@@ -124,7 +124,8 @@ func InputUpdate(event, machine : DayshiftManager):
 				machine.gizmo_box.global_position.z += machine.pizzeria.TILE_SIZE/2
 				machine.gizmo_box.size = Vector3(machine.pizzeria.WALL_THICK, machine.pizzeria.WALL_HEIGHT, machine.pizzeria.TILE_SIZE)
 	else: 
-			# Modifying the gizmo- to represent the area
+			# Modifying the gizmo to represent the area
+			
 			# The top left corner will have the max y value and min x value
 			# The bottom right will be the opposite
 			

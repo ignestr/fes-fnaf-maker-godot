@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://0kc36tdej2m4"]
 
-[ext_resource type="Script" uid="uid://k6dkux5wmkk5" path="res://scripts/classes/datapizzeria-classes/window_class.gd" id="1_7k4m1"]
+[ext_resource type="Script" uid="uid://k6dkux5wmkk5" path="res://scripts/classes/scene-related-classes/window_class.gd" id="1_7k4m1"]
 [ext_resource type="Material" uid="uid://cwjrxe1rccw11" path="res://resources/materials/glass_mat.tres" id="2_jwocx"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4o103"]
@@ -73,7 +73,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_ntcae")
 
-[node name="window_device" type="Node3D" unique_id=2104694261 groups=["office_devices"]]
+[node name="window_device" type="Node3D" unique_id=2104694261 groups=["objects"]]
 script = ExtResource("1_7k4m1")
 borders = SubResource("ArrayMesh_84msg")
 metadata/_custom_type_script = "uid://k6dkux5wmkk5"

@@ -1,4 +1,5 @@
 extends Node
+class_name DeviceIndex
 
 var defaults := {
 	pizzeria_wall.WALL_FLAGS.HAS_DOOR : {

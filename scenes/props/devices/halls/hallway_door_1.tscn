@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://xt5q73pnr4bl"]
 
-[ext_resource type="Script" uid="uid://dpk48ag0xn3vv" path="res://scripts/classes/datapizzeria-classes/security_door_class.gd" id="1_pmpj6"]
+[ext_resource type="Script" uid="uid://dpk48ag0xn3vv" path="res://scripts/classes/scene-related-classes/security_door_class.gd" id="1_pmpj6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sfl6x"]
 resource_name = "Frame_metal"
@@ -198,7 +198,7 @@ nodes/opening/position = Vector2(60, 160)
 "nodes/Animation 2/position" = Vector2(-340, 180)
 node_connections = [&"output", 0, &"opening", &"opening", 0, &"Animation 2", &"opening", 1, &"Animation 4"]
 
-[node name="hall_1" type="Node3D" unique_id=511937533 node_paths=PackedStringArray("collision_shape") groups=["office_devices", "security_door"]]
+[node name="hall_1" type="Node3D" unique_id=511937533 node_paths=PackedStringArray("collision_shape") groups=["objects", "security_door"]]
 script = ExtResource("1_pmpj6")
 borders = SubResource("ArrayMesh_7xhsp")
 collision_shape = NodePath("hallway_1/Armature_005/Skeleton3D/hallway_door1/StaticBody3D/CollisionShape3D")

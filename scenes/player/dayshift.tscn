@@ -403,6 +403,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "Floor"
 
+[connection signal="pressed" from="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/Button2" to="." method="_on_catalog_furniture"]
 [connection signal="pressed" from="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/Button6" to="." method="on_catalog_material"]
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button" to="." method="_on_wall_button_pressed"]
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button2" to="." method="_on_room_button_pressed"]

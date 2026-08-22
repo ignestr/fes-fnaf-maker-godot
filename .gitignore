@@ -1,6 +1,5 @@
 # Godot 4+ specific ignores
 .godot/
-/android/
-backup commands
-components/
-addons/at-icons
+/addons
+/.godot_ide
+/.script_splitter
