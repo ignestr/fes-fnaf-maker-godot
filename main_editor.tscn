@@ -13,7 +13,10 @@
 
 [sub_resource type="Environment" id="Environment_21po1"]
 background_mode = 1
-background_color = Color(0.53125, 0.53125, 0.53125, 1)
+background_color = Color(0.012132352, 0.020557601, 0.0859375, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.26900005, 0.13999999, 1, 1)
+reflected_light_source = 1
 tonemap_mode = 3
 tonemap_exposure = 0.62
 
@@ -24,12 +27,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.434, 20)
 
 [node name="MasterPizzeria" type="Node" parent="." unique_id=759086066]
 script = ExtResource("1_up0xs")
-SIZE = null
-TILE_SIZE = null
-WALL_HEIGHT = null
-WALL_THICK = null
-default_ground_material = null
-default_wall_material = null
 metadata/_custom_type_script = "uid://cvc8eo6lq5yob"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=863748286]
@@ -37,8 +34,7 @@ environment = SubResource("Environment_21po1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=1234315056]
 transform = Transform3D(0.5517197, -0.5948455, 0.584606, 0, 0.7009416, 0.71321875, -0.8340297, -0.39349687, 0.38672334, 0, 0, 0)
-light_energy = 2.0
-shadow_enabled = true
+light_energy = 4.0
 
 [node name="DayshiftManager" type="Node" parent="." unique_id=197531565 node_paths=PackedStringArray("pizzeria", "default_state")]
 script = ExtResource("2_xyjpv")

@@ -13,7 +13,7 @@ var floors : Array[pizzeria_floor] = []
 @export var SIZE : Vector2i = Vector2i(20, 20)
 ## The size of each tile in standard position units.
 @export var TILE_SIZE : float = 4
-## The global height all walls use in standard position units. 3.5 is the minimum for hallway devices (3 is possible but it makes the top be flush with the roof
+## The global height all walls use in standard position units. 3.5 is the minimum for hallway devices (3 is possible but it makes the top be flush with the roof. CANNOT BE HIGHER THAN TILE_SIZE.
 @export var WALL_HEIGHT : float = 3.5
 ## The global width all walls use in standard position units. Low values recommended, but it can work with higher ones.
 @export var WALL_THICK : float = 0.3
@@ -25,6 +25,8 @@ const CHUNK_SIZE = 7.0
 @export var default_ground_material := &"fnaf1_ground_1"
 @export var default_wall_material := &"fnaf1_wall_1"
 @export var wall_cap_material : Material = load("res://resources/materials/basic/misc/concrete.tres")
+
+var objman : ObjectManager
 
 var animatronics = []
 
@@ -95,12 +97,22 @@ func to_chunk(n : Vector2i):
 func _ready():
 	init_pizzeria()
 
+func decode_wall_coord(vector : Vector4i):
+	return [Vector2i(vector.x, vector.y), vector.z, vector.w & 1, vector.w & 2]
+
 ## Initialize the pizzeria.
 func init_pizzeria():
 	if !self.has_node("MaterialManager"):
 		var new = MaterialManager.new()
 		new.name = "MaterialManager"
-		self.add_child(new)	
+		self.add_child(new)
+	
+	if !self.has_node("ObjectManager"):
+		var new = ObjectManager.new()
+		new.name = "ObjectManager"
+		self.add_child(new)
+		objman = self.get_node("ObjectManager")
+		
 	if floors.size() == 0:
 		floors.append(pizzeria_floor.new())
 		render_base_fullfloor(floors[0], 0)
@@ -135,7 +147,6 @@ func init_pizzeria():
 #
 # So we don't have to change the data structure at all and 
 # we still get to keep all of the benefits of chunks!
-
 
 ## Instance CSG pizzeria fully + devices, then bake.
 
@@ -211,7 +222,9 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			for anchor in range(9):
 				if floor.objects_ground.has(Vector3i(x,y,anchor)):
 					chunk_data.objects_ground[Vector3i(x,y,anchor)] = floor.objects_ground[Vector3i(x,y,anchor)]
-	
+				for byte in range(4):
+					if floor.objects_wall.has(Vector4i(x,y,anchor,byte)):
+						chunk_data.objects_wall[Vector4i(x,y,anchor,byte)] = floor.objects_wall[Vector4i(x,y,anchor,byte)]
 	# If it's empty
 	if chunk_data.groundtiles.is_empty() and chunk_data.walls.is_empty():
 		csg.queue_free()
@@ -408,22 +421,81 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	for index in chunk_data.objects_ground:
 		var item_data : pizzeria_item = chunk_data.objects_ground[index]
 		if Objex.list_all.objects[item_data.id].scene:
-			var object = load(Objex.list_all.objects[item_data.id].scene).instantiate()
+			var object : Node3D
+			if objman.objects.has(item_data.id):
+				object = objman.objects[item_data.id].instantiate()
+			else:
+				await objman.load_new(item_data.id)
+				object = objman.objects[item_data.id].instantiate()
 			
 			# Start at the middle of the correct place in the cell
 			var quadrant = tile_quadrant_lut[index.z]
 			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2)
 			+ Vector3(item_data.offset.x, 0, item_data.offset.y)
-
 			object.add_to_group(&"objects")
 			object.rotate_y(deg_to_rad(item_data.rotate_y))
 			csg.add_child(object)
+			object.index = index
 	
-	for obj in chunk_data.objects_wall:
-		#TODO do
+	for index in chunk_data.objects_wall:
+		var item_data : pizzeria_item = chunk_data.objects_wall[index]
+		if Objex.list_all.objects[item_data.id].scene:
+			var object : Node3D
+			if objman.objects.has(item_data.id):
+				object = objman.objects[item_data.id].instantiate()
+			else:
+				await objman.load_new(item_data.id)
+				object = objman.objects[item_data.id].instantiate()
+			
+			# Start at the middle of the correct place in the cell
+			var direction = decode_wall_coord(index)[2]
+			var side = decode_wall_coord(index)[3]
+			var quadrant = tile_quadrant_lut[index.z]
+			csg.add_child(object)
+			object.scale = Vector3(object.scale_factor, object.scale_factor, object.scale_factor)
+			
+			if direction:
+				object.rotate_y(deg_to_rad(90))
+				object.global_position = Vector3(
+					index.x * TILE_SIZE, 
+					floor_level+WALL_HEIGHT/2, 
+					TILE_SIZE * index.y + TILE_SIZE/2
+					)
+					
+				object.global_position += Vector3(0, quadrant.y, quadrant.x)
+				if side:
+					object.global_position.x += WALL_THICK
+				else:
+					object.rotate_y(deg_to_rad(180))
+					object.global_position.x -= WALL_THICK
+				object.rotate_z(deg_to_rad(item_data.rotate_y))
+			
+			else:
+				object.global_position = Vector3(
+				TILE_SIZE * index.x + TILE_SIZE/2,
+				floor_level+WALL_HEIGHT/2,
+				index.y * TILE_SIZE
+				)
+				
+				if side:
+					object.global_position.z -= WALL_THICK
+					object.rotate_y(deg_to_rad(180))
+				else:
+					object.global_position.z += WALL_THICK
+				object.rotate_x(deg_to_rad(item_data.rotate_y))
+				
+				print(quadrant)
+				object.global_position += Vector3(quadrant.x, quadrant.y, 0)
+				
+			object.add_to_group(&"objects")
+			
+			object.index = index
+		
 		pass
 	for obj in chunk_data.objects_roof:
 		pass
+	
+	
 	#endregion
 	#region Closing off - baking and adding collisions
 	# In case the player spams the build function and it gets freed in the same frame
@@ -456,6 +528,9 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	for child in csg.get_children():
 		if child.is_in_group(&"objects"):
 			var copy = child.duplicate()
+			#TODO CRITICAL: If objects have properties that aren't being copied
+			# it might be this
+			copy.index = child.index
 			new_mesh.add_child(copy)
 	csg.queue_free()
 	await get_tree().process_frame

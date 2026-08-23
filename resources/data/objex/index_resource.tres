@@ -5,34 +5,67 @@
 [ext_resource type="Script" uid="uid://c8iu2t8nilrlu" path="res://scripts/classes/indexdata-classes/object_index_resource.gd" id="2_2ih2s"]
 [ext_resource type="Texture2D" uid="uid://c6gvs87x5vgxk" path="res://icon.svg" id="2_4gigb"]
 [ext_resource type="Texture2D" uid="uid://bis7die188kux" path="res://resources/temporary/bee/Bee_0.png" id="2_ykxjv"]
-[ext_resource type="Texture2D" uid="uid://yvj45s6xgj7p" path="res://resources/textures/pbr/walls/fnaf1_wall_1/fnaf1_wall_1.webp" id="3_5t0cj"]
+[ext_resource type="Texture2D" uid="uid://d2d1bf65emftu" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_normal.png" id="3_1mn7c"]
+[ext_resource type="Texture2D" uid="uid://1yf42yvgs65p" path="res://resources/textures/pbr/misc/concrete/concrete_albedo.png" id="4_an3js"]
+[ext_resource type="Texture2D" uid="uid://c3a081hwa0dos" path="res://resources/models/animatronics/toy_chica/toy chica_5.png" id="5_4gigb"]
+[ext_resource type="Texture2D" uid="uid://dexlq8ukfq8l2" path="res://resources/temporary/clock/WallClock_LP_Clock_Specular.png" id="8_an3js"]
 
 [sub_resource type="Resource" id="Resource_y8s5v"]
 script = ExtResource("1_5t0cj")
 icon = ExtResource("2_4gigb")
-members = Array[StringName]([&"bee", &"fnaf1_doorframe"])
+members = Array[StringName]([&"bee"])
+metadata/_custom_type_script = "uid://by17fa6o76ruq"
+
+[sub_resource type="Resource" id="Resource_pfk28"]
+script = ExtResource("1_5t0cj")
+icon = ExtResource("3_1mn7c")
+field = 2
+members = Array[StringName]([&"lamp"])
+metadata/_custom_type_script = "uid://by17fa6o76ruq"
+
+[sub_resource type="Resource" id="Resource_s1hmd"]
+script = ExtResource("1_5t0cj")
+icon = ExtResource("4_an3js")
+field = 1
+members = Array[StringName]([&"clock"])
 metadata/_custom_type_script = "uid://by17fa6o76ruq"
 
 [sub_resource type="Resource" id="Resource_5moft"]
 script = ExtResource("1_wrf8i")
-scene = "uid://cvjwk7tbpg3wl"
+scene = "uid://b15qdr2rbytpa"
 icon = ExtResource("2_ykxjv")
 natural_name = "Bee. (remove this)"
 metadata/_custom_type_script = "uid://bxrjxqch2eswd"
 
-[sub_resource type="Resource" id="Resource_2pl6x"]
+[sub_resource type="Resource" id="Resource_txtqv"]
 script = ExtResource("1_wrf8i")
-icon = ExtResource("3_5t0cj")
-natural_name = "Doorframe. Remove - debug"
+icon = ExtResource("5_4gigb")
+natural_name = "klok"
+allowed_position = 1
+metadata/_custom_type_script = "uid://bxrjxqch2eswd"
+
+[sub_resource type="Resource" id="Resource_2mk6h"]
+script = ExtResource("1_wrf8i")
+scene = "uid://bncjbqd7p0gh5"
+icon = ExtResource("8_an3js")
+natural_name = "Clock"
+allowed_position = 1
 metadata/_custom_type_script = "uid://bxrjxqch2eswd"
 
 [resource]
 script = ExtResource("2_2ih2s")
 objects = Dictionary[StringName, ExtResource("1_wrf8i")]({
 &"bee": SubResource("Resource_5moft"),
-&"fnaf1_doorframe": SubResource("Resource_2pl6x")
+&"clock": SubResource("Resource_2mk6h"),
+&"lamp": SubResource("Resource_txtqv")
 })
 categories_ground = Dictionary[StringName, ExtResource("1_5t0cj")]({
 &"FNAF 1": SubResource("Resource_y8s5v")
+})
+categories_wall = Dictionary[StringName, ExtResource("1_5t0cj")]({
+&"Misc": SubResource("Resource_s1hmd")
+})
+categories_roof = Dictionary[StringName, ExtResource("1_5t0cj")]({
+&"Misc": SubResource("Resource_pfk28")
 })
 metadata/_custom_type_script = "uid://c8iu2t8nilrlu"

@@ -18,5 +18,7 @@ var groundtiles : Dictionary[Vector2i, pizzeria_groundtile]
 #
 
 var objects_ground : Dictionary[Vector3i, pizzeria_item]
-var objects_wall : Dictionary[Vector3i, pizzeria_item]
+# The w coordinate is bitpacked
+# bit 1 is whether the wall is u or v (like z in the wall dict), bit 2 is whether it's on the front or back of the wall
+var objects_wall : Dictionary[Vector4i, pizzeria_item]
 var objects_roof : Dictionary[Vector3i, pizzeria_item]

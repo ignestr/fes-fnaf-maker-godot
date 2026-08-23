@@ -15,6 +15,8 @@ func _input(event: InputEvent) -> void:
 				player.catalog_load_category_material(category_name)
 			DayshiftManager.CATALOG_TYPES.FURNITURE:
 				player.catalog_load_category_furniture(category_name)
+			DayshiftManager.CATALOG_TYPES.WALL:
+				player.catalog_load_category_wall(category_name)
 
 func _ready() -> void:
 	if icon_texture:

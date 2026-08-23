@@ -81,16 +81,31 @@ func catalog_load_category_furniture(id : StringName):
 		child.queue_free()
 	
 	for item in Objex.list_all.categories_ground[id].members:
+		if !Objex.list_all.objects.has(item):
+			continue
 		var new_button = CATALOG_ENTRY_BUTTON.instantiate()
 		new_button.id = item
 		new_button.player = self
 		new_button.type = dayshift_manager.CATALOG_TYPES.FURNITURE
 		new_button.natural_name = Objex.list_all.objects[item].natural_name
-		if !Objex.list_all.objects.has(item):
-			continue
+
 		new_button.icon_texture = Objex.list_all.objects[item].icon
 		catalog_grid.add_child(new_button)
 
+func catalog_load_category_wall(id : StringName):
+	for child in catalog_grid.get_children():
+		child.queue_free()
+	
+	for item in Objex.list_all.categories_wall[id].members:
+		if !Objex.list_all.objects.has(item):
+			continue
+		var new_button = CATALOG_ENTRY_BUTTON.instantiate()
+		new_button.id = item
+		new_button.player = self
+		new_button.type = dayshift_manager.CATALOG_TYPES.WALL
+		new_button.natural_name = Objex.list_all.objects[item].natural_name
+		new_button.icon_texture = Objex.list_all.objects[item].icon
+		catalog_grid.add_child(new_button)
 
 func _on_catalog_furniture() -> void:
 	for child in categories_container.get_children():
@@ -100,7 +115,31 @@ func _on_catalog_furniture() -> void:
 		var new_button = CATEGORY_BUTTON.instantiate()
 		new_button.player = self
 		new_button.category_name = category
-		new_button.icon_texture = Materindex.list_all.categories[category].icon
+		new_button.icon_texture = Objex.list_all.categories_ground[category].icon
 		new_button.type = dayshift_manager.CATALOG_TYPES.FURNITURE
 		categories_container.add_child(new_button)
+
+
+func _on_catalog_devices() -> void:
+	pass
+
+
+func _on_catalog_animatronics() -> void:
+	pass # Replace with function body.
+
+
+func _on_catalog_walldecor() -> void:
+	for child in categories_container.get_children():
+		child.queue_free()
 	
+	for category in Objex.list_all.categories_wall:
+		var new_button = CATEGORY_BUTTON.instantiate()
+		new_button.player = self
+		new_button.category_name = category
+		new_button.icon_texture = Objex.list_all.categories_wall[category].icon
+		new_button.type = dayshift_manager.CATALOG_TYPES.WALL
+		categories_container.add_child(new_button)
+
+
+func _on_catalog_roof() -> void:
+	pass # Replace with function body.

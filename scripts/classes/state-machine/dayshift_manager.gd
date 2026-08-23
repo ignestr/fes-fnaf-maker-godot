@@ -15,6 +15,7 @@ var current_floor_idx = 0
 var resource_view
 
 var gizmo_box := CSGBox3D.new()
+
 @onready var gizmo_level : GIZMO_LEVELS = GIZMO_LEVELS.NEUTRAL:
 	set(level):
 		gizmo_level = level
@@ -38,9 +39,9 @@ var gizmo_box := CSGBox3D.new()
 @onready var camera = get_viewport()
 
 var action_history : Array[ActionStackActionGroup] = []
-var max_remembered_actions : int = 16
+var max_remembered_actions : int = 32
 
-enum fields {GROUND, WALL, OBJECT}
+enum fields {GROUND, WALL, OBJECT_GROUND, OBJECT_WALL, OBJECT_ROOF}
 enum GIZMO_LEVELS {NEUTRAL, NEGATIVE, POSITIVE, OTHER}
 
 var mouse_coordinates
@@ -84,7 +85,7 @@ func _input(event: InputEvent) -> void:
 	
 	var query = PhysicsRayQueryParameters3D.create(origin, origin + dir * 1000)
 	var space_state = camera.get_camera_3d().get_world_3d().direct_space_state
-	var result = space_state.intersect_ray(query)
+	var result := space_state.intersect_ray(query)
 	
 	if mouse_coordinates:
 		current_wall = Vector2(
@@ -111,8 +112,6 @@ func _input(event: InputEvent) -> void:
 	
 	if current_state:
 		current_state.InputUpdate(event, self)
-	
-
 
 #region undo system actions
 
@@ -306,9 +305,14 @@ func place_room(idx_begin, idx_end):
 	for chunk in chunks:
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func place_object(idx : Vector3i, data):
+func place_object(idx, data : pizzeria_item):
 	new_actiongroup()
-	add_cell(Vector3i(idx), data, fields.OBJECT, current_floor_idx)
+	if Objex.list_all.objects[data.id].allowed_position == ObjectIndexDataEntry.allowed_positions.GROUND:
+		add_cell(Vector3i(idx), data, fields.OBJECT_GROUND, current_floor_idx)
+	elif Objex.list_all.objects[data.id].allowed_position == ObjectIndexDataEntry.allowed_positions.WALL:
+		add_cell(idx, data, fields.OBJECT_WALL, current_floor_idx)
+	else:
+		add_cell(Vector3i(idx), data, fields.OBJECT_ROOF, current_floor_idx)
 	
 	var chunk = pizzeria.to_chunk(Vector2i(idx.x, idx.y))
 	if pizzeria.get_node_or_null(str(chunk)):
@@ -395,6 +399,10 @@ func changemat_walls(idx_begin, idx_end, direction):
 					pizzeria.get_node(str(chunk)).queue_free()
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
+func delete_object(idx: Vector3i, field):
+	new_actiongroup()
+	remove_cell(idx, field, current_floor_idx)
+	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(idx.x, idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
 #endregion
 
@@ -457,7 +465,7 @@ func undo():
 					pizzeria.get_node(str(chunk)).queue_free()
 				await pizzeria.render_chunk(chunk, pizzeria.floors[floor_level], floor_level * pizzeria.WALL_HEIGHT)
 
-func add_cell(idx : Vector3i, data, field : fields, floor_idx : int=0, is_undo : bool = false):
+func add_cell(idx, data, field : fields, floor_idx : int=0, is_undo : bool = false):
 	var is_overriding = false
 	if data == null:
 		return
@@ -480,31 +488,26 @@ func add_cell(idx : Vector3i, data, field : fields, floor_idx : int=0, is_undo :
 				new_action.old_data = pizzeria.floors[floor_idx].walls[idx]
 			pizzeria.floors[floor_idx].walls[idx] = data
 		
-		fields.OBJECT:
-			match Objex.list_all.objects[data.id].allowed_position:
-				
-				ObjectIndexDataEntry.allowed_positions.GROUND:
-					if pizzeria.floors[floor_idx].objects_ground.has(idx):
-						is_overriding = true
-						new_action.old_data = pizzeria.floors[floor_idx].objects_ground[idx]
-					pizzeria.floors[floor_idx].objects_ground[idx] = data
-					resource_view = pizzeria.floors[floor_idx].objects_ground[idx]
-				
-				ObjectIndexDataEntry.allowed_positions.WALL:
-					if pizzeria.floors[floor_idx].objects_wall.has(idx):
-						is_overriding = true
-						new_action.old_data = pizzeria.floors[floor_idx].objects_wall[idx]
-					pizzeria.floors[floor_idx].objects_wall[idx] = data
-				
-				ObjectIndexDataEntry.allowed_positions.ROOF:
-					if pizzeria.floors[floor_idx].objects_wall.has(idx):
-						is_overriding = true
-						new_action.old_data = pizzeria.floors[floor_idx].objects_roof[idx]
-					pizzeria.floors[floor_idx].objects_roof[idx] = data
+		fields.OBJECT_GROUND:
+			if pizzeria.floors[floor_idx].objects_ground.has(idx):
+				is_overriding = true
+				new_action.old_data = pizzeria.floors[floor_idx].objects_ground[idx]
+			pizzeria.floors[floor_idx].objects_ground[idx] = data
+		fields.OBJECT_WALL:
+			if pizzeria.floors[floor_idx].objects_wall.has(idx):
+				is_overriding = true
+				new_action.old_data = pizzeria.floors[floor_idx].objects_wall[idx]
+			pizzeria.floors[floor_idx].objects_wall[idx] = data
+		fields.OBJECT_ROOF:
+			if pizzeria.floors[floor_idx].objects_roof.has(idx):
+				is_overriding = true
+				new_action.old_data = pizzeria.floors[floor_idx].objects_roof[idx]
+			pizzeria.floors[floor_idx].objects_roof[idx] = data
+		
 	if !is_undo:
 		action_history[0].actions.append(new_action)
 
-func remove_cell(idx : Vector3i, field : fields, floor_idx : int=0, is_undo : bool = false):
+func remove_cell(idx, field : fields, floor_idx : int=0, is_undo : bool = false):
 	var new_action = ActionStackAction.new()
 	new_action.field = field
 	new_action.idx = idx
@@ -518,10 +521,19 @@ func remove_cell(idx : Vector3i, field : fields, floor_idx : int=0, is_undo : bo
 			if pizzeria.floors[floor_idx].walls.has(idx):
 				new_action.old_data = pizzeria.floors[floor_idx].walls[idx]
 			pizzeria.floors[floor_idx].walls.erase(idx)
-		fields.OBJECT:
-			#TODO: Implement along with object system
-			pass
-		
+		fields.OBJECT_GROUND:
+			if pizzeria.floors[floor_idx].objects_ground.has(idx):
+				new_action.old_data = pizzeria.floors[floor_idx].objects_ground[idx]
+			pizzeria.floors[floor_idx].objects_ground.erase(idx)
+		fields.OBJECT_WALL:
+			if pizzeria.floors[floor_idx].objects_wall.has(idx):
+				new_action.old_data = pizzeria.floors[floor_idx].objects_wall[idx]
+			pizzeria.floors[floor_idx].objects_wall.erase(idx)
+		fields.OBJECT_ROOF:
+			if pizzeria.floors[floor_idx].objects_roof.has(idx):
+				new_action.old_data = pizzeria.floors[floor_idx].objects_roof[idx]
+			pizzeria.floors[floor_idx].objects_roof.erase(idx)
+	
 	if !is_undo:
 		action_history[0].actions.append(new_action)
 
