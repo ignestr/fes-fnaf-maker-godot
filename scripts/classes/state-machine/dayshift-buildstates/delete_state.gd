@@ -4,7 +4,7 @@ class_name delete_state
 var held_time := 0.0
 
 var start_cell := Vector2i(0, 0)
-var start_quadrant := Vector3i.ZERO
+var start_quadrant = Vector3i.ZERO
 var current_quadrant = Vector3i.ZERO
 
 var projected_cell:= Vector2i(0, 0)
@@ -91,8 +91,6 @@ func Update(delta, machine : DayshiftManager = null):
 					field = DayshiftManager.fields.OBJECT_WALL
 				ObjectIndexDataEntry.allowed_positions.ROOF:
 					field = DayshiftManager.fields.OBJECT_ROOF
-			print("what?")
-			print(DayshiftManager.fields.find_key(field))
 			machine.delete_object(start_quadrant, field)
 			machine.gizmo_box.visible = false
 			return
@@ -116,7 +114,6 @@ func Update(delta, machine : DayshiftManager = null):
 						#field = DayshiftManager.fields.OBJECT_WALL
 					#ObjectIndexDataEntry.allowed_positions.ROOF:
 						#field = DayshiftManager.fields.OBJECT_ROOF
-				#print(start_quadrant, end_cell)
 				#debug_point.global_position = Vector3(start_quadrant.x, 0, start_quadrant.y) * machine.pizzeria.TILE_SIZE + Vec3(machine.pizzeria.TILE_SIZE/2)
 				#machine.delete_object_range(start_quadrant, end_cell, field)
 			machine.gizmo_box.visible = false

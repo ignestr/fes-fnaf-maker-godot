@@ -107,6 +107,23 @@ func catalog_load_category_wall(id : StringName):
 		new_button.icon_texture = Objex.list_all.objects[item].icon
 		catalog_grid.add_child(new_button)
 
+func catalog_load_category_roof(id : StringName):
+	for child in catalog_grid.get_children():
+		child.queue_free()
+	
+	for item in Objex.list_all.categories_roof[id].members:
+		if !Objex.list_all.objects.has(item):
+			continue
+		var new_button = CATALOG_ENTRY_BUTTON.instantiate()
+		new_button.id = item
+		new_button.player = self
+		new_button.type = dayshift_manager.CATALOG_TYPES.ROOF
+		new_button.natural_name = Objex.list_all.objects[item].natural_name
+		new_button.icon_texture = Objex.list_all.objects[item].icon
+		catalog_grid.add_child(new_button)
+
+
+#region
 func _on_catalog_furniture() -> void:
 	for child in categories_container.get_children():
 		child.queue_free()
@@ -142,4 +159,13 @@ func _on_catalog_walldecor() -> void:
 
 
 func _on_catalog_roof() -> void:
-	pass # Replace with function body.
+	for child in categories_container.get_children():
+		child.queue_free()
+	
+	for category in Objex.list_all.categories_roof:
+		var new_button = CATEGORY_BUTTON.instantiate()
+		new_button.player = self
+		new_button.category_name = category
+		new_button.icon_texture = Objex.list_all.categories_roof[category].icon
+		new_button.type = dayshift_manager.CATALOG_TYPES.ROOF
+		categories_container.add_child(new_button)

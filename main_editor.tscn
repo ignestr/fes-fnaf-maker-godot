@@ -16,6 +16,7 @@ background_mode = 1
 background_color = Color(0.012132352, 0.020557601, 0.0859375, 1)
 ambient_light_source = 2
 ambient_light_color = Color(0.26900005, 0.13999999, 1, 1)
+ambient_light_energy = 0.1
 reflected_light_source = 1
 tonemap_mode = 3
 tonemap_exposure = 0.62
@@ -34,7 +35,7 @@ environment = SubResource("Environment_21po1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=1234315056]
 transform = Transform3D(0.5517197, -0.5948455, 0.584606, 0, 0.7009416, 0.71321875, -0.8340297, -0.39349687, 0.38672334, 0, 0, 0)
-light_energy = 4.0
+light_energy = 0.0
 
 [node name="DayshiftManager" type="Node" parent="." unique_id=197531565 node_paths=PackedStringArray("pizzeria", "default_state")]
 script = ExtResource("2_xyjpv")

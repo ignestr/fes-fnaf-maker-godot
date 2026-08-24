@@ -52,21 +52,25 @@ func Update(delta, machine : DayshiftManager = null):
 			var cell_center_ground = Vector2(obtained_cell) * machine.pizzeria.TILE_SIZE + Vector2(machine.pizzeria.TILE_SIZE/2, machine.pizzeria.TILE_SIZE/2)
 			var dist_ground = (mouse_position_ground - cell_center_ground) /2
 			
-			var dist_wall
-			var mouse_position_wall
-			var cell_center_wall
+			var dist_wall = Vector2.ZERO
+			var mouse_position_wall = Vector2.ZERO
+			var cell_center_wall = Vector2.ZERO
 			
 			if orientation == false:
 				mouse_position_wall = Vector2(machine.hit_pos.x, machine.hit_pos.y)
 				
-				cell_center_wall = Vector2(obtained_wall_u) * machine.pizzeria.TILE_SIZE + Vector2(machine.pizzeria.TILE_SIZE/2, machine.pizzeria.TILE_SIZE/2)
+				cell_center_wall.x = obtained_wall_u.x * machine.pizzeria.TILE_SIZE + machine.pizzeria.TILE_SIZE/2
+				cell_center_wall.y = obtained_wall_u.y * machine.pizzeria.WALL_HEIGHT + machine.pizzeria.WALL_HEIGHT/2
 				dist_wall = (mouse_position_wall - cell_center_wall) /2
-				
+				#debug_point.global_position = Vector3(cell_center_wall.x, cell_center_wall.y, machine.hit_pos.z)
+				#debug_point.global_position += Vector3(roundi(dist_wall.x), roundi(dist_wall.y), 0) * machine.pizzeria.TILE_SIZE/2
 			else:
 				mouse_position_wall = Vector2(machine.hit_pos.z, machine.hit_pos.y)
 				
-			
-				cell_center_wall = Vector2(obtained_wall_v) * machine.pizzeria.TILE_SIZE + Vector2(machine.pizzeria.TILE_SIZE/2, machine.pizzeria.TILE_SIZE/2)
+				cell_center_wall.x = obtained_wall_v.x * machine.pizzeria.TILE_SIZE + machine.pizzeria.TILE_SIZE/2
+				cell_center_wall.y = obtained_wall_v.y * machine.pizzeria.WALL_HEIGHT + machine.pizzeria.WALL_HEIGHT/2
+				#debug_point.global_position = Vector3(machine.hit_pos.x, cell_center_wall.y, cell_center_wall.x)
+				#debug_point.global_position = machine.hit_pos
 				dist_wall = (mouse_position_wall - cell_center_wall) /2
 			
 			obtained_quadrant_ground = Vector2i(
@@ -79,6 +83,11 @@ func Update(delta, machine : DayshiftManager = null):
 				roundi(dist_wall.y)
 			)
 			obtained_quadrant_wall = MasterPizzeria.tile_quadrant_lut.find_key(obtained_quadrant_wall)
+			if obtained_quadrant_wall == null:
+				print(Vector2i(
+				roundi(dist_wall.x),
+				roundi(dist_wall.y)
+			))
 			obtained_quadrant_ground = MasterPizzeria.tile_quadrant_lut.find_key(obtained_quadrant_ground)
 			
 			if machine.hit_normal.y > 0.9:
@@ -105,43 +114,65 @@ func Update(delta, machine : DayshiftManager = null):
 						orientation = true
 						projected_cell = obtained_cell + Vector2i(1, 0)
 
-
-
 func InputUpdate(event, machine : DayshiftManager):
+	# if we are aiming at the ground
 	if is_floor:
-		gizmo_obj.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.TILE_SIZE, projected_cell.y)
-		gizmo_obj.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
-		gizmo_obj.global_position += Vector3(machine.pizzeria.TILE_SIZE/2, 0, machine.pizzeria.TILE_SIZE/2)
-		if obtained_quadrant_ground:
-			gizmo_obj.global_position += (Vector3(
-			MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].x,
-			0,
-			MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
-			)) * machine.pizzeria.TILE_SIZE/2
-	
+		# if we're placing something in the ground
+		if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.GROUND:
+			gizmo_obj.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT, projected_cell.y)
+			gizmo_obj.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
+			gizmo_obj.global_position += Vector3(machine.pizzeria.TILE_SIZE/2, 0, machine.pizzeria.TILE_SIZE/2)
+			if obtained_quadrant_ground:
+				gizmo_obj.global_position += (Vector3(
+				MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].x,
+				0,
+				MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
+				)) * machine.pizzeria.TILE_SIZE/2
+		# if we're placing something on the roof by aiming below it
+		else:
+			# checking just in case
+			if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.ROOF:
+				gizmo_obj.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT, projected_cell.y)
+				gizmo_obj.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
+				gizmo_obj.global_position += Vector3(machine.pizzeria.TILE_SIZE/2, 0, machine.pizzeria.TILE_SIZE/2)
+				if obtained_quadrant_ground:
+					gizmo_obj.global_position += (Vector3(
+					MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].x,
+					0,
+					MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
+					)) * machine.pizzeria.TILE_SIZE/2
+	else:
+		#TODO: Gizmo for object walls
+		pass
+		
 	if Input.is_action_just_pressed("lclick"):
 		if get_viewport().gui_get_hovered_control():
 			return
 		var pos = Objex.list_all.objects[machine.current_item].allowed_position
-		if pos == ObjectIndexDataEntry.allowed_positions.GROUND:
-			if is_floor:
-				var item = pizzeria_item.new()
-				item.id = machine.current_item
-				item.offset = Vector2.ZERO
-				item.rotate_y = 0
-				machine.place_object(Vector3i(projected_cell.x, projected_cell.y, int(obtained_quadrant_ground)), item)
-		elif pos == ObjectIndexDataEntry.allowed_positions.WALL:
-			if !is_floor:
-				var item = pizzeria_item.new()
-				item.id = machine.current_item
-				item.offset = Vector2.ZERO
-				item.rotate_y = 0
-				machine.place_object(encode_wall_coord(projected_cell, obtained_quadrant_wall, orientation, side), item)
-		machine.gizmo_box.visible = false
-		if is_floor:
-			pass
-		else:
-			pass
+		match pos:
+			ObjectIndexDataEntry.allowed_positions.GROUND:
+				if is_floor:
+					var item = pizzeria_item.new()
+					item.id = machine.current_item
+					item.offset = Vector2.ZERO
+					item.rotate_y = 0
+					machine.place_object(Vector3i(projected_cell.x, projected_cell.y, int(obtained_quadrant_ground)), item, machine.fields.OBJECT_GROUND)
+			ObjectIndexDataEntry.allowed_positions.WALL:
+				if !is_floor:
+					var item = pizzeria_item.new()
+					item.id = machine.current_item
+					item.offset = Vector2.ZERO
+					item.rotate_y = 0
+					machine.place_object(encode_wall_coord(projected_cell, obtained_quadrant_wall, orientation, side), item, machine.fields.OBJECT_WALL)
+			ObjectIndexDataEntry.allowed_positions.ROOF:
+				if is_floor:
+					
+					var item = pizzeria_item.new()
+					item.id = machine.current_item
+					item.offset = Vector2.ZERO
+					item.rotate_y = 0
+					machine.place_object(Vector3i(projected_cell.x, projected_cell.y, int(obtained_quadrant_ground)), item, machine.fields.OBJECT_ROOF)
+
 
 
 func Enter(machine : DayshiftManager):
@@ -155,7 +186,10 @@ func Enter(machine : DayshiftManager):
 	else:
 		scene = machine.pizzeria.objman.objects[machine.current_item].instantiate()
 	
-	gizmo_obj.mesh = scene.mesh
+	if scene.use_point or scene.gizmo_mesh == null:
+		gizmo_obj.mesh = SphereMesh.new()
+	else:
+		gizmo_obj.mesh = scene.gizmo_mesh
 	gizmo_obj.scale = Vector3(scene.scale_factor, scene.scale_factor ,scene.scale_factor)
 	gizmo_obj.material_overlay = machine.gizmo_box.material.duplicate(true)
 	gizmo_obj.material_overlay.albedo = machine.gizmo_positive_color

@@ -4,7 +4,6 @@ enum animations {IDLE, JUMP, HOVER}
 
 func _ready():
 	#properties = {&"current_animation" : play}
-	#print_rich(play)
 	pass
 
 

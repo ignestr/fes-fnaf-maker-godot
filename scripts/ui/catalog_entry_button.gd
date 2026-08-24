@@ -19,6 +19,10 @@ func _input(event: InputEvent) -> void:
 				player.dayshift_manager.state(player.dayshift_manager.states[&"object_place_state"])
 			DayshiftManager.CATALOG_TYPES.WALL:
 				player.dayshift_manager.state(player.dayshift_manager.states[&"object_place_state"])
+			DayshiftManager.CATALOG_TYPES.ROOF:
+				player.dayshift_manager.state(player.dayshift_manager.states[&"object_place_state"])
+			DayshiftManager.CATALOG_TYPES.TRONICS:
+				player.dayshift_manager.state(player.dayshift_manager.states[&"object_place_state"])
 		
 		#
 		

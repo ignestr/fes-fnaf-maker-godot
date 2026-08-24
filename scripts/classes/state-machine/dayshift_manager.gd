@@ -51,6 +51,8 @@ var hit_normal
 
 var current_wall : Vector2i
 
+
+
 var current_item : StringName = &"" 
 
 
@@ -305,14 +307,9 @@ func place_room(idx_begin, idx_end):
 	for chunk in chunks:
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func place_object(idx, data : pizzeria_item):
+func place_object(idx, data : pizzeria_item, field):
 	new_actiongroup()
-	if Objex.list_all.objects[data.id].allowed_position == ObjectIndexDataEntry.allowed_positions.GROUND:
-		add_cell(Vector3i(idx), data, fields.OBJECT_GROUND, current_floor_idx)
-	elif Objex.list_all.objects[data.id].allowed_position == ObjectIndexDataEntry.allowed_positions.WALL:
-		add_cell(idx, data, fields.OBJECT_WALL, current_floor_idx)
-	else:
-		add_cell(Vector3i(idx), data, fields.OBJECT_ROOF, current_floor_idx)
+	add_cell(idx, data, field, current_floor_idx)
 	
 	var chunk = pizzeria.to_chunk(Vector2i(idx.x, idx.y))
 	if pizzeria.get_node_or_null(str(chunk)):
@@ -399,7 +396,7 @@ func changemat_walls(idx_begin, idx_end, direction):
 					pizzeria.get_node(str(chunk)).queue_free()
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func delete_object(idx: Vector3i, field):
+func delete_object(idx, field):
 	new_actiongroup()
 	remove_cell(idx, field, current_floor_idx)
 	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(idx.x, idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)

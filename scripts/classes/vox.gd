@@ -21,6 +21,7 @@ var floors : Array[pizzeria_floor] = []
 # Don't mess around with this value, it's just here for readability. Changing it isn't tested.
 const FLOOR_THICK = 0.1
 const CHUNK_SIZE = 7.0
+const QUADRANT_MARGIN = 0.8
 
 @export var default_ground_material := &"fnaf1_ground_1"
 @export var default_wall_material := &"fnaf1_wall_1"
@@ -148,10 +149,26 @@ func init_pizzeria():
 # So we don't have to change the data structure at all and 
 # we still get to keep all of the benefits of chunks!
 
+# Objects:
+#
+# 1. Objects are split into three dictionaries for placing in the ground, the walls or the roof.
+# This is because one tile index can correspond to any of the three.
+#
+# 2. To allow for further freedom, objects can have sub-tile positions, using quadrants.
+# As such, objects have 9 possible positions (named quadrants) for each tile. (eg, northwest, south)
+# The Z component in all three dicts corresponds to this,
+# expressed as an int that maps to a Vector2i. This vector is the offset from the center
+# of the tile needed to get to the desired position.
+#
+# 3. Wall objects use Vector4i keys to encode the direction (like pizzeria_wall) but also
+# the side of the wall they're on.
+# Because the side and direction of walls can be interpreted as two booleans,
+# they are bitpacked together into the w component (while the z component is the quadrant like before)
+#
+# This results in all relevant information needed to build and distinguish objects in most
+# configurations.
+
 ## Instance CSG pizzeria fully + devices, then bake.
-
-
-
 func render_base_fullfloor(floor : pizzeria_floor, floor_level):
 	for i in self.get_children():
 		if i is MeshInstance3D:
@@ -222,6 +239,9 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			for anchor in range(9):
 				if floor.objects_ground.has(Vector3i(x,y,anchor)):
 					chunk_data.objects_ground[Vector3i(x,y,anchor)] = floor.objects_ground[Vector3i(x,y,anchor)]
+				if floor.objects_roof.has(Vector3i(x,y,anchor)):
+					chunk_data.objects_roof[Vector3i(x,y,anchor)] = floor.objects_roof[Vector3i(x,y,anchor)]
+
 				for byte in range(4):
 					if floor.objects_wall.has(Vector4i(x,y,anchor,byte)):
 						chunk_data.objects_wall[Vector4i(x,y,anchor,byte)] = floor.objects_wall[Vector4i(x,y,anchor,byte)]
@@ -418,26 +438,39 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			csg.add_child(cutout)
 	#endregion
 	#region 4: objects ☆
+	# for every object in the ground
 	for index in chunk_data.objects_ground:
+		# first get the data associated with the index (the value of the key)
 		var item_data : pizzeria_item = chunk_data.objects_ground[index]
+		# if the object index entry for the item ID even references a scene to be
+		# instanced
 		if Objex.list_all.objects[item_data.id].scene:
 			var object : Node3D
+			# If the scene has already been loaded into memory, just
+			# instance it
 			if objman.objects.has(item_data.id):
 				object = objman.objects[item_data.id].instantiate()
+			# if it hasn't, do it now
 			else:
 				await objman.load_new(item_data.id)
 				object = objman.objects[item_data.id].instantiate()
 			
-			# Start at the middle of the correct place in the cell
+			# the quadrant offset is obtained by using index.z as a key
 			var quadrant = tile_quadrant_lut[index.z]
-			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2)
+			# First set the object's position to the center, then add the offset from the quadrant,
+			# and finally add the user-defined offset
+			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
 			+ Vector3(item_data.offset.x, 0, item_data.offset.y)
+			# add it to the group so it isn't removed
 			object.add_to_group(&"objects")
+			# rotate it by the amount specified by the user
 			object.rotate_y(deg_to_rad(item_data.rotate_y))
 			csg.add_child(object)
+			# set its index for use with the dayshiftmanager states
 			object.index = index
 	
 	for index in chunk_data.objects_wall:
+		# same things as before
 		var item_data : pizzeria_item = chunk_data.objects_wall[index]
 		if Objex.list_all.objects[item_data.id].scene:
 			var object : Node3D
@@ -447,30 +480,45 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				await objman.load_new(item_data.id)
 				object = objman.objects[item_data.id].instantiate()
 			
-			# Start at the middle of the correct place in the cell
+			# the helper function for decoding the 
+			# bitpacked wall coordinates
+			# outputs direction third, and side last
 			var direction = decode_wall_coord(index)[2]
 			var side = decode_wall_coord(index)[3]
 			var quadrant = tile_quadrant_lut[index.z]
 			csg.add_child(object)
+			# scale by the amount specified in the scene, in case it has to be
 			object.scale = Vector3(object.scale_factor, object.scale_factor, object.scale_factor)
-			
+			# if walls are vertical
 			if direction:
+				# rotate accordingly
 				object.rotate_y(deg_to_rad(90))
+				# same position as vertical walls, object is placed at the center of the
 				object.global_position = Vector3(
 					index.x * TILE_SIZE, 
 					floor_level+WALL_HEIGHT/2, 
 					TILE_SIZE * index.y + TILE_SIZE/2
 					)
-					
-				object.global_position += Vector3(0, quadrant.y, quadrant.x)
+				# because walls aren't square, this is uses TILE_SIZE for x or z, and wall_height for y
+				# QUADRANT_MARGIN is added so it won't lie at the exact edge of the wall
+				# doing so can look jarring and somewhat discontinuous
+				object.global_position.z += quadrant.x * TILE_SIZE/2 * QUADRANT_MARGIN
+				object.global_position.y += quadrant.y * WALL_HEIGHT/2 * QUADRANT_MARGIN
+				
+				# Because it's at the center, it has to displace it forward or backward by
+				# half of the wall's thickness, so on one side it's +=, and on the other it's -=
+				
 				if side:
-					object.global_position.x += WALL_THICK
+					object.global_position.x += WALL_THICK/2.0
 				else:
+					# it has to turn around
 					object.rotate_y(deg_to_rad(180))
-					object.global_position.x -= WALL_THICK
+					object.global_position.x -= WALL_THICK/2.0
+				# rotate by the amount the user specified
 				object.rotate_z(deg_to_rad(item_data.rotate_y))
 			
 			else:
+				# same thing but flipped to fit horizontal walls
 				object.global_position = Vector3(
 				TILE_SIZE * index.x + TILE_SIZE/2,
 				floor_level+WALL_HEIGHT/2,
@@ -478,22 +526,37 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				)
 				
 				if side:
-					object.global_position.z -= WALL_THICK
+					object.global_position.z -= WALL_THICK/2.0
 					object.rotate_y(deg_to_rad(180))
 				else:
-					object.global_position.z += WALL_THICK
+					object.global_position.z += WALL_THICK/2.0
 				object.rotate_x(deg_to_rad(item_data.rotate_y))
 				
-				print(quadrant)
-				object.global_position += Vector3(quadrant.x, quadrant.y, 0)
-				
+				object.global_position.x += quadrant.x * TILE_SIZE/2 * QUADRANT_MARGIN
+				object.global_position.y += quadrant.y * WALL_HEIGHT/2 * QUADRANT_MARGIN
 			object.add_to_group(&"objects")
 			
 			object.index = index
 		
 		pass
-	for obj in chunk_data.objects_roof:
-		pass
+	for index in chunk_data.objects_roof:
+		var item_data : pizzeria_item = chunk_data.objects_roof[index]
+		if Objex.list_all.objects[item_data.id].scene:
+			var object : Node3D
+			if objman.objects.has(item_data.id):
+				object = objman.objects[item_data.id].instantiate()
+			else:
+				await objman.load_new(item_data.id)
+				object = objman.objects[item_data.id].instantiate()
+			
+			# Start at the middle of the correct place in the cell
+			var quadrant = tile_quadrant_lut[index.z]
+			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level + WALL_HEIGHT, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2)
+			+ Vector3(item_data.offset.x, 0, item_data.offset.y)
+			object.add_to_group(&"objects")
+			object.rotate_y(deg_to_rad(item_data.rotate_y))
+			csg.add_child(object)
+			object.index = index
 	
 	
 	#endregion
