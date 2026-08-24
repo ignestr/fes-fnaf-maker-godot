@@ -19,9 +19,11 @@ var orientation = false
 var side
 
 var gizmo_obj : MeshInstance3D
+var collision_detect : Area3D
 
+var is_invalid = false
 
-#var debug_point = CSGSphere3D.new()
+#var debug_point : CSGSphere3D
 
 # TODO: make this logic be skippable if hovering over an object (as we can
 # just check for those. Wait until objects are implemented)
@@ -62,15 +64,11 @@ func Update(delta, machine : DayshiftManager = null):
 				cell_center_wall.x = obtained_wall_u.x * machine.pizzeria.TILE_SIZE + machine.pizzeria.TILE_SIZE/2
 				cell_center_wall.y = obtained_wall_u.y * machine.pizzeria.WALL_HEIGHT + machine.pizzeria.WALL_HEIGHT/2
 				dist_wall = (mouse_position_wall - cell_center_wall) /2
-				#debug_point.global_position = Vector3(cell_center_wall.x, cell_center_wall.y, machine.hit_pos.z)
-				#debug_point.global_position += Vector3(roundi(dist_wall.x), roundi(dist_wall.y), 0) * machine.pizzeria.TILE_SIZE/2
 			else:
 				mouse_position_wall = Vector2(machine.hit_pos.z, machine.hit_pos.y)
 				
 				cell_center_wall.x = obtained_wall_v.x * machine.pizzeria.TILE_SIZE + machine.pizzeria.TILE_SIZE/2
 				cell_center_wall.y = obtained_wall_v.y * machine.pizzeria.WALL_HEIGHT + machine.pizzeria.WALL_HEIGHT/2
-				#debug_point.global_position = Vector3(machine.hit_pos.x, cell_center_wall.y, cell_center_wall.x)
-				#debug_point.global_position = machine.hit_pos
 				dist_wall = (mouse_position_wall - cell_center_wall) /2
 			
 			obtained_quadrant_ground = Vector2i(
@@ -113,11 +111,37 @@ func Update(delta, machine : DayshiftManager = null):
 					Vector3(-1,0,0):
 						orientation = true
 						projected_cell = obtained_cell + Vector2i(1, 0)
+	
+	# if it's in the air, invalid
+	if is_floor:
+		if !machine.pizzeria.floors[machine.current_floor_idx].groundtiles.has(projected_cell):
+			is_invalid = true
+		else:
+			is_invalid = false
+	
+	if collision_detect.has_overlapping_bodies():
+		is_invalid = true
+		#debug_point.global_position = collision_detect.global_position
+	
+	# in case it's invalid for another reason
+	elif !is_invalid:
+		is_invalid = false
+		#debug_point.global_position = collision_detect.global_position
+	
+	
+	# After a value is decided, set the gizmo level
+	if is_invalid:
+		machine.gizmo_level = machine.GIZMO_LEVELS.NEGATIVE
+	else:
+		machine.gizmo_level = machine.GIZMO_LEVELS.POSITIVE
 
 func InputUpdate(event, machine : DayshiftManager):
 	# if we are aiming at the ground
+	
+	
+	# if we're placing something in the ground
 	if is_floor:
-		# if we're placing something in the ground
+		
 		if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.GROUND:
 			gizmo_obj.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT, projected_cell.y)
 			gizmo_obj.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
@@ -128,6 +152,9 @@ func InputUpdate(event, machine : DayshiftManager):
 				0,
 				MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
 				)) * machine.pizzeria.TILE_SIZE/2
+			collision_detect.global_position = gizmo_obj.global_position
+			# so the floor won't trigger it
+			collision_detect.global_position.y += machine.pizzeria.FLOOR_THICK/2 + 0.1
 		# if we're placing something on the roof by aiming below it
 		else:
 			# checking just in case
@@ -141,12 +168,19 @@ func InputUpdate(event, machine : DayshiftManager):
 					0,
 					MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
 					)) * machine.pizzeria.TILE_SIZE/2
+	
 	else:
 		#TODO: Gizmo for object walls
 		pass
-		
+	
+	
+	
 	if Input.is_action_just_pressed("lclick"):
 		if get_viewport().gui_get_hovered_control():
+			return
+		
+		#TODO: add ERROR sfx
+		if is_invalid:
 			return
 		var pos = Objex.list_all.objects[machine.current_item].allowed_position
 		match pos:
@@ -191,10 +225,25 @@ func Enter(machine : DayshiftManager):
 	else:
 		gizmo_obj.mesh = scene.gizmo_mesh
 	gizmo_obj.scale = Vector3(scene.scale_factor, scene.scale_factor ,scene.scale_factor)
-	gizmo_obj.material_overlay = machine.gizmo_box.material.duplicate(true)
+	gizmo_obj.material_overlay = machine.gizmo_box.material
 	gizmo_obj.material_overlay.albedo = machine.gizmo_positive_color
+	
+	if scene.collision_shape:
+		collision_detect = Area3D.new()
+		var shape = CollisionShape3D.new()
+		shape.shape = scene.collision_shape.shape
+		shape.scale = Vector3(scene.scale_factor, scene.scale_factor, scene.scale_factor)
+		collision_detect.add_child(shape)
+		
+		machine.add_child(collision_detect)
+	else:
+		print(machine.current_item, " has no collision shape defined.")
+		
 	add_child(gizmo_obj)
-	#add_child(debug_point)
+	
+	#debug_point = CSGSphere3D.new()
+	#machine.add_child(debug_point)
+	print("yeah?? ")
 
 
 
@@ -202,3 +251,4 @@ func Exit(machine : DayshiftManager):
 	machine.gizmo_level = machine.GIZMO_LEVELS.NEUTRAL
 	machine.gizmo_box.visible = true
 	gizmo_obj.queue_free()
+	collision_detect.queue_free()
