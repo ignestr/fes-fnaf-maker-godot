@@ -103,19 +103,19 @@ func Update(delta, machine : DayshiftManager = null):
 					machine.delete_floortile_range(start_cell, end_cell)
 				else:
 					machine.delete_wall_range(start_cell, end_cell, orientation)
-			#else:
-				#end_cell = Vector3i(machine.current_cell.x, machine.current_cell.y, int(current_quadrant))
-				#var field = DayshiftManager.fields.OBJECT_GROUND
-				#
-				#match Objex.list_all.objects[machine.current_item].allowed_position:
-					#ObjectIndexDataEntry.allowed_positions.GROUND:
-						#field = DayshiftManager.fields.OBJECT_GROUND
-					#ObjectIndexDataEntry.allowed_positions.WALL:
-						#field = DayshiftManager.fields.OBJECT_WALL
-					#ObjectIndexDataEntry.allowed_positions.ROOF:
-						#field = DayshiftManager.fields.OBJECT_ROOF
-				#debug_point.global_position = Vector3(start_quadrant.x, 0, start_quadrant.y) * machine.pizzeria.TILE_SIZE + Vec3(machine.pizzeria.TILE_SIZE/2)
-				#machine.delete_object_range(start_quadrant, end_cell, field)
+			else:
+				end_cell = Vector3i(machine.current_cell.x, machine.current_cell.y, int(current_quadrant))
+				var field = DayshiftManager.fields.OBJECT_GROUND
+				
+				match Objex.list_all.objects[machine.current_item].allowed_position:
+					ObjectIndexDataEntry.allowed_positions.GROUND:
+						field = DayshiftManager.fields.OBJECT_GROUND
+					ObjectIndexDataEntry.allowed_positions.WALL:
+						field = DayshiftManager.fields.OBJECT_WALL
+					ObjectIndexDataEntry.allowed_positions.ROOF:
+						field = DayshiftManager.fields.OBJECT_ROOF
+				debug_point.global_position = Vector3(start_quadrant.x, 0, start_quadrant.y) * machine.pizzeria.TILE_SIZE + Vec3(machine.pizzeria.TILE_SIZE/2)
+				machine.delete_object_range(start_quadrant, end_cell, field)
 			machine.gizmo_box.visible = false
 
 func InputUpdate(event, machine : DayshiftManager):

@@ -160,7 +160,7 @@ points = PackedVector3Array(0.007083535, 1.5610139, 0.9573406, 0.007083535, 1.56
 script = ExtResource("1_t1n8a")
 gizmo_mesh = SubResource("ArrayMesh_2wnyw")
 collision_shape = NodePath("StaticBody3D/CollisionShape3D")
-scale_factor = 0.1
+scale_factor = 0.25
 metadata/_custom_type_script = "uid://be8h1rptch1ix"
 
 [node name="Node3D" type="Node3D" parent="." unique_id=1079571532]

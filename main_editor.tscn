@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://dbji2y1a3ncqw" path="res://scripts/classes/state-machine/dayshift-buildstates/set_material_state.gd" id="8_f85ke"]
 [ext_resource type="PackedScene" uid="uid://bik8ysf8p1als" path="res://resources/models/animatronics/toy_freddy/Toy Freddy v2.fbx" id="9_4gipx"]
 [ext_resource type="Script" uid="uid://dii0d61dbbpck" path="res://scripts/classes/state-machine/dayshift-buildstates/object_place_state.gd" id="9_aimki"]
+[ext_resource type="Script" uid="uid://cly6rlsyeqtv0" path="res://scripts/classes/state-machine/dayshift-buildstates/select_state.gd" id="11_1qerd"]
 
 [sub_resource type="Environment" id="Environment_21po1"]
 background_mode = 1
@@ -40,8 +41,12 @@ light_energy = 0.0
 [node name="DayshiftManager" type="Node" parent="." unique_id=197531565 node_paths=PackedStringArray("pizzeria", "default_state")]
 script = ExtResource("2_xyjpv")
 pizzeria = NodePath("../MasterPizzeria")
-default_state = NodePath("room_place_state")
+default_state = NodePath("select_state")
 metadata/_custom_type_script = "uid://sqbdrwq25tg6"
+
+[node name="select_state" type="Node" parent="DayshiftManager" unique_id=1343401499]
+script = ExtResource("11_1qerd")
+metadata/_custom_type_script = "uid://cly6rlsyeqtv0"
 
 [node name="ground_place_state" type="Node" parent="DayshiftManager" unique_id=1688740203]
 script = ExtResource("3_72ku5")

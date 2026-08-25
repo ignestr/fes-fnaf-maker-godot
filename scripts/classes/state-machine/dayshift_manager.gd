@@ -401,6 +401,14 @@ func delete_object(idx, field):
 	remove_cell(idx, field, current_floor_idx)
 	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(idx.x, idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
+func place_object_anchor(parent_object_idx, anchor_index, data : pizzeria_item):
+	new_actiongroup()
+	var old_object = pizzeria.floors[current_floor_idx].objects_ground[parent_object_idx].clone()
+	old_object.anchors[anchor_index] = data
+	add_cell(parent_object_idx, old_object, fields.OBJECT_GROUND, current_floor_idx)
+	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(parent_object_idx.x, parent_object_idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+	
+
 #endregion
 
 # The way the undo system works is that every modification can be boiled down

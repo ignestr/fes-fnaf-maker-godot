@@ -7,13 +7,15 @@
 [ext_resource type="Texture2D" uid="uid://bis7die188kux" path="res://resources/temporary/bee/Bee_0.png" id="2_ykxjv"]
 [ext_resource type="Texture2D" uid="uid://d2d1bf65emftu" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_normal.png" id="3_1mn7c"]
 [ext_resource type="Texture2D" uid="uid://1yf42yvgs65p" path="res://resources/textures/pbr/misc/concrete/concrete_albedo.png" id="4_an3js"]
+[ext_resource type="Script" uid="uid://dnq4qfiypihn4" path="res://scripts/classes/datapizzeria-classes/pizzeria_item.gd" id="6_3mpgc"]
 [ext_resource type="Texture2D" uid="uid://dexlq8ukfq8l2" path="res://resources/temporary/clock/WallClock_LP_Clock_Specular.png" id="8_an3js"]
 [ext_resource type="Texture2D" uid="uid://dd8oetcrxri67" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_orm.png" id="8_j7rk6"]
+[ext_resource type="Texture2D" uid="uid://c1ce3sf62qg2r" path="res://resources/temporary/lamp/12272_re_lamp_02_alb.jpg" id="9_j7rk6"]
 
 [sub_resource type="Resource" id="Resource_y8s5v"]
 script = ExtResource("1_5t0cj")
 icon = ExtResource("2_4gigb")
-members = Array[StringName]([&"bee"])
+members = Array[StringName]([&"bee", &"fnaf1_dining_table1"])
 metadata/_custom_type_script = "uid://by17fa6o76ruq"
 
 [sub_resource type="Resource" id="Resource_pfk28"]
@@ -35,6 +37,7 @@ script = ExtResource("1_wrf8i")
 scene = "uid://b15qdr2rbytpa"
 icon = ExtResource("2_ykxjv")
 natural_name = "Bee. (remove this)"
+can_be_in_anchor = true
 metadata/_custom_type_script = "uid://bxrjxqch2eswd"
 
 [sub_resource type="Resource" id="Resource_2mk6h"]
@@ -43,6 +46,13 @@ scene = "uid://bncjbqd7p0gh5"
 icon = ExtResource("8_an3js")
 natural_name = "Clock"
 allowed_position = 1
+metadata/_custom_type_script = "uid://bxrjxqch2eswd"
+
+[sub_resource type="Resource" id="Resource_udxuc"]
+script = ExtResource("1_wrf8i")
+scene = "uid://12vi44wpbedf"
+icon = ExtResource("9_j7rk6")
+natural_name = "Dining Table (White)"
 metadata/_custom_type_script = "uid://bxrjxqch2eswd"
 
 [sub_resource type="Resource" id="Resource_txtqv"]
@@ -58,6 +68,7 @@ script = ExtResource("2_2ih2s")
 objects = Dictionary[StringName, ExtResource("1_wrf8i")]({
 &"bee": SubResource("Resource_5moft"),
 &"clock": SubResource("Resource_2mk6h"),
+&"fnaf1_dining_table1": SubResource("Resource_udxuc"),
 &"lamp": SubResource("Resource_txtqv")
 })
 categories_ground = Dictionary[StringName, ExtResource("1_5t0cj")]({

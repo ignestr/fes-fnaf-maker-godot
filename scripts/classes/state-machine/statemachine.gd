@@ -33,7 +33,9 @@ func _physics_process(delta: float) -> void:
 
 func state(new_state : StateMachineState):
 	if new_state == current_state:
-		print(self.name, "attempted to switch to state", str(new_state) + ",", "but it's already the current state. Doing nothing.")
+		print(self.name, "attempted to switch to state", str(new_state) + ",", "but it's already the current state.")
+		await current_state.Exit(self)
+		await current_state.Enter(self)
 		return 
 	
 	if current_state:

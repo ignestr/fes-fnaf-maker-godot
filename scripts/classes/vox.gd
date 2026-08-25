@@ -86,8 +86,8 @@ const tile_quadrant_lut = {
 # Blender export settings 4 devices:
 # scale = 1.00
 # apply scaling fbx units scale
-# forward = -x forward
-# up = y up
+# forward = y forward
+# up = z up
 # apply unit, apply space transform and apply transform all off
 
 var use_random_colors = false
@@ -455,8 +455,12 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				await objman.load_new(item_data.id)
 				object = objman.objects[item_data.id].instantiate()
 			
+			csg.add_child(object)
+			object.index_anchors()
 			# the quadrant offset is obtained by using index.z as a key
 			var quadrant = tile_quadrant_lut[index.z]
+			
+			
 			# First set the object's position to the center, then add the offset from the quadrant,
 			# and finally add the user-defined offset
 			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
@@ -465,7 +469,22 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			object.add_to_group(&"objects")
 			# rotate it by the amount specified by the user
 			object.rotate_y(deg_to_rad(item_data.rotate_y))
-			csg.add_child(object)
+			
+			if !item_data.anchors.is_empty():
+				for i in item_data.anchors:
+					var sub_obj : Node3D
+					if objman.objects.has(item_data.anchors[i].id):
+						sub_obj = objman.objects[item_data.anchors[i].id].instantiate()
+					# if it hasn't, do it now
+					else:
+						await objman.load_new(item_data.anchors[i].id)
+						sub_obj = objman.objects[item_data.anchors[i].id].instantiate()
+					
+					print(i)
+					sub_obj.global_position = object.anchors[i].global_position
+					sub_obj.add_to_group(&"objects")
+					sub_obj.rotate_y(deg_to_rad(item_data.anchors[i].rotate_y))
+					csg.add_child(sub_obj)
 			# set its index for use with the dayshiftmanager states
 			object.index = index
 	
@@ -539,6 +558,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			object.index = index
 		
 		pass
+	
 	for index in chunk_data.objects_roof:
 		var item_data : pizzeria_item = chunk_data.objects_roof[index]
 		if Objex.list_all.objects[item_data.id].scene:
@@ -551,7 +571,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			
 			# Start at the middle of the correct place in the cell
 			var quadrant = tile_quadrant_lut[index.z]
-			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level + WALL_HEIGHT, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2)
+			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level + WALL_HEIGHT, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
 			+ Vector3(item_data.offset.x, 0, item_data.offset.y)
 			object.add_to_group(&"objects")
 			object.rotate_y(deg_to_rad(item_data.rotate_y))

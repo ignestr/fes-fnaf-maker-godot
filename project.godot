@@ -38,6 +38,7 @@ enabled=PackedStringArray("res://addons/at-icons/plugin.cfg", "res://addons/scri
 
 security_door=""
 objects=""
+editor_subobj_anchor=""
 
 [input]
 

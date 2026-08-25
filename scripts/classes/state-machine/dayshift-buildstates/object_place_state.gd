@@ -18,6 +18,10 @@ var is_floor = true
 var orientation = false
 var side
 
+var is_on_anchor = false
+var anchor_index : int
+var anchor_parent_index : Vector3i
+
 var gizmo_obj : MeshInstance3D
 var collision_detect : Area3D
 
@@ -37,6 +41,13 @@ func Update(delta, machine : DayshiftManager = null):
 		# The way this works is if the normal of the object we hit
 		# is up, we can know whether it's a floor or not
 		if machine.hit_normal:
+			if machine.collider:
+				if machine.collider.is_in_group(&"editor_subobj_anchor"):
+					is_on_anchor = true
+					anchor_index = machine.collider.index
+					anchor_parent_index = machine.collider.get_parent().index
+				else:
+					is_on_anchor = false
 			# if its vector is upward, it's a floor and we need no extra logic
 			obtained_cell = Vector2i(
 				floori(float(machine.hit_pos.x) / machine.pizzeria.TILE_SIZE),
@@ -119,15 +130,28 @@ func Update(delta, machine : DayshiftManager = null):
 		else:
 			is_invalid = false
 	
-	if collision_detect.has_overlapping_bodies():
-		is_invalid = true
-		#debug_point.global_position = collision_detect.global_position
+		if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.ROOF:
+			collision_detect.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT + machine.pizzeria.WALL_HEIGHT, projected_cell.y)
+			collision_detect.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
+			collision_detect.global_position += Vector3(machine.pizzeria.TILE_SIZE/2, 0, machine.pizzeria.TILE_SIZE/2)
+			if obtained_quadrant_ground:
+				collision_detect.global_position += (Vector3(
+				MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].x,
+				0,
+				MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
+				)) * machine.pizzeria.TILE_SIZE/2
+			
+		if collision_detect.has_overlapping_bodies():
+			is_invalid = true
+			#debug_point.global_position = collision_detect.global_position
+		
+		# in case it's invalid for another reason
+		elif !is_invalid:
+			is_invalid = false
+			#debug_point.global_position = collision_detect.global_position
 	
-	# in case it's invalid for another reason
-	elif !is_invalid:
-		is_invalid = false
-		#debug_point.global_position = collision_detect.global_position
-	
+	# Wall objects don't get checked
+	# "because it allows for more freedom"
 	
 	# After a value is decided, set the gizmo level
 	if is_invalid:
@@ -136,29 +160,11 @@ func Update(delta, machine : DayshiftManager = null):
 		machine.gizmo_level = machine.GIZMO_LEVELS.POSITIVE
 
 func InputUpdate(event, machine : DayshiftManager):
-	# if we are aiming at the ground
-	
-	
-	# if we're placing something in the ground
+	# if we're aiming at the ground
 	if is_floor:
-		
-		if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.GROUND:
-			gizmo_obj.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT, projected_cell.y)
-			gizmo_obj.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
-			gizmo_obj.global_position += Vector3(machine.pizzeria.TILE_SIZE/2, 0, machine.pizzeria.TILE_SIZE/2)
-			if obtained_quadrant_ground:
-				gizmo_obj.global_position += (Vector3(
-				MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].x,
-				0,
-				MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
-				)) * machine.pizzeria.TILE_SIZE/2
-			collision_detect.global_position = gizmo_obj.global_position
-			# so the floor won't trigger it
-			collision_detect.global_position.y += machine.pizzeria.FLOOR_THICK/2 + 0.1
-		# if we're placing something on the roof by aiming below it
-		else:
-			# checking just in case
-			if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.ROOF:
+		if not is_on_anchor:
+			collision_detect.monitoring = true
+			if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.GROUND:
 				gizmo_obj.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT, projected_cell.y)
 				gizmo_obj.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
 				gizmo_obj.global_position += Vector3(machine.pizzeria.TILE_SIZE/2, 0, machine.pizzeria.TILE_SIZE/2)
@@ -168,12 +174,65 @@ func InputUpdate(event, machine : DayshiftManager):
 					0,
 					MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
 					)) * machine.pizzeria.TILE_SIZE/2
-	
+				collision_detect.global_position = gizmo_obj.global_position
+				# so the floor won't trigger it
+				collision_detect.global_position.y += machine.pizzeria.FLOOR_THICK/2 + 0.1
+			# if we're placing something on the roof by aiming below it
+			else:
+				# checking just in case
+				if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.ROOF:
+					gizmo_obj.global_position = Vector3(projected_cell.x, machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT, projected_cell.y)
+					gizmo_obj.global_position *= Vector3(machine.pizzeria.TILE_SIZE, 1, machine.pizzeria.TILE_SIZE)
+					gizmo_obj.global_position += Vector3(machine.pizzeria.TILE_SIZE/2, 0, machine.pizzeria.TILE_SIZE/2)
+					if obtained_quadrant_ground:
+						gizmo_obj.global_position += (Vector3(
+						MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].x,
+						0,
+						MasterPizzeria.tile_quadrant_lut[obtained_quadrant_ground].y
+						)) * machine.pizzeria.TILE_SIZE/2
+		else:
+			gizmo_obj.global_position = machine.hit_pos
+			collision_detect.monitoring = false
 	else:
 		#TODO: Gizmo for object walls
-		pass
-	
-	
+		if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.WALL:
+			var quadrant = MasterPizzeria.tile_quadrant_lut[obtained_quadrant_wall]
+			if orientation:
+				# rotate accordingly
+				gizmo_obj.global_rotate(Vector3.UP, deg_to_rad(90))
+				
+				# same position as vertical walls, object is placed at the center of the
+				gizmo_obj.global_position = Vector3(
+					projected_cell.x * machine.pizzeria.TILE_SIZE, 
+					machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT + machine.pizzeria.WALL_HEIGHT/2, 
+					machine.pizzeria.TILE_SIZE * projected_cell.y + machine.pizzeria.TILE_SIZE/2
+					)
+				gizmo_obj.global_position.z += quadrant.x * machine.pizzeria.TILE_SIZE/2 * machine.pizzeria.QUADRANT_MARGIN
+				gizmo_obj.global_position.y += quadrant.y * machine.pizzeria.WALL_HEIGHT/2 * machine.pizzeria.QUADRANT_MARGIN
+				
+				if side:
+					gizmo_obj.global_position.x += machine.pizzeria.WALL_THICK/2.0
+				else:
+					# it has to turn around
+					gizmo_obj.global_rotate(Vector3.UP, deg_to_rad(180))
+					gizmo_obj.global_position.x -= machine.pizzeria.WALL_THICK/2.0
+				# rotate by the amount the user specified
+			else:
+				gizmo_obj.global_position = Vector3(
+				machine.pizzeria.TILE_SIZE * projected_cell.x + machine.pizzeria.TILE_SIZE/2,
+				machine.current_floor_idx * machine.pizzeria.WALL_HEIGHT+machine.pizzeria.WALL_HEIGHT/2,
+				projected_cell.y * machine.pizzeria.TILE_SIZE
+				)
+				if side:
+					gizmo_obj.global_position.z -= machine.pizzeria.WALL_THICK/2.0
+					gizmo_obj.global_rotate(Vector3.UP, deg_to_rad(180))
+				else:
+					gizmo_obj.global_position.z += machine.pizzeria.WALL_THICK/2.0
+				
+				gizmo_obj.global_position.x += quadrant.x * machine.pizzeria.TILE_SIZE/2 * machine.pizzeria.QUADRANT_MARGIN
+				gizmo_obj.global_position.y += quadrant.y * machine.pizzeria.WALL_HEIGHT/2 * machine.pizzeria.QUADRANT_MARGIN
+		else:
+			return
 	
 	if Input.is_action_just_pressed("lclick"):
 		if get_viewport().gui_get_hovered_control():
@@ -181,6 +240,16 @@ func InputUpdate(event, machine : DayshiftManager):
 		
 		#TODO: add ERROR sfx
 		if is_invalid:
+			return
+		
+		
+		if is_on_anchor:
+			if Objex.list_all.objects[machine.current_item].can_be_in_anchor:
+				var item = pizzeria_item.new()
+				item.id = machine.current_item
+				item.offset = Vector2.ZERO
+				item.rotate_y = 0
+				machine.place_object_anchor(anchor_parent_index, anchor_index, item)
 			return
 		var pos = Objex.list_all.objects[machine.current_item].allowed_position
 		match pos:
@@ -206,8 +275,8 @@ func InputUpdate(event, machine : DayshiftManager):
 					item.offset = Vector2.ZERO
 					item.rotate_y = 0
 					machine.place_object(Vector3i(projected_cell.x, projected_cell.y, int(obtained_quadrant_ground)), item, machine.fields.OBJECT_ROOF)
-
-
+		if !Input.is_action_pressed(&"shift"):
+			machine.state(machine.default_state)
 
 func Enter(machine : DayshiftManager):
 	machine.gizmo_level = machine.GIZMO_LEVELS.POSITIVE
@@ -225,6 +294,7 @@ func Enter(machine : DayshiftManager):
 	else:
 		gizmo_obj.mesh = scene.gizmo_mesh
 	gizmo_obj.scale = Vector3(scene.scale_factor, scene.scale_factor ,scene.scale_factor)
+	gizmo_obj.rotation = Vector3(deg_to_rad(scene.custom_rotation_degrees.x), deg_to_rad(scene.custom_rotation_degrees.y), deg_to_rad(scene.custom_rotation_degrees.z))
 	gizmo_obj.material_overlay = machine.gizmo_box.material
 	gizmo_obj.material_overlay.albedo = machine.gizmo_positive_color
 	
@@ -232,18 +302,19 @@ func Enter(machine : DayshiftManager):
 		collision_detect = Area3D.new()
 		var shape = CollisionShape3D.new()
 		shape.shape = scene.collision_shape.shape
-		shape.scale = Vector3(scene.scale_factor, scene.scale_factor, scene.scale_factor)
+		shape.scale = Vector3(scene.scale_factor, scene.scale_factor, scene.scale_factor) * scene.overlap_leniency
+		collision_detect.rotation = Vector3(deg_to_rad(scene.custom_rotation_degrees.x), deg_to_rad(scene.custom_rotation_degrees.y), deg_to_rad(scene.custom_rotation_degrees.z))
 		collision_detect.add_child(shape)
 		
 		machine.add_child(collision_detect)
 	else:
 		print(machine.current_item, " has no collision shape defined.")
+	
 		
 	add_child(gizmo_obj)
 	
 	#debug_point = CSGSphere3D.new()
 	#machine.add_child(debug_point)
-	print("yeah?? ")
 
 
 
