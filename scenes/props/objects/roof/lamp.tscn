@@ -62,8 +62,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_uiv4b")
 
-[node name="ObjectScene" type="Node3D" unique_id=250746723 node_paths=PackedStringArray("collision_shape")]
+[node name="ObjectScene" type="Node3D" unique_id=250746723 node_paths=PackedStringArray("hide_light_point", "collision_shape")]
 script = ExtResource("1_n53dg")
+hide_light_point = NodePath("Node3D/re_lamp_02/OmniLight3D")
 collision_shape = NodePath("StaticBody3D/CollisionShape3D")
 scale_factor = 1.0
 use_point = true

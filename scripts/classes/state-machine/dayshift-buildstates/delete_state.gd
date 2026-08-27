@@ -4,7 +4,6 @@ class_name delete_state
 var held_time := 0.0
 
 var start_cell := Vector2i(0, 0)
-var start_quadrant = Vector3i.ZERO
 var current_quadrant = Vector3i.ZERO
 
 var projected_cell:= Vector2i(0, 0)
@@ -13,6 +12,8 @@ var holding := false
 
 var is_floor = true
 var is_on_object = false
+
+var object_node : ObjectScene
 
 # horizontal if false, vertical if true
 var orientation = false
@@ -33,7 +34,7 @@ func Update(delta, machine : DayshiftManager = null):
 			if machine.collider:
 				if machine.collider.get_parent().is_in_group(&"objects"):
 					is_on_object = true
-					start_quadrant = machine.collider.get_parent().index
+					object_node = machine.collider.get_parent()
 				else:
 					is_on_object = false
 		
@@ -82,19 +83,23 @@ func Update(delta, machine : DayshiftManager = null):
 	
 	if Input.is_action_just_released("lclick") and held_time != 0:
 		holding = false
-		if is_on_object:
-			var field = DayshiftManager.fields.OBJECT_GROUND
-			match Objex.list_all.objects[machine.current_item].allowed_position:
-				ObjectIndexDataEntry.allowed_positions.GROUND:
-					field = DayshiftManager.fields.OBJECT_GROUND
-				ObjectIndexDataEntry.allowed_positions.WALL:
-					field = DayshiftManager.fields.OBJECT_WALL
-				ObjectIndexDataEntry.allowed_positions.ROOF:
-					field = DayshiftManager.fields.OBJECT_ROOF
-			machine.delete_object(start_quadrant, field)
-			machine.gizmo_box.visible = false
-			return
-		
+		if is_on_object and object_node:
+			if !object_node.is_on_anchor:
+				var field = DayshiftManager.fields.OBJECT_GROUND
+				match Objex.list_all.objects[machine.current_item].allowed_position:
+					ObjectIndexDataEntry.allowed_positions.GROUND:
+						field = DayshiftManager.fields.OBJECT_GROUND
+					ObjectIndexDataEntry.allowed_positions.WALL:
+						field = DayshiftManager.fields.OBJECT_WALL
+					ObjectIndexDataEntry.allowed_positions.ROOF:
+						field = DayshiftManager.fields.OBJECT_ROOF
+				machine.delete_object(object_node.index, field)
+				machine.gizmo_box.visible = false
+				return
+			else:
+				machine.delete_object_anchor(object_node.index, object_node.anchor_number, object_node.field)
+				machine.gizmo_box.visible = false
+				return
 		if held_time >= hold_time_limit:
 			held_time = 0
 			var end_cell = projected_cell
@@ -103,19 +108,19 @@ func Update(delta, machine : DayshiftManager = null):
 					machine.delete_floortile_range(start_cell, end_cell)
 				else:
 					machine.delete_wall_range(start_cell, end_cell, orientation)
-			else:
-				end_cell = Vector3i(machine.current_cell.x, machine.current_cell.y, int(current_quadrant))
-				var field = DayshiftManager.fields.OBJECT_GROUND
-				
-				match Objex.list_all.objects[machine.current_item].allowed_position:
-					ObjectIndexDataEntry.allowed_positions.GROUND:
-						field = DayshiftManager.fields.OBJECT_GROUND
-					ObjectIndexDataEntry.allowed_positions.WALL:
-						field = DayshiftManager.fields.OBJECT_WALL
-					ObjectIndexDataEntry.allowed_positions.ROOF:
-						field = DayshiftManager.fields.OBJECT_ROOF
-				debug_point.global_position = Vector3(start_quadrant.x, 0, start_quadrant.y) * machine.pizzeria.TILE_SIZE + Vec3(machine.pizzeria.TILE_SIZE/2)
-				machine.delete_object_range(start_quadrant, end_cell, field)
+			#else: Removed until further notice
+			#	end_cell = Vector3i(machine.current_cell.x, machine.current_cell.y, 0)
+			#	var field = DayshiftManager.fields.OBJECT_GROUND
+			#	
+			#	match Objex.list_all.objects[machine.current_item].allowed_position:
+			#		ObjectIndexDataEntry.allowed_positions.GROUND:
+			#			field = DayshiftManager.fields.OBJECT_GROUND
+			#		ObjectIndexDataEntry.allowed_positions.WALL:
+			#			field = DayshiftManager.fields.OBJECT_WALL
+			#		ObjectIndexDataEntry.allowed_positions.ROOF:
+			#			field = DayshiftManager.fields.OBJECT_ROOF
+			#	#debug_point.global_position = Vector3(start_quadrant.x, 0, start_quadrant.y) * machine.pizzeria.TILE_SIZE + Vec3(machine.pizzeria.TILE_SIZE/2)
+			#	machine.delete_object_range(object_node.index, end_cell, field)
 			machine.gizmo_box.visible = false
 
 func InputUpdate(event, machine : DayshiftManager):

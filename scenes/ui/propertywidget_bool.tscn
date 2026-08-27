@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://cmyp0ob31rslu"]
+
+[ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://resources/misc/main_ui_theme.tres" id="1_2o72l"]
+[ext_resource type="Script" uid="uid://br67hkdrsj6wk" path="res://scripts/ui/property_edit_bool.gd" id="2_jky3l"]
+
+[node name="Panel2" type="Panel" unique_id=891534265]
+custom_minimum_size = Vector2(0, 60)
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme = ExtResource("1_2o72l")
+script = ExtResource("2_jky3l")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=181581237]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=295797409]
+layout_mode = 2
+
+[node name="name" type="RichTextLabel" parent="MarginContainer/HBoxContainer" unique_id=539535329]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 12
+theme_override_font_sizes/bold_font_size = 12
+theme_override_font_sizes/bold_italics_font_size = 12
+theme_override_font_sizes/italics_font_size = 12
+theme_override_font_sizes/mono_font_size = 12
+text = "color"
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/HBoxContainer" unique_id=193653932]
+custom_minimum_size = Vector2(37, 23)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/CheckButton" to="." method="_on_trigger"]

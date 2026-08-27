@@ -19,8 +19,11 @@ var orientation = false
 var side
 
 var is_on_anchor = false
+var anchor_field : int
 var anchor_index : int
 var anchor_parent_index : Vector3i
+
+var accumulated_rotation = 0
 
 var gizmo_obj : MeshInstance3D
 var collision_detect : Area3D
@@ -46,6 +49,7 @@ func Update(delta, machine : DayshiftManager = null):
 					is_on_anchor = true
 					anchor_index = machine.collider.index
 					anchor_parent_index = machine.collider.get_parent().index
+					anchor_field = machine.collider.get_parent().field
 				else:
 					is_on_anchor = false
 			# if its vector is upward, it's a floor and we need no extra logic
@@ -122,7 +126,6 @@ func Update(delta, machine : DayshiftManager = null):
 					Vector3(-1,0,0):
 						orientation = true
 						projected_cell = obtained_cell + Vector2i(1, 0)
-	
 	# if it's in the air, invalid
 	if is_floor:
 		if !machine.pizzeria.floors[machine.current_floor_idx].groundtiles.has(projected_cell):
@@ -162,6 +165,10 @@ func Update(delta, machine : DayshiftManager = null):
 func InputUpdate(event, machine : DayshiftManager):
 	# if we're aiming at the ground
 	if is_floor:
+		if Input.is_action_just_pressed("rotate"):
+			gizmo_obj.rotate_y(deg_to_rad(90))
+			accumulated_rotation += 90
+		
 		if not is_on_anchor:
 			collision_detect.monitoring = true
 			if Objex.list_all.objects[machine.current_item].allowed_position == ObjectIndexDataEntry.allowed_positions.GROUND:
@@ -234,6 +241,7 @@ func InputUpdate(event, machine : DayshiftManager):
 		else:
 			return
 	
+	
 	if Input.is_action_just_pressed("lclick"):
 		if get_viewport().gui_get_hovered_control():
 			return
@@ -248,8 +256,8 @@ func InputUpdate(event, machine : DayshiftManager):
 				var item = pizzeria_item.new()
 				item.id = machine.current_item
 				item.offset = Vector2.ZERO
-				item.rotate_y = 0
-				machine.place_object_anchor(anchor_parent_index, anchor_index, item)
+				item.properties[&"property_rotation_offset"] = accumulated_rotation
+				machine.place_object_anchor(anchor_parent_index, anchor_index, anchor_field, item)
 			return
 		var pos = Objex.list_all.objects[machine.current_item].allowed_position
 		match pos:
@@ -258,14 +266,14 @@ func InputUpdate(event, machine : DayshiftManager):
 					var item = pizzeria_item.new()
 					item.id = machine.current_item
 					item.offset = Vector2.ZERO
-					item.rotate_y = 0
+					item.properties[&"property_rotation_offset"] = accumulated_rotation
 					machine.place_object(Vector3i(projected_cell.x, projected_cell.y, int(obtained_quadrant_ground)), item, machine.fields.OBJECT_GROUND)
 			ObjectIndexDataEntry.allowed_positions.WALL:
 				if !is_floor:
 					var item = pizzeria_item.new()
 					item.id = machine.current_item
 					item.offset = Vector2.ZERO
-					item.rotate_y = 0
+					item.properties[&"property_rotation_offset"] = accumulated_rotation
 					machine.place_object(encode_wall_coord(projected_cell, obtained_quadrant_wall, orientation, side), item, machine.fields.OBJECT_WALL)
 			ObjectIndexDataEntry.allowed_positions.ROOF:
 				if is_floor:
@@ -273,9 +281,10 @@ func InputUpdate(event, machine : DayshiftManager):
 					var item = pizzeria_item.new()
 					item.id = machine.current_item
 					item.offset = Vector2.ZERO
-					item.rotate_y = 0
+					item.properties[&"property_rotation_offset"] = accumulated_rotation
 					machine.place_object(Vector3i(projected_cell.x, projected_cell.y, int(obtained_quadrant_ground)), item, machine.fields.OBJECT_ROOF)
 		if !Input.is_action_pressed(&"shift"):
+			accumulated_rotation = 0
 			machine.state(machine.default_state)
 
 func Enter(machine : DayshiftManager):

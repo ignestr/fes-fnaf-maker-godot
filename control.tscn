@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c0b5cxps28dw1"]
+
+[ext_resource type="PackedScene" uid="uid://bymdtxrfau1ws" path="res://scenes/ui/propertywidget_colorpicker.tscn" id="1_62e2m"]
+[ext_resource type="PackedScene" uid="uid://cmyp0ob31rslu" path="res://scenes/ui/propertywidget_bool.tscn" id="2_ee4bf"]
+[ext_resource type="Script" uid="uid://br67hkdrsj6wk" path="res://scripts/ui/property_edit_bool.gd" id="3_kbped"]
+[ext_resource type="PackedScene" uid="uid://bpy7lirju57td" path="res://scenes/ui/propertywidget_float.tscn" id="4_kbped"]
+[ext_resource type="Script" uid="uid://d1rq1jxyjyfx5" path="res://scripts/ui/property_edit_float.gd" id="5_fj5cn"]
+
+[node name="Control" type="Control" unique_id=654453050]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=348592847]
+custom_minimum_size = Vector2(286.5, 400)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer" unique_id=1820592004]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Panel" parent="ScrollContainer/VBoxContainer" unique_id=1275524987 instance=ExtResource("1_62e2m")]
+layout_mode = 2
+
+[node name="Panel2" parent="ScrollContainer/VBoxContainer" unique_id=891534265 instance=ExtResource("2_ee4bf")]
+layout_mode = 2
+script = ExtResource("3_kbped")
+
+[node name="Panel3" parent="ScrollContainer/VBoxContainer" unique_id=848175716 instance=ExtResource("4_kbped")]
+layout_mode = 2
+script = ExtResource("5_fj5cn")

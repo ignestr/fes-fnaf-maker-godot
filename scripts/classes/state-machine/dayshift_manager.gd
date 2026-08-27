@@ -51,17 +51,20 @@ var hit_normal
 
 var current_wall : Vector2i
 
-
-
 var current_item : StringName = &"" 
 
+# Just... the nodepath to the object. Every object already knows its index so anything else
+# is unnecessary
+var selected_object
 
 # NOTE: cell index coordinates can be roughly defined as m/TS, where TS is
 # the tile size, so in order to use them for positioning, you must ALWAYS
 # multiply them by the tile size to get meters back
 
-
 # TODO: implement redo
+
+signal has_selected
+
 
 func new_actiongroup():
 	var newgroup = ActionStackActionGroup.new()
@@ -108,9 +111,14 @@ func _input(event: InputEvent) -> void:
 	if mouse_coordinates:
 		current_cell = Vector2i(floori(float(mouse_coordinates.x) / pizzeria.TILE_SIZE), floori(float(mouse_coordinates.z) / pizzeria.TILE_SIZE))
 	
+	if Input.is_action_just_pressed("lclick"):
+		if get_viewport().gui_get_hovered_control() == null:
+			get_viewport().gui_release_focus()
+	
 	# state machine code	
 	if get_viewport().gui_get_hovered_control():
 		return 
+	
 	
 	if current_state:
 		current_state.InputUpdate(event, self)
@@ -307,15 +315,15 @@ func place_room(idx_begin, idx_end):
 	for chunk in chunks:
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func place_object(idx, data : pizzeria_item, field):
+func place_object(idx, data : pizzeria_item, field, rebuild=true):
 	new_actiongroup()
 	add_cell(idx, data, field, current_floor_idx)
 	
-	var chunk = pizzeria.to_chunk(Vector2i(idx.x, idx.y))
-	if pizzeria.get_node_or_null(str(chunk)):
-				pizzeria.get_node(str(chunk)).queue_free()
-	
-	await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+	if rebuild:
+		var chunk = pizzeria.to_chunk(Vector2i(idx.x, idx.y))
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
 func changemat_ground(idx_begin, idx_end):
 	new_actiongroup()
@@ -401,13 +409,39 @@ func delete_object(idx, field):
 	remove_cell(idx, field, current_floor_idx)
 	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(idx.x, idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func place_object_anchor(parent_object_idx, anchor_index, data : pizzeria_item):
+func delete_object_anchor(parent_idx, anchor_idx, field):
 	new_actiongroup()
-	var old_object = pizzeria.floors[current_floor_idx].objects_ground[parent_object_idx].clone()
+	var old_object
+	match field:
+		fields.OBJECT_GROUND:
+			old_object = pizzeria.floors[current_floor_idx].objects_ground[parent_idx].clone()
+		fields.OBJECT_WALL:
+			old_object = pizzeria.floors[current_floor_idx].objects_wall[parent_idx].clone()
+		fields.OBJECT_ROOF:
+			old_object = pizzeria.floors[current_floor_idx].objects_roof[parent_idx].clone()
+	old_object.anchors.erase(anchor_idx)
+	add_cell(parent_idx, old_object, field, current_floor_idx)
+	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(parent_idx.x, parent_idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
+func place_object_anchor(parent_object_idx, anchor_index, field, data : pizzeria_item, rebuild=true):
+	new_actiongroup()
+	var old_object
+	match field:
+		fields.OBJECT_GROUND:
+			old_object = pizzeria.floors[current_floor_idx].objects_ground[parent_object_idx].clone()
+		fields.OBJECT_WALL:
+			old_object = pizzeria.floors[current_floor_idx].objects_wall[parent_object_idx].clone()
+		fields.OBJECT_ROOF:
+			old_object = pizzeria.floors[current_floor_idx].objects_roof[parent_object_idx].clone()
 	old_object.anchors[anchor_index] = data
-	add_cell(parent_object_idx, old_object, fields.OBJECT_GROUND, current_floor_idx)
-	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(parent_object_idx.x, parent_object_idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+	add_cell(parent_object_idx, old_object, field, current_floor_idx)
 	
+	if rebuild:
+		var chunk = pizzeria.to_chunk(Vector2i(parent_object_idx.x, parent_object_idx.y))
+		if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
 
 #endregion
 
@@ -498,6 +532,7 @@ func add_cell(idx, data, field : fields, floor_idx : int=0, is_undo : bool = fal
 				is_overriding = true
 				new_action.old_data = pizzeria.floors[floor_idx].objects_ground[idx]
 			pizzeria.floors[floor_idx].objects_ground[idx] = data
+			resource_view = pizzeria.floors[floor_idx].objects_ground[idx]
 		fields.OBJECT_WALL:
 			if pizzeria.floors[floor_idx].objects_wall.has(idx):
 				is_overriding = true

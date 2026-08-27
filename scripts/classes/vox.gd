@@ -98,7 +98,7 @@ func to_chunk(n : Vector2i):
 func _ready():
 	init_pizzeria()
 
-func decode_wall_coord(vector : Vector4i):
+static func decode_wall_coord(vector : Vector4i):
 	return [Vector2i(vector.x, vector.y), vector.z, vector.w & 1, vector.w & 2]
 
 ## Initialize the pizzeria.
@@ -464,12 +464,14 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			# First set the object's position to the center, then add the offset from the quadrant,
 			# and finally add the user-defined offset
 			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
-			+ Vector3(item_data.offset.x, 0, item_data.offset.y)
+			object.original_position = object.global_position
 			# add it to the group so it isn't removed
 			object.add_to_group(&"objects")
 			# rotate it by the amount specified by the user
-			object.rotate_y(deg_to_rad(item_data.rotate_y))
-			
+			object.field = DayshiftManager.fields.OBJECT_GROUND
+			for property in item_data.properties:
+				object.set(property, item_data.properties[property])
+				
 			if !item_data.anchors.is_empty():
 				for i in item_data.anchors:
 					var sub_obj : Node3D
@@ -479,11 +481,15 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 					else:
 						await objman.load_new(item_data.anchors[i].id)
 						sub_obj = objman.objects[item_data.anchors[i].id].instantiate()
-					
-					print(i)
 					sub_obj.global_position = object.anchors[i].global_position
 					sub_obj.add_to_group(&"objects")
-					sub_obj.rotate_y(deg_to_rad(item_data.anchors[i].rotate_y))
+					sub_obj.index = index
+					sub_obj.anchor_number = i
+					sub_obj.original_position = sub_obj.global_position
+					sub_obj.field = object.field
+					for property in item_data.anchors[i].properties:
+						sub_obj.set(property, item_data.anchors[i].properties[property])
+					sub_obj.is_on_anchor = true
 					csg.add_child(sub_obj)
 			# set its index for use with the dayshiftmanager states
 			object.index = index
@@ -505,7 +511,11 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			var direction = decode_wall_coord(index)[2]
 			var side = decode_wall_coord(index)[3]
 			var quadrant = tile_quadrant_lut[index.z]
+			for property in item_data.properties:
+				object.set(property, item_data.properties[property])
+			
 			csg.add_child(object)
+			
 			# scale by the amount specified in the scene, in case it has to be
 			object.scale = Vector3(object.scale_factor, object.scale_factor, object.scale_factor)
 			# if walls are vertical
@@ -534,8 +544,6 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 					object.rotate_y(deg_to_rad(180))
 					object.global_position.x -= WALL_THICK/2.0
 				# rotate by the amount the user specified
-				object.rotate_z(deg_to_rad(item_data.rotate_y))
-			
 			else:
 				# same thing but flipped to fit horizontal walls
 				object.global_position = Vector3(
@@ -549,15 +557,35 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 					object.rotate_y(deg_to_rad(180))
 				else:
 					object.global_position.z += WALL_THICK/2.0
-				object.rotate_x(deg_to_rad(item_data.rotate_y))
 				
 				object.global_position.x += quadrant.x * TILE_SIZE/2 * QUADRANT_MARGIN
 				object.global_position.y += quadrant.y * WALL_HEIGHT/2 * QUADRANT_MARGIN
-			object.add_to_group(&"objects")
 			
+			object.original_position = object.global_position
+			object.add_to_group(&"objects")
+			object.field = DayshiftManager.fields.OBJECT_WALL
 			object.index = index
-		
-		pass
+			
+			
+			if !item_data.anchors.is_empty():
+				for i in item_data.anchors:
+					var sub_obj : Node3D
+					if objman.objects.has(item_data.anchors[i].id):
+						sub_obj = objman.objects[item_data.anchors[i].id].instantiate()
+					# if it hasn't, do it now
+					else:
+						await objman.load_new(item_data.anchors[i].id)
+						sub_obj = objman.objects[item_data.anchors[i].id].instantiate()
+					sub_obj.global_position = object.anchors[i].global_position
+					sub_obj.add_to_group(&"objects")
+					sub_obj.index = index
+					sub_obj.anchor_number = i
+					sub_obj.original_position = sub_obj.global_position
+					sub_obj.field = object.field
+					sub_obj.is_on_anchor = true
+					for property in item_data.anchors[i].properties:
+						sub_obj.set(property, item_data.anchors[i].properties[property])
+					csg.add_child(sub_obj)
 	
 	for index in chunk_data.objects_roof:
 		var item_data : pizzeria_item = chunk_data.objects_roof[index]
@@ -568,16 +596,17 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			else:
 				await objman.load_new(item_data.id)
 				object = objman.objects[item_data.id].instantiate()
-			
+			for property in item_data.properties:
+				object.set(property, item_data.properties[property])
 			# Start at the middle of the correct place in the cell
 			var quadrant = tile_quadrant_lut[index.z]
-			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level + WALL_HEIGHT, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
-			+ Vector3(item_data.offset.x, 0, item_data.offset.y)
+			var pos = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level + WALL_HEIGHT, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
+			object.global_position = pos
+			object.original_position = pos
 			object.add_to_group(&"objects")
-			object.rotate_y(deg_to_rad(item_data.rotate_y))
 			csg.add_child(object)
 			object.index = index
-	
+			object.field = DayshiftManager.fields.OBJECT_ROOF
 	
 	#endregion
 	#region Closing off - baking and adding collisions
@@ -614,6 +643,12 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			#TODO CRITICAL: If objects have properties that aren't being copied
 			# it might be this
 			copy.index = child.index
+			copy.field = child.field
+			copy.is_on_anchor = child.is_on_anchor
+			copy.anchor_number = child.anchor_number
+			copy.use_power = child.use_power
+			copy.original_position = child.original_position
+			copy.properties = child.properties
 			new_mesh.add_child(copy)
 	csg.queue_free()
 	await get_tree().process_frame
