@@ -21,14 +21,16 @@ var floors : Array[pizzeria_floor] = []
 # Don't mess around with this value, it's just here for readability. Changing it isn't tested.
 const FLOOR_THICK = 0.1
 const CHUNK_SIZE = 7.0
-const QUADRANT_MARGIN = 0.8
+var QUADRANT_MARGIN_GROUND = 1
+var QUADRANT_MARGIN_WALL = 0.8
+var QUADRANT_MARGIN_ROOF = 0.9
 
 @export var default_ground_material := &"fnaf1_ground_1"
 @export var default_wall_material := &"fnaf1_wall_1"
 @export var wall_cap_material : Material = load("res://resources/materials/basic/misc/concrete.tres")
 
 var objman : ObjectManager
-
+var deviceman : DeviceManager
 var animatronics = []
 
 # -1 is for when both are off
@@ -113,7 +115,13 @@ func init_pizzeria():
 		new.name = "ObjectManager"
 		self.add_child(new)
 		objman = self.get_node("ObjectManager")
-		
+	
+	if !self.has_node("DeviceManager"):
+		var new = DeviceManager.new()
+		new.name = "DeviceManager"
+		self.add_child(new)
+		deviceman = self.get_node("DeviceManager")
+	
 	if floors.size() == 0:
 		floors.append(pizzeria_floor.new())
 		render_base_fullfloor(floors[0], 0)
@@ -374,7 +382,6 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			elif current_wall.base_get_flag(pizzeria_wall.WALL_FLAGS.HAS_GLASS):
 				key = pizzeria_wall.WALL_FLAGS.HAS_GLASS
 			
-			
 			alignment = wall_lut[key][current_wall.base_get_type()]
 			
 			# Choosing the device
@@ -403,9 +410,14 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				# Fall back to the default
 				device_data = Devicedex.list_all.devices[Devicedex.defaults[key][current_wall.base_get_type()]]
 				
-			var device_scene = load(device_data.scene)
+			var device_scene
+			if !deviceman.devices.has(current_wall.device_model_name):
+				await deviceman.load_new(current_wall.device_model_name)
+				device_scene = deviceman.devices[current_wall.device_model_name].instantiate()
+			else:
+				device_scene = deviceman.devices[current_wall.device_model_name].instantiate()
 			
-			var new_device = device_scene.instantiate()
+			var new_device = device_scene
 			var aabb = new_device.borders.get_aabb()
 			
 			if alignment == wall_alignments.BOTTOM:
@@ -430,7 +442,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				second_cutout.position = new_device.position + new_device.window_offset
 				second_cutout.operation = CSGShape3D.OPERATION_SUBTRACTION
 				csg.add_child(second_cutout)
-			
+			new_device.index = wall_tile
 			csg.add_child(new_device)
 			
 			
@@ -463,7 +475,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			
 			# First set the object's position to the center, then add the offset from the quadrant,
 			# and finally add the user-defined offset
-			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
+			object.global_position = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN_GROUND
 			object.original_position = object.global_position
 			# add it to the group so it isn't removed
 			object.add_to_group(&"objects")
@@ -531,8 +543,8 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				# because walls aren't square, this is uses TILE_SIZE for x or z, and wall_height for y
 				# QUADRANT_MARGIN is added so it won't lie at the exact edge of the wall
 				# doing so can look jarring and somewhat discontinuous
-				object.global_position.z += quadrant.x * TILE_SIZE/2 * QUADRANT_MARGIN
-				object.global_position.y += quadrant.y * WALL_HEIGHT/2 * QUADRANT_MARGIN
+				object.global_position.z += quadrant.x * TILE_SIZE/2 * QUADRANT_MARGIN_WALL
+				object.global_position.y += quadrant.y * WALL_HEIGHT/2 * QUADRANT_MARGIN_WALL
 				
 				# Because it's at the center, it has to displace it forward or backward by
 				# half of the wall's thickness, so on one side it's +=, and on the other it's -=
@@ -558,8 +570,8 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				else:
 					object.global_position.z += WALL_THICK/2.0
 				
-				object.global_position.x += quadrant.x * TILE_SIZE/2 * QUADRANT_MARGIN
-				object.global_position.y += quadrant.y * WALL_HEIGHT/2 * QUADRANT_MARGIN
+				object.global_position.x += quadrant.x * TILE_SIZE/2 * QUADRANT_MARGIN_WALL
+				object.global_position.y += quadrant.y * WALL_HEIGHT/2 * QUADRANT_MARGIN_WALL
 			
 			object.original_position = object.global_position
 			object.add_to_group(&"objects")
@@ -600,7 +612,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				object.set(property, item_data.properties[property])
 			# Start at the middle of the correct place in the cell
 			var quadrant = tile_quadrant_lut[index.z]
-			var pos = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level + WALL_HEIGHT, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN
+			var pos = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level + WALL_HEIGHT, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * QUADRANT_MARGIN_ROOF
 			object.global_position = pos
 			object.original_position = pos
 			object.add_to_group(&"objects")

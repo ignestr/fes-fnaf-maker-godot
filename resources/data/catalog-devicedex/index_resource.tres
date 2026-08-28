@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="CatalogDevicedexResource" format=3 uid="uid://c2m7uqgo2h5f7"]
+
+[ext_resource type="Script" uid="uid://ddpujke7ncyga" path="res://scripts/classes/indexdata-classes/catalog/catalog_device_category.gd" id="1_06tmq"]
+[ext_resource type="Texture2D" uid="uid://ct3p8xveab04a" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_1/fnaf1_ground_1_albedo.png" id="2_7qyrc"]
+[ext_resource type="Script" uid="uid://blm7h4ji8j0s3" path="res://scripts/classes/indexdata-classes/catalog_device_index_resource.gd" id="2_yn3of"]
+[ext_resource type="Script" uid="uid://c7mjw13npguj3" path="res://scripts/classes/indexdata-classes/catalog_device_index_entry.gd" id="3_aunnr"]
+
+[sub_resource type="Resource" id="Resource_ogt6m"]
+script = ExtResource("3_aunnr")
+id = &"fnaf1_door_1"
+metadata/_custom_type_script = "uid://c7mjw13npguj3"
+
+[sub_resource type="Resource" id="Resource_vkm3r"]
+script = ExtResource("3_aunnr")
+id = &"fnaf1_door_1_empty"
+metadata/_custom_type_script = "uid://c7mjw13npguj3"
+
+[sub_resource type="Resource" id="Resource_txtqv"]
+script = ExtResource("1_06tmq")
+icon = ExtResource("2_7qyrc")
+members = Array[ExtResource("3_aunnr")]([SubResource("Resource_ogt6m"), SubResource("Resource_vkm3r")])
+metadata/_custom_type_script = "uid://ddpujke7ncyga"
+
+[resource]
+script = ExtResource("2_yn3of")
+categories = Dictionary[StringName, ExtResource("1_06tmq")]({
+&"FNAF": SubResource("Resource_txtqv")
+})
+metadata/_custom_type_script = "uid://blm7h4ji8j0s3"

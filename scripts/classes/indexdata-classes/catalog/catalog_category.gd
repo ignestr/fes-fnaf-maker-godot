@@ -4,5 +4,6 @@ class_name DayshiftCatalogCategory
 enum FIELDS {GROUND, WALL, ROOF}
 
 @export var icon : Texture2D
+@export var natural_name : String
 @export var field : FIELDS
 @export var members : Array[StringName]

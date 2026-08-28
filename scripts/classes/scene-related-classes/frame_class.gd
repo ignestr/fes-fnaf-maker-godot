@@ -1,4 +1,4 @@
-extends wall_device
+extends WallDevice
 class_name entry_frame_device
 
 # Class may be deprecated, I'm only making it in case it becomes relevant later on

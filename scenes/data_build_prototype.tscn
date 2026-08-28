@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b2xu80nmpfdmm" path="res://scripts/classes/debug/debug_class_2.gd" id="1_vyvm5"]
 [ext_resource type="Script" uid="uid://cvc8eo6lq5yob" path="res://scripts/classes/vox.gd" id="3_q7gyk"]
-[ext_resource type="Resource" uid="uid://yeo2nmm16si0" path="res://resources/data/devindex/index_resource.tres" id="6_irbku"]
+[ext_resource type="Resource" uid="uid://yeo2nmm16si0" path="res://resources/data/devicedex/index_resource.tres" id="6_irbku"]
 [ext_resource type="Script" uid="uid://dkawadkvqk3fc" path="res://scripts/singletons/devicedex.gd" id="6_q7gyk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_25ajg"]

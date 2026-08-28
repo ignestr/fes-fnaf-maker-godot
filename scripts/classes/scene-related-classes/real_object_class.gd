@@ -8,7 +8,7 @@ var use_power := false
 # collision_shape to be used. ITS ORIGIN MUST BE THE SAME AS THE MESH'S.
 @export var collision_shape : CollisionShape3D
 # by how much the mesh had to be scaled
-@export var scale_factor : float = 0.01
+@export var scale_factor : float = 1
 # what rotation value does it need to be straight
 @export var custom_rotation_degrees : Vector3
 # number from 0 to 1 that scales the collision box for the object.
@@ -46,7 +46,7 @@ var use_power := false
 					self.rotation.z = final_val
 				else:
 					self.rotation.x = final_val
-
+@export var show_transform_properties : bool = true
 
 var original_position
 

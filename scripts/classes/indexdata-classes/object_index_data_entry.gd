@@ -8,5 +8,3 @@ enum allowed_positions {GROUND, WALL, ROOF} # BOTTOM, CENTER, TOP...
 @export var natural_name : String
 @export var allowed_position : allowed_positions
 @export var can_be_in_anchor : bool
-
-@export var anchors : Array[pizzeria_item] = []

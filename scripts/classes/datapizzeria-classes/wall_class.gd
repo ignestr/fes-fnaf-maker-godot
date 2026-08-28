@@ -5,8 +5,10 @@ extends Resource
 class_name pizzeria_wall
 ## enum for using wall type names directly
 enum WALL_TYPES {NONE, FLAT, DOOR, FLOORVENT, HALL, ROOFVENT, WALLVENT} # int 0 through 6
+
+# the NEITHER is here to handle the entries that don't have neither door nor glass enabled
 ## enum for using wall flag names directly.
-enum WALL_FLAGS {HAS_DOOR = 1 << 0, HAS_LIGHT = 1 << 1, HAS_GLASS = 1 << 2, DO_INTERACT = 1 << 3} # 4 bits (bools)
+enum WALL_FLAGS {HAS_DOOR = 1 << 0, HAS_LIGHT = 1 << 1, HAS_GLASS = 1 << 2, DO_INTERACT = 1 << 3} # 
 
 ## Wall byte for storing the main wall data:
 ## bits 0-3: Flags (WALL_FLAGS)
@@ -16,6 +18,7 @@ var wall_byte : int = 0
 var mod_byte : int = 0
 
 var material_id = &""
+var device_model_name = &""
 
 
 #TODO: implement the mod byte
@@ -51,10 +54,10 @@ var material_id = &""
 
 #endregion
 
-func base_get_flag(x : WALL_FLAGS):
+func base_get_flag(x):
 	return bool(wall_byte & x)
 
-func base_set_flag(x : WALL_FLAGS, val : bool):
+func base_set_flag(x, val : bool):
 	if val == true:
 		wall_byte |= x
 	else:
@@ -72,4 +75,5 @@ func clone():
 	clone.wall_byte = wall_byte
 	clone.mod_byte = mod_byte 
 	clone.material_id = material_id
+	clone.device_model_name = device_model_name
 	return clone

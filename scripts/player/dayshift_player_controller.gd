@@ -69,6 +69,9 @@ func object_selected():
 		list.reverse()
 		for i in list:
 			if i["name"].contains("property_"):
+				if !dayshift_manager.selected_object.show_transform_properties:
+					if i["name"] == "property_offset" or i["name"] == "property_rotation_offset":
+						continue
 				properties[i["name"]] = i["type"]
 		
 		for child in properties_container.get_children():
@@ -198,6 +201,46 @@ func catalog_load_category_roof(id : StringName):
 		new_button.icon_texture = Objex.list_all.objects[item].icon
 		catalog_grid.add_child(new_button)
 
+func catalog_load_category_devices(id : StringName):
+	for child in catalog_grid.get_children():
+		child.queue_free()
+	
+	for item in CatalogDevicedex.list_all.categories[id].members:
+		var new_button = CATALOG_ENTRY_BUTTON.instantiate()
+		new_button.id = item.id
+		new_button.player = self
+	
+		match item.device_type:
+			item.device_types.WALL_DEVICE:
+				if !Devicedex.list_all.devices.has(item.id):
+					continue
+				new_button.type = dayshift_manager.CATALOG_TYPES.DEVICES
+				new_button.natural_name = Devicedex.list_all.devices[item.id].natural_name
+				if Devicedex.list_all.devices[item.id].icon:
+					new_button.icon_texture = Devicedex.list_all.devices[item.id].icon
+			item.device_types.GROUND:
+				if !Objex.list_all.objects.has(item.id):
+					continue
+				new_button.type = dayshift_manager.CATALOG_TYPES.FURNITURE
+				new_button.natural_name = Objex.list_all.objects[item.id].natural_name
+				if Objex.list_all.objects[item.id].icon:
+					new_button.icon_texture = Objex.list_all.objects[item.id].icon
+			item.device_types.WALL:
+				if !Objex.list_all.objects.has(item.id):
+					continue
+				new_button.type = dayshift_manager.CATALOG_TYPES.WALL
+				new_button.natural_name = Objex.list_all.objects[item.id].natural_name
+				if Objex.list_all.objects[item.id].icon:
+					new_button.icon_texture = Objex.list_all.objects[item.id].icon
+			item.device_types.ROOF:
+				if !Objex.list_all.objects.has(item.id):
+					continue
+				new_button.type = dayshift_manager.CATALOG_TYPES.ROOF
+				new_button.natural_name = Objex.list_all.objects[item.id].natural_name
+				if Objex.list_all.objects[item.id].icon:
+					new_button.icon_texture = Objex.list_all.objects[item.id].icon
+	
+		catalog_grid.add_child(new_button)
 
 func _on_catalog_furniture() -> void:
 	for child in categories_container.get_children():
@@ -213,7 +256,16 @@ func _on_catalog_furniture() -> void:
 
 
 func _on_catalog_devices() -> void:
-	pass
+	for child in categories_container.get_children():
+		child.queue_free()
+	
+	for category in CatalogDevicedex.list_all.categories:
+		var new_button = CATEGORY_BUTTON.instantiate()
+		new_button.player = self
+		new_button.category_name = category
+		new_button.icon_texture = CatalogDevicedex.list_all.categories[category].icon
+		new_button.type = dayshift_manager.CATALOG_TYPES.DEVICES
+		categories_container.add_child(new_button)
 
 
 func _on_catalog_animatronics() -> void:

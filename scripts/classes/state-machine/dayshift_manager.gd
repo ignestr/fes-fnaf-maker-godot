@@ -1,6 +1,9 @@
 extends StateMachine
 class_name DayshiftManager
 
+# Finished the first demo's Object system :)
+# 28/8/2026
+
 @export var pizzeria: MasterPizzeria
 # enum states {PLACING, SELECT, ROOM, WALL}
 
@@ -51,7 +54,8 @@ var hit_normal
 
 var current_wall : Vector2i
 
-var current_item : StringName = &"" 
+var current_item : StringName = &""
+var placing_wall_device
 
 # Just... the nodepath to the object. Every object already knows its index so anything else
 # is unnecessary
@@ -115,10 +119,9 @@ func _input(event: InputEvent) -> void:
 		if get_viewport().gui_get_hovered_control() == null:
 			get_viewport().gui_release_focus()
 	
-	# state machine code	
+	# state machine code
 	if get_viewport().gui_get_hovered_control():
 		return 
-	
 	
 	if current_state:
 		current_state.InputUpdate(event, self)
@@ -161,6 +164,24 @@ func place_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 		if pizzeria.get_node_or_null(str(chunk)):
 					pizzeria.get_node(str(chunk)).queue_free()
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
+func place_wall_data(idx, data):
+	new_actiongroup()
+	add_cell(idx, data, fields.WALL, current_floor_idx)
+	
+	var chunk = pizzeria.to_chunk(Vector2i(idx.x, idx.y))
+	if pizzeria.get_node_or_null(str(chunk)):
+				pizzeria.get_node(str(chunk)).queue_free()
+	await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
+
+func delete_walldevice(idx):
+	var old_wall = pizzeria.floors[current_floor_idx].walls[idx].clone()
+	old_wall.base_set_type(pizzeria_wall.WALL_TYPES.FLAT)
+	old_wall.base_set_flag(pizzeria_wall.WALL_FLAGS.HAS_DOOR, false)
+	old_wall.base_set_flag(pizzeria_wall.WALL_FLAGS.HAS_GLASS, false)
+	old_wall.base_set_flag(pizzeria_wall.WALL_FLAGS.HAS_LIGHT, false)
+	old_wall.base_set_flag(pizzeria_wall.WALL_FLAGS.DO_INTERACT, false)
+	place_wall_data(idx, old_wall)
 
 func place_walltile_range(idx_begin, idx_end, direction):
 	new_actiongroup()
@@ -232,7 +253,7 @@ func delete_floortile_range(idx_begin : Vector2i, idx_end : Vector2i):
 					pizzeria.get_node(str(chunk)).queue_free()
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i, direction : bool):
+func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i, direction):
 	new_actiongroup()
 	var x_step = 1
 	var y_step = 1
@@ -249,9 +270,10 @@ func delete_wall_range(idx_begin : Vector2i, idx_end : Vector2i, direction : boo
 	# adding x and y step because ranges are exclusive
 	for x in range(idx_begin.x, idx_end.x + x_step, x_step):
 		for y in range(idx_begin.y, idx_end.y + y_step, y_step):
-			if !direction:
-				remove_cell(Vector3i(x, y, 0), fields.WALL, current_floor_idx)
+			if int(direction) != 2:
+				remove_cell(Vector3i(x, y, direction), fields.WALL, current_floor_idx)
 			else:
+				remove_cell(Vector3i(x, y, 0), fields.WALL, current_floor_idx)
 				remove_cell(Vector3i(x, y, 1), fields.WALL, current_floor_idx)
 			if not chunks.has(pizzeria.to_chunk(Vector2i(x, y))):
 				chunks.append(pizzeria.to_chunk(Vector2i(x, y)))
@@ -374,12 +396,14 @@ func changemat_walls(idx_begin, idx_end, direction):
 			# Case when it's one wall
 			if idx_begin == idx_end:
 				var template : pizzeria_wall = pizzeria.floors[current_floor_idx].walls[Vector3i(x, y, direction)].clone()
-				resource_view = template
 				if Materindex.list_all.materials[current_item].is_wall_mat == true:
 					template.material_id = current_item
-				add_cell(Vector3i(x, y, direction), template, fields.WALL, current_floor_idx)
-			
-			
+				
+				if int(direction) != 2:
+					add_cell(Vector3i(x, y, direction), template, fields.WALL, current_floor_idx)
+				else:
+					add_cell(Vector3i(x, y, 0), template, fields.WALL, current_floor_idx)
+					add_cell(Vector3i(x, y, 1), template, fields.WALL, current_floor_idx)
 			else:
 				# Case for 0
 				if pizzeria.floors[current_floor_idx].walls.has(Vector3i(x, y, 0)):
@@ -482,6 +506,7 @@ func place_object_anchor(parent_object_idx, anchor_index, field, data : pizzeria
 # contain it (hence new_actiongroup())
 # if anything else is unclear, you can ask me
 
+
 func undo():
 	if len(action_history) > 0:
 		var chunks = {}
@@ -532,12 +557,13 @@ func add_cell(idx, data, field : fields, floor_idx : int=0, is_undo : bool = fal
 				is_overriding = true
 				new_action.old_data = pizzeria.floors[floor_idx].objects_ground[idx]
 			pizzeria.floors[floor_idx].objects_ground[idx] = data
-			resource_view = pizzeria.floors[floor_idx].objects_ground[idx]
+			
 		fields.OBJECT_WALL:
 			if pizzeria.floors[floor_idx].objects_wall.has(idx):
 				is_overriding = true
 				new_action.old_data = pizzeria.floors[floor_idx].objects_wall[idx]
 			pizzeria.floors[floor_idx].objects_wall[idx] = data
+			
 		fields.OBJECT_ROOF:
 			if pizzeria.floors[floor_idx].objects_roof.has(idx):
 				is_overriding = true
@@ -578,8 +604,5 @@ func remove_cell(idx, field : fields, floor_idx : int=0, is_undo : bool = false)
 		action_history[0].actions.append(new_action)
 
 func _process(delta: float) -> void:
-	if current_state:
-		current_state.Update(delta, self)
-	
 	if Input.is_action_just_pressed(&"undo"):
 		undo()

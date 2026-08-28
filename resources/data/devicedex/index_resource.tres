@@ -1,130 +1,150 @@
 [gd_resource type="Resource" script_class="DeviceIndexResource" format=3 uid="uid://yeo2nmm16si0"]
 
-[ext_resource type="Script" uid="uid://cd1kcdg3obt2a" path="res://scripts/classes/indexdata-classes/device_index_data_entry.gd" id="1_kt441"]
-[ext_resource type="Script" uid="uid://c8geo1haj7v0u" path="res://scripts/classes/indexdata-classes/device_index_resource.gd" id="2_8ltr3"]
+[ext_resource type="Script" uid="uid://cd1kcdg3obt2a" path="res://scripts/classes/indexdata-classes/device_index_data_entry.gd" id="1_ayrqc"]
+[ext_resource type="Texture2D" uid="uid://iy3f2278xjx4" path="res://resources/textures/pbr/groundtiles/fnaf1_ground_3/fnaf1_ground_3_albedo.png" id="2_pn4sv"]
+[ext_resource type="Script" uid="uid://c8geo1haj7v0u" path="res://scripts/classes/indexdata-classes/device_index_resource.gd" id="3_almc5"]
+[ext_resource type="Texture2D" uid="uid://cj86uf5pdify8" path="res://resources/temporary/bee/Bee_2.png" id="3_pn4sv"]
 
 [sub_resource type="Resource" id="Resource_kt441"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://cf20nw056d12u"
+natural_name = "Blast Door"
+icon = ExtResource("2_pn4sv")
 allowed_flag = 1
 allowed_type = 2
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_p6vd5"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://rd6uuku7f48y"
+natural_name = "Doorframe"
+icon = ExtResource("3_pn4sv")
 allowed_flag = -1
 allowed_type = 2
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_xhgyu"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://b1s4vfsu2wtgy"
-allowed_flag = -1
+natural_name = "Blast Door (Window)"
+allowed_flag = 4
 allowed_type = 2
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_yc1tl"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://3r26lux661jn"
+natural_name = "Square Vent Frame"
 allowed_flag = -1
 allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_q7gyk"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://dykduylafydiv"
+natural_name = "Square Vent Door"
 allowed_flag = 1
 allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_sfl6x"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://b7o17bex8fj8"
+natural_name = "Hall Frame"
 allowed_flag = -1
 allowed_type = 4
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_76gd8"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://xt5q73pnr4bl"
+natural_name = "Hall Door"
 allowed_flag = 1
 allowed_type = 4
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_kf5so"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://dpl82roe1uowi"
+natural_name = "Square Roof Vent Frame"
 alignment = 2
 allowed_flag = -1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_onrv4"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://svo4tbpd5y70"
+natural_name = "Square Roof Vent Door"
 alignment = 2
 allowed_flag = 1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_7k4m1"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://0kc36tdej2m4"
+natural_name = "Large Window"
 alignment = 1
 allowed_flag = 4
 allowed_type = 4
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_cmp8d"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://chddfqejbtd4m"
+natural_name = "Wall Vent Frame"
 alignment = 1
 allowed_flag = -1
 allowed_type = 6
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_oms6s"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://2rv6r8sg15k7"
+natural_name = "Wall Vent Door"
 alignment = 1
 allowed_flag = 1
 allowed_type = 6
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_ipmd2"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://dwuov7tuh5hvv"
+natural_name = "Small Vent Frame"
 allowed_flag = -1
 allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_udev2"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://5qx8dnyxf68g"
+natural_name = "Small Vent Door"
 allowed_flag = 1
 allowed_type = 3
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_dnwq2"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://cbiq16ukvqfot"
+natural_name = "Small Roof Vent Frame"
 alignment = 2
 allowed_flag = -1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [sub_resource type="Resource" id="Resource_8ltr3"]
-script = ExtResource("1_kt441")
+script = ExtResource("1_ayrqc")
 scene = "uid://djr36f8bcjlfg"
+natural_name = "Small Roof Vent Door"
 alignment = 2
 allowed_flag = 1
 allowed_type = 5
 metadata/_custom_type_script = "uid://cd1kcdg3obt2a"
 
 [resource]
-script = ExtResource("2_8ltr3")
-devices = Dictionary[StringName, ExtResource("1_kt441")]({
+script = ExtResource("3_almc5")
+devices = Dictionary[StringName, ExtResource("1_ayrqc")]({
 &"fnaf1_door_1": SubResource("Resource_kt441"),
 &"fnaf1_door_1_empty": SubResource("Resource_p6vd5"),
 &"fnaf1_windoor_doorglass_1": SubResource("Resource_xhgyu"),
