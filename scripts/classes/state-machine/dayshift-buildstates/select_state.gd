@@ -12,7 +12,7 @@ var is_on_object = false
 
 var hold_time_limit = 0.1
 
-var debug_point = CSGSphere3D.new()
+#var debug_point = CSGSphere3D.new()
 
 
 func Update(delta, machine : DayshiftManager = null):
@@ -75,7 +75,7 @@ func Enter(machine : DayshiftManager):
 	machine.gizmo_level = machine.GIZMO_LEVELS.NEUTRAL
 	machine.gizmo_box.visible = false
 	
-	add_child(debug_point)
+	#add_child(debug_point)
 
 func Exit(machine : DayshiftManager):
 	holding = false

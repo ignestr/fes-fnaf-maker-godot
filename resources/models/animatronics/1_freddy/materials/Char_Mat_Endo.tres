@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bwpqawpdec83l"]
+
+[ext_resource type="Texture2D" uid="uid://ca2iovsgiwfv" path="res://resources/models/animatronics/1_freddy/Char_Tex_Endoskeleton_BaseColor.png" id="1_g4e28"]
+[ext_resource type="Texture2D" uid="uid://u3kjnyuj76ik" path="res://resources/models/animatronics/1_freddy/Char_Tex_Endoskeleton_Metallic.png" id="2_uv5ut"]
+[ext_resource type="Texture2D" uid="uid://c0u70dxxalu7j" path="res://resources/models/animatronics/1_freddy/Char_Tex_Endoskeleton_Normal.png" id="3_orneq"]
+[ext_resource type="Texture2D" uid="uid://b7avemljdm05i" path="res://resources/models/animatronics/1_freddy/Char_Tex_Endoskeleton_Roughness.png" id="4_pjklo"]
+
+[resource]
+resource_name = "Char_Mat_Endo"
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_g4e28")
+metallic = 1.0
+metallic_texture = ExtResource("2_uv5ut")
+roughness_texture = ExtResource("4_pjklo")
+normal_enabled = true
+normal_texture = ExtResource("3_orneq")

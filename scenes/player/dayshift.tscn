@@ -4,6 +4,20 @@
 [ext_resource type="Theme" uid="uid://hgbgrvn5ecdm" path="res://resources/misc/main_ui_theme.tres" id="2_txtqv"]
 [ext_resource type="Material" uid="uid://cwjrxe1rccw11" path="res://resources/materials/glass_mat.tres" id="3_ogt6m"]
 [ext_resource type="Texture2D" uid="uid://b5e66yyjuankl" path="res://resources/textures/ui_background.png" id="4_kcjai"]
+[ext_resource type="Texture2D" uid="uid://crub2tgmvlixv" path="res://addons/at-icons/node/plug_and_socket.svg" id="5_7r0in"]
+[ext_resource type="Texture2D" uid="uid://4ej10x7r1cl3" path="res://addons/at-icons/node/television.svg" id="6_0j02c"]
+[ext_resource type="Texture2D" uid="uid://dbda68mxir8wn" path="res://addons/at-icons/node/troll.svg" id="7_lgsc1"]
+[ext_resource type="Texture2D" uid="uid://jnh4bee4nxrx" path="res://addons/at-icons/node/face.svg" id="8_76vc1"]
+[ext_resource type="Texture2D" uid="uid://dqj7071vgo4bn" path="res://addons/at-icons/node/clock.svg" id="8_kfhn0"]
+[ext_resource type="Texture2D" uid="uid://ch1s5g8bahu13" path="res://addons/at-icons/node/lightbulb.svg" id="9_cmg0d"]
+[ext_resource type="Texture2D" uid="uid://daika5br8vibl" path="res://addons/at-icons/node/area.svg" id="9_kfhn0"]
+[ext_resource type="Texture2D" uid="uid://bs18cwna2f7b2" path="res://addons/at-icons/node/click.svg" id="10_cmg0d"]
+[ext_resource type="Texture2D" uid="uid://ck00yiv16cjmi" path="res://addons/at-icons/node/checkerboard_circle.svg" id="10_gvg52"]
+[ext_resource type="Texture2D" uid="uid://dttjs7hfsfmbq" path="res://addons/at-icons/node/eraser.svg" id="11_gvg52"]
+[ext_resource type="Texture2D" uid="uid://coe106f1s5rtw" path="res://addons/at-icons/node/checkerboard.svg" id="12_srn88"]
+[ext_resource type="Texture2D" uid="uid://csi6ucctnlhaf" path="res://addons/at-icons/node/wrench.svg" id="16_gvg52"]
+[ext_resource type="Texture2D" uid="uid://bokxfsrd0232u" path="res://addons/at-icons/node/arrow_up_from_bracket.svg" id="17_srn88"]
+[ext_resource type="Texture2D" uid="uid://dthkxdkyjvhdv" path="res://addons/at-icons/node/arrow_right_from_bracket.svg" id="18_onyc2"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kcjai"]
 radius = 1.3637
@@ -30,6 +44,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+theme = ExtResource("2_txtqv")
 
 [node name="MarginContainer" type="MarginContainer" parent="Control" unique_id=18905749]
 layout_mode = 1
@@ -50,6 +65,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 0
 theme = ExtResource("2_txtqv")
 title = "Info"
+title_alignment = 1
 
 [node name="Context_Menu" type="Panel" parent="Control/MarginContainer/FoldableContainer" unique_id=2035570998]
 custom_minimum_size = Vector2(200, 300)
@@ -58,31 +74,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 0
 theme = ExtResource("2_txtqv")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu" unique_id=1059084333]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer" unique_id=103582253]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer/VBoxContainer" unique_id=556891232]
-layout_mode = 2
-text = "Info:"
-horizontal_alignment = 1
-
-[node name="Panel" type="Panel" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer/VBoxContainer" unique_id=386665608]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer/VBoxContainer/Panel" unique_id=96926098]
+[node name="MarginContainer2" type="MarginContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu" unique_id=96926098]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -94,19 +86,13 @@ theme_override_constants/margin_top = 7
 theme_override_constants/margin_right = 7
 theme_override_constants/margin_bottom = 7
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer/VBoxContainer/Panel/MarginContainer" unique_id=759390446]
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer2" unique_id=759390446]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer" unique_id=254628656]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer2/ScrollContainer" unique_id=254628656]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer" unique_id=653966525]
-custom_minimum_size = Vector2(0.21, 109.23)
-layout_mode = 2
-horizontal_alignment = 1
-autowrap_mode = 3
 
 [node name="Catalog" type="Panel" parent="Control/MarginContainer" unique_id=1365128103]
 custom_minimum_size = Vector2(700, 160)
@@ -210,51 +196,63 @@ alignment = 1
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "Devices"
+icon = ExtResource("5_7r0in")
 text_overrun_behavior = 1
 autowrap_mode = 1
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button2" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=1641294049]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "Furniture"
+icon = ExtResource("6_0j02c")
 text_overrun_behavior = 1
 autowrap_mode = 1
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button3" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=890899937]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "Tronics"
+icon = ExtResource("7_lgsc1")
 text_overrun_behavior = 1
 autowrap_mode = 1
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button4" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=553663044]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "Wall Decor"
+icon = ExtResource("8_kfhn0")
 text_overrun_behavior = 1
 autowrap_mode = 1
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button5" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=1125230645]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "Lights roof"
+icon = ExtResource("9_cmg0d")
 text_overrun_behavior = 1
 autowrap_mode = 1
 autowrap_trim_flags = 192
 clip_text = true
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button6" type="Button" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer" unique_id=2089904851]
 custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "Materials"
+icon = ExtResource("10_gvg52")
 text_overrun_behavior = 1
 autowrap_mode = 1
+icon_alignment = 1
+expand_icon = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer" unique_id=463278707]
 custom_minimum_size = Vector2(440, 0)
@@ -312,34 +310,89 @@ alignment = 1
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-text = "Wall"
+icon = ExtResource("8_76vc1")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button2" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=322696337]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-text = "Room"
+icon = ExtResource("9_kfhn0")
 text_overrun_behavior = 2
 clip_text = true
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button3" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=694791497]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-text = "Select"
+icon = ExtResource("10_cmg0d")
 clip_text = true
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button5" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=1938940637]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-text = "Delete"
+icon = ExtResource("11_gvg52")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Button4" type="Button" parent="Control/MarginContainer/Top/MarginContainer/HBoxContainer" unique_id=284335728]
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-text = "Floor"
+icon = ExtResource("12_srn88")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Panel" type="Panel" parent="Control/MarginContainer" unique_id=300231652]
+custom_minimum_size = Vector2(200, 55)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Panel" unique_id=1830770088]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/MarginContainer/Panel/MarginContainer" unique_id=1409712582]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Control/MarginContainer/Panel/MarginContainer/HBoxContainer" unique_id=1084510039]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+icon = ExtResource("16_gvg52")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Button3" type="Button" parent="Control/MarginContainer/Panel/MarginContainer/HBoxContainer" unique_id=1187363479]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+icon = ExtResource("17_srn88")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Button2" type="Button" parent="Control/MarginContainer/Panel/MarginContainer/HBoxContainer" unique_id=408038259]
+custom_minimum_size = Vector2(45, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+icon = ExtResource("18_onyc2")
+icon_alignment = 1
+expand_icon = true
 
 [connection signal="pressed" from="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/Button" to="." method="_on_catalog_devices"]
 [connection signal="pressed" from="Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel/MarginContainer/HBoxContainer/Button2" to="." method="_on_catalog_furniture"]
@@ -352,3 +405,6 @@ text = "Floor"
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button3" to="." method="_on_select_button_pressed"]
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button5" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="Control/MarginContainer/Top/MarginContainer/HBoxContainer/Button4" to="." method="_on_floor_button_pressed"]
+[connection signal="pressed" from="Control/MarginContainer/Panel/MarginContainer/HBoxContainer/Button" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Control/MarginContainer/Panel/MarginContainer/HBoxContainer/Button3" to="." method="on_import_pressed"]
+[connection signal="pressed" from="Control/MarginContainer/Panel/MarginContainer/HBoxContainer/Button2" to="." method="on_export_pressed"]

@@ -301,15 +301,17 @@ func Enter(machine : DayshiftManager):
 	machine.gizmo_box.visible = false
 	var scene
 	gizmo_obj = MeshInstance3D.new()
+	
 	if !machine.pizzeria.objman.objects.has(machine.current_item):
 		await machine.pizzeria.objman.load_new(machine.current_item)
 		scene = machine.pizzeria.objman.objects[machine.current_item].instantiate()
 	else:
 		scene = machine.pizzeria.objman.objects[machine.current_item].instantiate()
+	
+	
 	if scene.use_point or scene.gizmo_mesh == null:
 		gizmo_obj.mesh = SphereMesh.new()
-	
-	elif !machine.placing_wall_device:
+	else:
 		gizmo_obj.mesh = scene.gizmo_mesh
 	
 	

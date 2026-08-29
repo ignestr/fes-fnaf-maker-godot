@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="TronicIndexResource" format=3 uid="uid://c43ff4dekvo5f"]
+
+[ext_resource type="Script" uid="uid://bfl8cp2yoiji3" path="res://scripts/classes/indexdata-classes/tronic_index_data_entry.gd" id="1_kswaf"]
+[ext_resource type="Texture2D" uid="uid://rlrh8q6qwfyp" path="res://resources/models/animatronics/1_freddy/Char_Tex_Freddy_BaseColor.png" id="2_4kqir"]
+[ext_resource type="Script" uid="uid://by17fa6o76ruq" path="res://scripts/classes/indexdata-classes/catalog/catalog_category.gd" id="2_ghtkf"]
+[ext_resource type="Script" uid="uid://cl0g8yipfbhh8" path="res://scripts/classes/indexdata-classes/tronic_index_resource.gd" id="2_wvpl5"]
+
+[sub_resource type="Resource" id="Resource_wvpl5"]
+script = ExtResource("1_kswaf")
+scene = "uid://1ikev5x6h8x2"
+natural_name = "Freddy Fazbear"
+icon = ExtResource("2_4kqir")
+metadata/_custom_type_script = "uid://bfl8cp2yoiji3"
+
+[sub_resource type="Resource" id="Resource_4kqir"]
+script = ExtResource("2_ghtkf")
+natural_name = "Five Nights At Freddy's"
+members = Array[StringName]([&"fnaf1_freddy", &""])
+metadata/_custom_type_script = "uid://by17fa6o76ruq"
+
+[resource]
+script = ExtResource("2_wvpl5")
+animatronics = Dictionary[StringName, ExtResource("1_kswaf")]({
+&"fnaf1_freddy": SubResource("Resource_wvpl5")
+})
+categories = Dictionary[StringName, ExtResource("2_ghtkf")]({
+&"FNAF 1": SubResource("Resource_4kqir")
+})
+metadata/_custom_type_script = "uid://cl0g8yipfbhh8"

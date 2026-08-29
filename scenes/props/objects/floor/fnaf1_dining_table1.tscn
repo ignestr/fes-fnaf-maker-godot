@@ -79,42 +79,47 @@ shadow_mesh = SubResource("ArrayMesh_wgv51")
 points = PackedVector3Array(-0.62829196, -0.0006146431, 0.70043147, -0.61230177, -0.0006146431, 0.7182522, -0.5976646, 0.9754909, 0.69867057, -0.5975416, 0.97446644, 0.32866183, -0.6201739, -0.0006146431, 0.31563088, -0.5975416, -0.9746712, 0.32866183, -0.5976646, -0.97569567, 0.69867057, -0.58044434, -0.922014, 0.7157165, -0.5051674, -0.0006146431, 0.7195201, -0.58044434, 0.9218092, 0.7157165, -0.57859933, -0.99126744, 0.7155051, -0.58745545, 1.0099126, 0.69867057, -0.5873324, 1.0088881, 0.32908446, -0.55658203, 0.9906529, 0, -0.55658203, -0.99085766, 0, -0.5873324, -1.009093, 0.32908446, -0.58745545, -1.0101175, 0.69867057, 0.50504446, -0.0006146431, 0.7195201, -0.47060394, 1.0283531, 0.7155756, -0.5416989, -1.0271236, 0.7155051, -0.47060394, -1.0285578, 0.7155756, -0.5611331, 1.0355242, 0.6986001, -0.5612561, 1.0344998, 0.3291549, -0.551908, 1.001717, 0, -0.551908, -1.0019219, 0, -0.5612561, -1.0347046, 0.3291549, -0.5611331, -1.035729, 0.6986001, 0.58032143, -0.922014, 0.7157165, 0.6121788, -0.0006146431, 0.7182522, 0.58032143, 0.9218092, 0.7157165, 0.47048104, 1.0283531, 0.7155756, 0.47048104, -1.0285578, 0.7155756, 0.5784763, -0.99126744, 0.7155051, -0.47023496, 1.0465883, 0.69867057, -0.52583164, 1.045359, 0.6986001, -0.52583164, -1.0455638, 0.6986001, -0.47023496, -1.0465883, 0.69867057, -0.52595466, 1.0443345, 0.32908446, -0.5408379, 1.0064296, 0, -0.5408379, -1.0066344, 0, -0.52595466, -1.0445393, 0.32908446, 0.5975416, -0.97569567, 0.69867057, 0.62829196, -0.0006146431, 0.70043147, 0.5975416, 0.9754909, 0.69867057, 0.5873325, 1.0099126, 0.69867057, 0.5610101, 1.0355242, 0.6986001, 0.5257087, 1.045359, 0.6986001, 0.47011197, 1.0463835, 0.69867057, 0.47011197, -1.0465883, 0.69867057, 0.5257087, -1.0455638, 0.6986001, 0.5610101, -1.035729, 0.6986001, 0.5873325, -1.0101175, 0.69867057, 0.467775, 1.045359, 0.32873228, -0.46789792, 1.045359, 0.32873228, -0.46789792, -1.0455638, 0.32873228, 0.54071486, 1.0064296, 0, 0.54071486, -1.0066344, 0, 0.59741855, -0.9746712, 0.32866183, 0.6200509, -0.0006146431, 0.31563088, 0.59741855, 0.97446644, 0.32866183, 0.58720946, 1.0088881, 0.32908446, 0.56113315, 1.0344998, 0.32922533, 0.5258317, 1.0443345, 0.32908446, 0.467775, -1.0455638, 0.32873228, 0.5258317, -1.0445393, 0.32908446, 0.56113315, -1.0347046, 0.3291549, 0.58720946, -1.009093, 0.32908446, 0.551785, 1.001717, 0, 0.551785, -1.0019219, 0, 0.55645907, -0.99085766, 0, 0.55645907, 0.9906529, 0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1467k"]
-size = Vector3(0.25, 0.25, 0.25)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_wgv51"]
-size = Vector3(0.25, 0.25, 0.25)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_em16u"]
-size = Vector3(0.25, 0.25, 0.25)
+size = Vector3(0.4, 0.4, 0.4)
 
 [node name="ObjectScene" type="Node3D" unique_id=875786042 node_paths=PackedStringArray("collision_shape", "anchors")]
 script = ExtResource("1_uc5ug")
 gizmo_mesh = SubResource("ArrayMesh_vevkg")
 collision_shape = NodePath("StaticBody3D/CollisionShape3D")
+scale_factor = 1.2
 custom_rotation_degrees = Vector3(-90, 0, 0)
-overlap_leniency = 0.9
+overlap_leniency = 0.8
 anchors = {
-0: NodePath("StaticBody3D3"),
-1: NodePath("StaticBody3D4"),
-2: NodePath("StaticBody3D5"),
-3: NodePath("StaticBody3D6"),
-4: NodePath("StaticBody3D7")
+0: NodePath("StaticBody3D2"),
+1: NodePath("StaticBody3D3"),
+2: NodePath("StaticBody3D4"),
+3: NodePath("StaticBody3D5"),
+4: NodePath("StaticBody3D6")
 }
 metadata/_custom_type_script = "uid://be8h1rptch1ix"
 
-[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1824558401]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1664301665]
+transform = Transform3D(1.25, 0, 0, 0, -5.4639237e-08, 1.25, 0, -1.25, -5.4639237e-08, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=430509646]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1038094178]
 shape = SubResource("ConvexPolygonShape3D_uwcfx")
 
 [node name="Plane" type="MeshInstance3D" parent="." unique_id=754181108]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
+transform = Transform3D(1.25, 0, 0, 0, -5.4639237e-08, 1.25, 0, -1.25, -5.4639237e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_vevkg")
 skeleton = NodePath("")
 
+[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=1714963414 groups=["editor_subobj_anchor"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99812675, 0.87923026)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("4_em16u")
+index = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=2014033692]
+shape = SubResource("BoxShape3D_1467k")
+
 [node name="StaticBody3D3" type="StaticBody3D" parent="." unique_id=306368256 groups=["editor_subobj_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76623523, 0.72760457)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99812675, 0.49294993)
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("4_em16u")
@@ -125,7 +130,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.06378782)
 shape = SubResource("BoxShape3D_1467k")
 
 [node name="StaticBody3D4" type="StaticBody3D" parent="." unique_id=1311889214 groups=["editor_subobj_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76623523, 0.37682265)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99812675, 0.04662688)
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("4_em16u")
@@ -133,35 +138,25 @@ index = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D4" unique_id=47168692]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.05363381)
-shape = SubResource("BoxShape3D_wgv51")
+shape = SubResource("BoxShape3D_1467k")
 
 [node name="StaticBody3D5" type="StaticBody3D" parent="." unique_id=1357486331 groups=["editor_subobj_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76623523, -0.024538904)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99812675, -0.45915022)
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("4_em16u")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D5" unique_id=1681867393]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.01275596)
-shape = SubResource("BoxShape3D_em16u")
+shape = SubResource("BoxShape3D_1467k")
 
 [node name="StaticBody3D6" type="StaticBody3D" parent="." unique_id=1235678035 groups=["editor_subobj_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76623523, -0.3543072)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99812675, -0.8718529)
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("4_em16u")
 index = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D6" unique_id=2083269253]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0077904463)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.040237874)
 shape = SubResource("BoxShape3D_1467k")
-
-[node name="StaticBody3D7" type="StaticBody3D" parent="." unique_id=1261280580 groups=["editor_subobj_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76623523, -0.70508915)
-collision_layer = 2
-collision_mask = 0
-script = ExtResource("4_em16u")
-index = 2
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D7" unique_id=805829873]
-shape = SubResource("BoxShape3D_wgv51")

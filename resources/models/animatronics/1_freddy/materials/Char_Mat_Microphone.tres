@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c3ucq14bj43h7"]
+
+[ext_resource type="Texture2D" uid="uid://cbgtfjg0q8va4" path="res://resources/models/animatronics/1_freddy/Char_Tex_Microphone_BaseColor.png" id="1_mw1uq"]
+[ext_resource type="Texture2D" uid="uid://c62ln1qpwom1h" path="res://resources/models/animatronics/1_freddy/Char_Tex_Microphone_Normal.png" id="2_ilkub"]
+[ext_resource type="Texture2D" uid="uid://bbkx8lvi0hxoc" path="res://resources/models/animatronics/1_freddy/Char_Tex_Microphone_Roughness.png" id="3_4f5yr"]
+
+[resource]
+resource_name = "Char_Mat_Microphone"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.8633233, 0.9238501, 0.865666, 1)
+albedo_texture = ExtResource("1_mw1uq")
+roughness_texture = ExtResource("3_4f5yr")
+emission_enabled = true
+normal_enabled = true
+normal_texture = ExtResource("2_ilkub")

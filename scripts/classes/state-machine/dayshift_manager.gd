@@ -42,9 +42,10 @@ var gizmo_box := CSGBox3D.new()
 @onready var camera = get_viewport()
 
 var action_history : Array[ActionStackActionGroup] = []
+var redo_action_history : Array[ActionStackActionGroup] = []
 var max_remembered_actions : int = 32
 
-enum fields {GROUND, WALL, OBJECT_GROUND, OBJECT_WALL, OBJECT_ROOF}
+enum fields {GROUND, WALL, OBJECT_GROUND, OBJECT_WALL, OBJECT_ROOF, ANIMATRONICS}
 enum GIZMO_LEVELS {NEUTRAL, NEGATIVE, POSITIVE, OTHER}
 
 var mouse_coordinates
@@ -55,7 +56,6 @@ var hit_normal
 var current_wall : Vector2i
 
 var current_item : StringName = &""
-var placing_wall_device
 
 # Just... the nodepath to the object. Every object already knows its index so anything else
 # is unnecessary
@@ -75,6 +75,14 @@ func new_actiongroup():
 	action_history.push_front(newgroup)
 	if len(action_history) >= max_remembered_actions:
 		action_history.pop_back()
+
+
+func new_actiongroup_redo():
+	var newgroup = ActionStackActionGroup.new()
+	redo_action_history.push_front(newgroup)
+	if len(action_history) >= max_remembered_actions:
+		redo_action_history.pop_back()
+	
 
 func _ready_extra():
 	gizmo_box.size = Vector3(pizzeria.TILE_SIZE, pizzeria.FLOOR_THICK, pizzeria.TILE_SIZE)
@@ -337,7 +345,7 @@ func place_room(idx_begin, idx_end):
 	for chunk in chunks:
 		await pizzeria.render_chunk(chunk, pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func place_object(idx, data : pizzeria_item, field, rebuild=true):
+func place_object(idx, data, field, rebuild=true):
 	new_actiongroup()
 	add_cell(idx, data, field, current_floor_idx)
 	
@@ -447,7 +455,7 @@ func delete_object_anchor(parent_idx, anchor_idx, field):
 	add_cell(parent_idx, old_object, field, current_floor_idx)
 	await pizzeria.render_chunk(pizzeria.to_chunk(Vector2i(parent_idx.x, parent_idx.y)), pizzeria.floors[current_floor_idx], current_floor_idx * pizzeria.WALL_HEIGHT)
 
-func place_object_anchor(parent_object_idx, anchor_index, field, data : pizzeria_item, rebuild=true):
+func place_object_anchor(parent_object_idx, anchor_index, field, data, rebuild=true):
 	new_actiongroup()
 	var old_object
 	match field:
@@ -509,6 +517,7 @@ func place_object_anchor(parent_object_idx, anchor_index, field, data : pizzeria
 
 func undo():
 	if len(action_history) > 0:
+		new_actiongroup_redo()
 		var chunks = {}
 		for action : ActionStackAction in action_history[0].actions:
 			# if we don't have the floor index or the chunk number, we make it
@@ -517,10 +526,12 @@ func undo():
 			if not chunks.get_or_add(action.floor_idx).has(pizzeria.to_chunk(Vector2i(action.idx.x, action.idx.y))):
 					chunks.get_or_add(action.floor_idx).append(pizzeria.to_chunk(Vector2i(action.idx.x, action.idx.y)))
 			
+			
 			if action.old_data == null:
 				remove_cell(action.idx, action.field, action.floor_idx, true)
 			else:
 				add_cell(action.idx, action.old_data, action.field, action.floor_idx, true)
+		
 		action_history.pop_front()
 		
 		for floor_level in chunks.keys():
@@ -528,6 +539,34 @@ func undo():
 				if pizzeria.get_node_or_null(str(chunk)):
 					pizzeria.get_node(str(chunk)).queue_free()
 				await pizzeria.render_chunk(chunk, pizzeria.floors[floor_level], floor_level * pizzeria.WALL_HEIGHT)
+
+
+func redo():
+	if len(redo_action_history) > 0:
+		new_actiongroup()
+		var chunks = {}
+		for action : ActionStackAction in redo_action_history[0].actions:
+			# if we don't have the floor index or the chunk number, we make it
+			
+			if not chunks.has(action.floor_idx):
+				chunks.get_or_add(action.floor_idx, [])
+			if not chunks.get_or_add(action.floor_idx).has(pizzeria.to_chunk(Vector2i(action.idx.x, action.idx.y))):
+					chunks.get_or_add(action.floor_idx).append(pizzeria.to_chunk(Vector2i(action.idx.x, action.idx.y)))
+			
+			if action.old_data == null:
+				remove_cell(action.idx, action.field, action.floor_idx, false)
+			else:
+				add_cell(action.idx, action.old_data, action.field, action.floor_idx, false)
+			
+		redo_action_history.pop_front()
+		
+		
+		for floor_level in chunks.keys():
+			for chunk in chunks[floor_level]:
+				if pizzeria.get_node_or_null(str(chunk)):
+					pizzeria.get_node(str(chunk)).queue_free()
+				await pizzeria.render_chunk(chunk, pizzeria.floors[floor_level], floor_level * pizzeria.WALL_HEIGHT)
+
 
 func add_cell(idx, data, field : fields, floor_idx : int=0, is_undo : bool = false):
 	var is_overriding = false
@@ -569,7 +608,12 @@ func add_cell(idx, data, field : fields, floor_idx : int=0, is_undo : bool = fal
 				is_overriding = true
 				new_action.old_data = pizzeria.floors[floor_idx].objects_roof[idx]
 			pizzeria.floors[floor_idx].objects_roof[idx] = data
-		
+		fields.ANIMATRONICS:
+			if pizzeria.floors[floor_idx].animatronics.has(idx):
+				is_overriding = true
+				new_action.old_data = pizzeria.floors[floor_idx].animatronics[idx]
+			pizzeria.floors[floor_idx].animatronics[idx] = data
+	
 	if !is_undo:
 		action_history[0].actions.append(new_action)
 
@@ -599,10 +643,18 @@ func remove_cell(idx, field : fields, floor_idx : int=0, is_undo : bool = false)
 			if pizzeria.floors[floor_idx].objects_roof.has(idx):
 				new_action.old_data = pizzeria.floors[floor_idx].objects_roof[idx]
 			pizzeria.floors[floor_idx].objects_roof.erase(idx)
+		fields.ANIMATRONICS:
+			if pizzeria.floors[floor_idx].animatronics.has(idx):
+				new_action.old_data = pizzeria.floors[floor_idx].animatronics[idx]
+			pizzeria.floors[floor_idx].animatronics.erase(idx)
 	
 	if !is_undo:
 		action_history[0].actions.append(new_action)
+	else:
+		redo_action_history[0].actions.append(new_action)
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed(&"undo"):
 		undo()
+	if Input.is_action_just_pressed(&"redo"):
+		redo()

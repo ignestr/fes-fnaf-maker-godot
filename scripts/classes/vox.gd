@@ -14,7 +14,7 @@ var floors : Array[pizzeria_floor] = []
 ## The size of each tile in standard position units.
 @export var TILE_SIZE : float = 4
 ## The global height all walls use in standard position units. 3.5 is the minimum for hallway devices (3 is possible but it makes the top be flush with the roof. CANNOT BE HIGHER THAN TILE_SIZE.
-@export var WALL_HEIGHT : float = 3.5
+@export var WALL_HEIGHT : float = 4
 ## The global width all walls use in standard position units. Low values recommended, but it can work with higher ones.
 @export var WALL_THICK : float = 0.3
 
@@ -31,7 +31,11 @@ var QUADRANT_MARGIN_ROOF = 0.9
 
 var objman : ObjectManager
 var deviceman : DeviceManager
+var tronicman : AnimatronicManager
 var animatronics = []
+
+var is_in_nightshift
+
 
 # -1 is for when both are off
 
@@ -121,6 +125,12 @@ func init_pizzeria():
 		new.name = "DeviceManager"
 		self.add_child(new)
 		deviceman = self.get_node("DeviceManager")
+	
+	if !self.has_node("AnimatronicManager"):
+		var new = AnimatronicManager.new()
+		new.name = "AnimatronicManager"
+		self.add_child(new)
+		tronicman = self.get_node("AnimatronicManager")
 	
 	if floors.size() == 0:
 		floors.append(pizzeria_floor.new())
@@ -247,12 +257,17 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			for anchor in range(9):
 				if floor.objects_ground.has(Vector3i(x,y,anchor)):
 					chunk_data.objects_ground[Vector3i(x,y,anchor)] = floor.objects_ground[Vector3i(x,y,anchor)]
+				
+				if floor.animatronics.has(Vector3i(x,y,anchor)):
+					chunk_data.animatronics[Vector3i(x,y,anchor)] = floor.animatronics[Vector3i(x,y,anchor)]
+				
 				if floor.objects_roof.has(Vector3i(x,y,anchor)):
 					chunk_data.objects_roof[Vector3i(x,y,anchor)] = floor.objects_roof[Vector3i(x,y,anchor)]
-
+				
 				for byte in range(4):
 					if floor.objects_wall.has(Vector4i(x,y,anchor,byte)):
 						chunk_data.objects_wall[Vector4i(x,y,anchor,byte)] = floor.objects_wall[Vector4i(x,y,anchor,byte)]
+	
 	# If it's empty
 	if chunk_data.groundtiles.is_empty() and chunk_data.walls.is_empty():
 		csg.queue_free()
@@ -288,7 +303,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 	#region 2: walls
 	for wall_tile in chunk_data.walls:
 		var wall = CSGBox3D.new()
-		var wall_cap = CSGBox3D.new()
+		var wall_cap
 		
 		# chunk logic
 		var vec2_i = Vector2i(wall_tile.x, wall_tile.y)
@@ -306,10 +321,12 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				floor_level+WALL_HEIGHT/2, 
 				TILE_SIZE * wall_tile.y
 				)
-			
-			wall_cap.size = Vector3(TILE_SIZE, 0.1, WALL_THICK)
-			wall_cap.position = wall.position
-			wall_cap.position.y += WALL_HEIGHT/2 + 0.05
+			if !is_in_nightshift:
+				wall_cap = CSGBox3D.new()
+				wall_cap.size = Vector3(TILE_SIZE, 0.1, WALL_THICK)
+				wall_cap.position = wall.position
+				wall_cap.position.y += WALL_HEIGHT/2 + 0.05
+				wall_cap.material = wall_cap_material
 		else:
 			# Adjust size according to orientation
 			wall.size = Vector3(WALL_THICK, WALL_HEIGHT, TILE_SIZE)
@@ -323,11 +340,14 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 				floor_level+WALL_HEIGHT/2 + 0.001,
 				wall_tile.y * TILE_SIZE + TILE_SIZE/2
 				)
-			wall_cap.size = Vector3(WALL_THICK, 0.1, TILE_SIZE)
-			wall_cap.position = wall.position
-			wall_cap.position.y += WALL_HEIGHT/2 + 0.05
+			if !is_in_nightshift:
+				wall_cap = CSGBox3D.new()
+				wall_cap.size = Vector3(WALL_THICK, 0.1, TILE_SIZE)
+				wall_cap.position = wall.position
+				wall_cap.position.y += WALL_HEIGHT/2 + 0.05
+				wall_cap.material = wall_cap_material
 		
-		wall_cap.material = wall_cap_material
+		
 		
 		if use_random_colors == true:
 			var mat = StandardMaterial3D.new()
@@ -350,7 +370,8 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 					print("Failed to get material ", chunk_data.walls[wall_tile].material_id, "!")
 		
 		# after the wall is set up, instance the basic wall
-		csg.add_child(wall_cap)
+		if !is_in_nightshift:
+			csg.add_child(wall_cap)
 		csg.add_child(wall)
 		
 		# if the wall doesn't need a cutout for windows, doors etc, the loop ends here
@@ -362,6 +383,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			var cutout := CSGBox3D.new()
 			var current_wall = chunk_data.walls[wall_tile]
 			cutout.operation = CSGShape3D.OPERATION_SUBTRACTION
+			cutout.material = wall_cap_material
 			# different cutout positions and dimensions for each type, using a look up table
 			var alignment = null
 			
@@ -449,7 +471,7 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			# instance the final cutout, end wall loop
 			csg.add_child(cutout)
 	#endregion
-	#region 4: objects ☆
+	#region 4: objects and animatronics ☆
 	# for every object in the ground
 	for index in chunk_data.objects_ground:
 		# first get the data associated with the index (the value of the key)
@@ -479,7 +501,6 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			object.original_position = object.global_position
 			# add it to the group so it isn't removed
 			object.add_to_group(&"objects")
-			# rotate it by the amount specified by the user
 			object.field = DayshiftManager.fields.OBJECT_GROUND
 			for property in item_data.properties:
 				object.set(property, item_data.properties[property])
@@ -619,6 +640,45 @@ func render_chunk(idx : Vector2i , floor : pizzeria_floor, floor_level : float):
 			csg.add_child(object)
 			object.index = index
 			object.field = DayshiftManager.fields.OBJECT_ROOF
+	
+	for index in chunk_data.animatronics:
+		var item_data : pizzeria_animatronic = chunk_data.animatronics[index]
+		
+		# if the object index entry for the item ID even references a scene to be
+		# instanced
+		if Animatrindex.list_all.animatronics[item_data.id].scene:
+			var object : Node3D
+			# If the scene has already been loaded into memory, just
+			# instance it
+			if tronicman.tronics.has(item_data.id):
+				object = tronicman.tronics[item_data.id].instantiate()
+			# if it hasn't, do it now
+			else:
+				await tronicman.load_new(item_data.id)
+				object = tronicman.tronics[item_data.id].instantiate()
+				
+			csg.add_child(object)
+			
+			if !animatronics.has(object):
+				animatronics.append(object)
+				
+			# the quadrant offset is obtained by using index.z as a key
+			var quadrant = tile_quadrant_lut[index.z]
+			
+			# First set the object's position to the center, then add the offset from the quadrant,
+			# and finally add the user-defined offset
+			var pos = Vector3(index.x * TILE_SIZE + TILE_SIZE/2, floor_level, index.y * TILE_SIZE + TILE_SIZE/2) + Vector3(quadrant.x * TILE_SIZE/2, 0, quadrant.y * TILE_SIZE/2) * 0.8
+			object.global_position = pos
+			object.original_position = pos
+			# add it to the group so it isn't removed
+			object.add_to_group(&"objects")
+			object.add_to_group(&"animatronic")
+			object.field = DayshiftManager.fields.ANIMATRONICS
+			for property in item_data.properties:
+				object.set(property, item_data.properties[property])
+			
+			# set its index for use with the dayshiftmanager states
+			object.index = index
 	
 	#endregion
 	#region Closing off - baking and adding collisions

@@ -8,7 +8,7 @@ const JUMP_VELOCITY = 4.5
 @onready var dayshift_manager : DayshiftManager = $"../DayshiftManager"
 @onready var categories_container: VBoxContainer = $Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/VBoxContainer/Panel2/MarginContainer/categories/VBoxContainer
 @onready var catalog_grid: GridContainer = $Control/MarginContainer/Catalog/MarginContainer/HBoxContainer/MarginContainer/Panel/MarginContainer/ScrollContainer/GridContainer
-@onready var properties_container: VBoxContainer = $Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer/VBoxContainer/Panel/MarginContainer/ScrollContainer/VBoxContainer
+@onready var properties_container: VBoxContainer = $Control/MarginContainer/FoldableContainer/Context_Menu/MarginContainer2/ScrollContainer/VBoxContainer
 
 var CATEGORY_BUTTON = load("uid://cu2l73mlss5c3")
 var CATALOG_ENTRY_BUTTON = load("uid://b6wl33yni3utc")
@@ -119,6 +119,8 @@ func set_property(p_name, val):
 					old_object = dayshift_manager.pizzeria.floors[dayshift_manager.current_floor_idx].objects_wall[object.index].clone()
 				dayshift_manager.fields.OBJECT_ROOF:
 					old_object = dayshift_manager.pizzeria.floors[dayshift_manager.current_floor_idx].objects_roof[object.index].clone()
+				dayshift_manager.fields.ANIMATRONICS:
+					old_object = dayshift_manager.pizzeria.floors[dayshift_manager.current_floor_idx].animatronics[object.index].clone()
 			old_object.properties[p_name] = val
 			if dayshift_manager.selected_object.is_on_anchor:
 				dayshift_manager.place_object_anchor(object.index, object.anchor_number, field, old_object, false)
@@ -242,6 +244,22 @@ func catalog_load_category_devices(id : StringName):
 	
 		catalog_grid.add_child(new_button)
 
+func catalog_load_category_animatronics(id : StringName):
+	for child in catalog_grid.get_children():
+		child.queue_free()
+	
+	for item in Animatrindex.list_all.categories[id].members:
+		if !Animatrindex.list_all.animatronics.has(item):
+			continue
+		var new_button = CATALOG_ENTRY_BUTTON.instantiate()
+		new_button.id = item
+		new_button.player = self
+		new_button.type = dayshift_manager.CATALOG_TYPES.TRONICS
+		new_button.natural_name = Animatrindex.list_all.animatronics[item].natural_name
+		new_button.icon_texture = Animatrindex.list_all.animatronics[item].icon
+		catalog_grid.add_child(new_button)
+
+
 func _on_catalog_furniture() -> void:
 	for child in categories_container.get_children():
 		child.queue_free()
@@ -269,7 +287,16 @@ func _on_catalog_devices() -> void:
 
 
 func _on_catalog_animatronics() -> void:
-	pass # Replace with function body.
+	for child in categories_container.get_children():
+		child.queue_free()
+	
+	for category in Animatrindex.list_all.categories:
+		var new_button = CATEGORY_BUTTON.instantiate()
+		new_button.player = self
+		new_button.category_name = category
+		new_button.icon_texture = Animatrindex.list_all.categories[category].icon
+		new_button.type = dayshift_manager.CATALOG_TYPES.TRONICS
+		categories_container.add_child(new_button)
 
 
 func _on_catalog_walldecor() -> void:
@@ -298,3 +325,15 @@ func _on_catalog_roof() -> void:
 		categories_container.add_child(new_button)
 
 #endregion
+
+
+func _on_settings_pressed() -> void:
+	pass # Replace with function body.
+
+
+func on_export_pressed() -> void:
+	pass # Replace with function body.
+
+
+func on_import_pressed() -> void:
+	pass # Replace with function body.

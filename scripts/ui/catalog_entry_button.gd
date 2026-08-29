@@ -12,7 +12,6 @@ var icon_texture : Texture2D
 func _input(event: InputEvent) -> void:
 	if button_pressed:
 		player.dayshift_manager.current_item = id
-		player.dayshift_manager.placing_wall_device = false
 		match type:
 			DayshiftManager.CATALOG_TYPES.MATERIAL:
 				player.dayshift_manager.state(player.dayshift_manager.states[&"set_material_state"])
@@ -23,9 +22,8 @@ func _input(event: InputEvent) -> void:
 			DayshiftManager.CATALOG_TYPES.ROOF:
 				player.dayshift_manager.state(player.dayshift_manager.states[&"object_place_state"])
 			DayshiftManager.CATALOG_TYPES.TRONICS:
-				player.dayshift_manager.state(player.dayshift_manager.states[&"object_place_state"])
+				player.dayshift_manager.state(player.dayshift_manager.states[&"animatronic_place_state"])
 			DayshiftManager.CATALOG_TYPES.DEVICES:
-				player.dayshift_manager.placing_wall_device = true
 				player.dayshift_manager.state(player.dayshift_manager.states[&"device_place_state"])
 
 

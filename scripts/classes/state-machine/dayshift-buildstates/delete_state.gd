@@ -16,7 +16,7 @@ var projected_wall := Vector2i(0,0)
 var is_floor = true
 var is_on_object = false
 
-var object_node : ObjectScene
+var object_node
 
 # horizontal if false, vertical if true
 var orientation = false

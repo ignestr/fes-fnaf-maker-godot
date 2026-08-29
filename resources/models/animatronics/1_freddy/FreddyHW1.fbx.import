@@ -1,0 +1,69 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://diy8txywqdig0"
+path="res://.godot/imported/FreddyHW1.fbx-ca37f8ed2fd8a7d84ad705dd06f56ab3.scn"
+
+[deps]
+
+source_file="res://resources/models/animatronics/1_freddy/FreddyHW1.fbx"
+dest_files=["res://.godot/imported/FreddyHW1.fbx-ca37f8ed2fd8a7d84ad705dd06f56ab3.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/root_script=null
+mesh_library/use_node_names_as_mesh_names=false
+array_mesh/deduplicate_surfaces=true
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
+nodes/use_node_type_suffixes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=true
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
+_subresources={
+"materials": {
+"Char_Mat_Endo": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/1_freddy/materials/Char_Mat_Endo.tres",
+"use_external/path": "uid://bwpqawpdec83l"
+},
+"Char_Mat_Eye_Freddy": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/1_freddy/materials/Char_Mat_Eye_Freddy.tres",
+"use_external/path": "uid://bcspjw8bsy18u"
+},
+"Char_Mat_Freddy_Body": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/1_freddy/materials/Char_Mat_Freddy_Body.tres",
+"use_external/path": "uid://vuk17m6rrarr"
+},
+"Char_Mat_Microphone": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://resources/models/animatronics/1_freddy/materials/Char_Mat_Microphone.tres",
+"use_external/path": "uid://c3ucq14bj43h7"
+}
+}
+}
+fbx/importer=0
+fbx/allow_geometry_helper_nodes=false
+fbx/embedded_image_handling=1
+fbx/naming_version=2

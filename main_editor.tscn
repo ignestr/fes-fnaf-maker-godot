@@ -8,10 +8,10 @@
 [ext_resource type="Script" uid="uid://dplkjicl5ujjf" path="res://scripts/classes/state-machine/dayshift-buildstates/delete_state.gd" id="6_fyby4"]
 [ext_resource type="Script" uid="uid://b7xkl0y7lra22" path="res://scripts/classes/state-machine/dayshift-buildstates/room_place.gd" id="7_jk1px"]
 [ext_resource type="Script" uid="uid://dbji2y1a3ncqw" path="res://scripts/classes/state-machine/dayshift-buildstates/set_material_state.gd" id="8_f85ke"]
-[ext_resource type="PackedScene" uid="uid://bik8ysf8p1als" path="res://resources/models/animatronics/toy_freddy/Toy Freddy v2.fbx" id="9_4gipx"]
 [ext_resource type="Script" uid="uid://dii0d61dbbpck" path="res://scripts/classes/state-machine/dayshift-buildstates/object_place_state.gd" id="9_aimki"]
 [ext_resource type="Script" uid="uid://cly6rlsyeqtv0" path="res://scripts/classes/state-machine/dayshift-buildstates/select_state.gd" id="11_1qerd"]
 [ext_resource type="Script" uid="uid://cqc8dlvq2nj8f" path="res://scripts/classes/state-machine/dayshift-buildstates/device_place_state.gd" id="11_b67c3"]
+[ext_resource type="Script" uid="uid://d21x2yg352nan" path="res://scripts/classes/state-machine/dayshift-buildstates/animatronic_place_state.gd" id="13_1bmbu"]
 
 [sub_resource type="Environment" id="Environment_21po1"]
 background_mode = 1
@@ -76,12 +76,6 @@ metadata/_custom_type_script = "uid://dii0d61dbbpck"
 script = ExtResource("11_b67c3")
 metadata/_custom_type_script = "uid://cqc8dlvq2nj8f"
 
-[node name="Toy Freddy v2" parent="." unique_id=1991967237 instance=ExtResource("9_4gipx")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -0.08649689, 0, -0.42760718)
-
-[node name="WorldEnvironment2" type="WorldEnvironment" parent="." unique_id=1770124815]
-environment = SubResource("Environment_21po1")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment2" unique_id=1234315056]
-transform = Transform3D(0.55171967, -0.59484553, 0.5846061, 0, 0.7009416, 0.7132187, -0.83402956, -0.39349678, 0.38672328, 0, 0, 0)
-light_energy = 0.0
+[node name="animatronic_place_state" type="Node" parent="DayshiftManager" unique_id=1048281588]
+script = ExtResource("13_1bmbu")
+metadata/_custom_type_script = "uid://d21x2yg352nan"

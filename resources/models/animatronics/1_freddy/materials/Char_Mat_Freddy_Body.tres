@@ -1,0 +1,16 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://vuk17m6rrarr"]
+
+[ext_resource type="Texture2D" uid="uid://rlrh8q6qwfyp" path="res://resources/models/animatronics/1_freddy/Char_Tex_Freddy_BaseColor.png" id="1_0fmli"]
+[ext_resource type="Texture2D" uid="uid://cw7vas06qg7rf" path="res://resources/models/animatronics/1_freddy/Char_Tex_Freddy_Metallic.png" id="2_o5rm1"]
+[ext_resource type="Texture2D" uid="uid://imicf6nbeyfm" path="res://resources/models/animatronics/1_freddy/Char_Tex_Freddy_Normal.png" id="3_j3erm"]
+[ext_resource type="Texture2D" uid="uid://da0hp3s8e8smk" path="res://resources/models/animatronics/1_freddy/Char_Tex_Freddy_Roughness.png" id="4_70xv0"]
+
+[resource]
+resource_name = "Char_Mat_Freddy_Body"
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_0fmli")
+metallic = 1.0
+metallic_texture = ExtResource("2_o5rm1")
+roughness_texture = ExtResource("4_70xv0")
+normal_enabled = true
+normal_texture = ExtResource("3_j3erm")

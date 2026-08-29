@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bcspjw8bsy18u"]
+
+[ext_resource type="Texture2D" uid="uid://dpjfh4dcyhicc" path="res://resources/models/animatronics/1_freddy/Eye-Color.png" id="1_4fksn"]
+[ext_resource type="Texture2D" uid="uid://dk7xwhc1eesdh" path="res://resources/models/animatronics/1_freddy/Eye-Roughness.png" id="2_on5nn"]
+
+[resource]
+resource_name = "Char_Mat_Eye_Freddy"
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_4fksn")
+roughness_texture = ExtResource("2_on5nn")
